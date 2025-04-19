@@ -10,5 +10,6 @@ export const EVENTS = deepFreeze({
     PLAYER_LEVEL_DEC: "player-level-dec",
     PLAYER_GEAR_INC: "player-gear-inc",
     PLAYER_GEAR_DEC: "player-gear-dec",
-    PLAYER_UPDATE: "player-update"
+    PLAYER_UPDATE: "player-update",
+    PARTY_UPDATE: "party-update"
 })
