@@ -18,23 +18,21 @@ export default function App() {
         function onDisconnect() {
             setIsConnected(false)
         }
-        function onPlayerJoin({newPlayer}) {
-            console.log("Player has joined")
-            console.log(newPlayer)
+        function onPlayerUpdate({playerObj}) {
             setDisplayModeSelect(false)
-            setPlayerObj(Object.assign(new Player(), JSON.parse(newPlayer)))
+            setPlayerObj(Object.assign(new Player(), JSON.parse(playerObj)))
         }
 
 
         socket.on(E.CONNECTION, onConnect)
         socket.on(E.DISCONNECTION, onDisconnect)
-        socket.on(E.PLAYER_JOIN, onPlayerJoin)
+        socket.on(E.PLAYER_UPDATE, onPlayerUpdate)
         
         
         return () => {
             socket.off(E.CONNECTION, onConnect)
             socket.off(E.DISCONNECTION, onDisconnect)
-            socket.off(E.PLAYER_JOIN, onPlayerJoin)
+            socket.off(E.PLAYER_UPDATE, onPlayerUpdate)
         }
     }, [])
 
