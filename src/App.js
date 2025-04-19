@@ -1,44 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { socket } from './socket';
-import { ConnectionState } from './components/ConnectionState';
-import { ConnectionManager } from './components/ConnectionManager';
-import { Events } from "./components/Events";
-import { MyForm } from './components/MyForm';
+import { EVENTS as E } from './app/events.mjs';
+import Player from './app/models.mjs';
+import ModeSelect from './components/ModeSelect';
+import PlayerCard from './components/PlayerCard';
 
 export default function App() {
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [fooEvents, setFooEvents] = useState([]);
+    const [isConnected, setIsConnected] = useState(socket.connected)
+    const [displayModeSelect, setDisplayModeSelect] = useState(true)
+    const [playerObj, setPlayerObj] = useState(null)
 
-  useEffect(() => {
-    function onConnect() {
-      setIsConnected(true);
-    }
+    
+    useEffect(() => {
+        function onConnect() {
+            setIsConnected(true)
+        }
+        function onDisconnect() {
+            setIsConnected(false)
+        }
+        function onPlayerJoin({newPlayer}) {
+            console.log("Player has joined")
+            console.log(newPlayer)
+            setDisplayModeSelect(false)
+            setPlayerObj(Object.assign(new Player(), JSON.parse(newPlayer)))
+        }
 
-    function onDisconnect() {
-      setIsConnected(false);
-    }
 
-    function onFooEvent(value) {
-      setFooEvents(previous => [...previous, value]);
-    }
+        socket.on(E.CONNECTION, onConnect)
+        socket.on(E.DISCONNECTION, onDisconnect)
+        socket.on(E.PLAYER_JOIN, onPlayerJoin)
+        
+        
+        return () => {
+            socket.off(E.CONNECTION, onConnect)
+            socket.off(E.DISCONNECTION, onDisconnect)
+            socket.off(E.PLAYER_JOIN, onPlayerJoin)
+        }
+    }, [])
 
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('foo', onFooEvent);
-
-    return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('foo', onFooEvent);
-    };
-  }, []);
-
-  return (
-    <div className="App">
-      <ConnectionState isConnected={ isConnected } />
-      <Events events={ fooEvents } />
-      <ConnectionManager />
-      <MyForm />
-    </div>
-  );
+    return (
+        <div className="App">
+            {displayModeSelect ? <ModeSelect socket={socket}/> : <></>}
+            {playerObj ? <PlayerCard socket={socket} playerObj={playerObj}/> : <></>}
+        </div>
+    );
 }
