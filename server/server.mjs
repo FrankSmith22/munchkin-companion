@@ -27,38 +27,42 @@ io.on(E.CONNECTION, socket => {
         }
         rooms[playerRoomId][socket.id] = playerObj
         console.log(`${playerName} has joined room: ${playerRoomId}`)
-        socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
-        // socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[roomId])})
-        // TODO Will also need to emit another event so that TV mode (and other players) get the message
+        socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj)})
+        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
-
+    
     socket.on(E.PLAYER_LEVEL_INC, () => {
         playerObj.level++
+        rooms[playerRoomId][socket.id] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
-        // socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[roomId])})
+        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
 
     socket.on(E.PLAYER_LEVEL_DEC, () => {
         playerObj.level = Math.max(playerObj.level - 1, 1)
+        rooms[playerRoomId][socket.id] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
-        // socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[roomId])})
+        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
 
     socket.on(E.PLAYER_GEAR_INC, () => {
         playerObj.gearBonus++
+        rooms[playerRoomId][socket.id] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
-        // socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[roomId])})
+        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
 
     socket.on(E.PLAYER_GEAR_DEC, () => {
         playerObj.gearBonus = Math.max(playerObj.gearBonus - 1, 0)
+        rooms[playerRoomId][socket.id] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
-        // socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[roomId])})
+        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
     // Connected as TV
     socket.on(E.TV_CONNECT, ({roomId}) => {
+        playerRoomId = roomId
         socket.join(playerRoomId)
-        socket.emit(E.TV_CONNECT, {"allPlayers": JSON.stringify(rooms[roomId])})
+        socket.emit(E.TV_CONNECT, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
 })
 io.on(E.DISCONNECTION, socket => {

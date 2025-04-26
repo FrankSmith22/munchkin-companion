@@ -9,6 +9,8 @@ import TvCard from './components/TvCard';
 export default function App() {
     const [isConnected, setIsConnected] = useState(socket.connected)
     const [displayModeSelect, setDisplayModeSelect] = useState(true)
+    const [playerConnect, setPlayerConnect] = useState(false)
+    const [tvConnect, setTvConnect] = useState(false)
     const [playerObj, setPlayerObj] = useState(null)
     const [allPlayers, setAllPlayers] = useState(null)
 
@@ -19,14 +21,30 @@ export default function App() {
         function onDisconnect() {
             setIsConnected(false)
         }
-        function onPlayerUpdate({playerObj}) {
+        function onPlayerConnect({playerObj}) {
             setDisplayModeSelect(false)
+            setPlayerConnect(true)
             setPlayerObj(Object.assign(new Player(), JSON.parse(playerObj)))
         }
+
         function onTvConnect({allPlayers}){
             setDisplayModeSelect(false)
-            setPlayerObj(null)
+            setTvConnect(true)
 
+            const parsedAllPlayers = JSON.parse(allPlayers)
+            const allPlayerObjs = {}
+            for (const [socket_id, playerObj] of Object.entries(parsedAllPlayers)) {
+                allPlayerObjs[socket_id] = Object.assign(new Player(), playerObj)
+            }
+            setAllPlayers(allPlayerObjs)
+        }
+
+        function onPlayerUpdate({playerObj}) {
+            setPlayerObj(Object.assign(new Player(), JSON.parse(playerObj)))
+        }
+
+        function onPartyUpdate({allPlayers}) {
+            console.log("Received party update")
             const parsedAllPlayers = JSON.parse(allPlayers)
             const allPlayerObjs = {}
             for (const [socket_id, playerObj] of Object.entries(parsedAllPlayers)) {
@@ -38,25 +56,27 @@ export default function App() {
 
         socket.on(E.CONNECTION, onConnect)
         socket.on(E.DISCONNECTION, onDisconnect)
-        socket.on(E.PLAYER_UPDATE, onPlayerUpdate)
+        socket.on(E.PLAYER_CONNECT, onPlayerConnect)
         socket.on(E.TV_CONNECT, onTvConnect)
-        socket.on(E.PARTY_UPDATE, onTvConnect)
+        socket.on(E.PLAYER_UPDATE, onPlayerUpdate)
+        socket.on(E.PARTY_UPDATE, onPartyUpdate)
         
         
         return () => {
             socket.off(E.CONNECTION, onConnect)
             socket.off(E.DISCONNECTION, onDisconnect)
-            socket.off(E.PLAYER_UPDATE, onPlayerUpdate)
+            socket.off(E.PLAYER_CONNECT, onPlayerConnect)
             socket.off(E.TV_CONNECT, onTvConnect)
-            socket.off(E.PARTY_UPDATE, onTvConnect)
+            socket.off(E.PLAYER_UPDATE, onPlayerUpdate)
+            socket.off(E.PARTY_UPDATE, onPartyUpdate)
         }
     }, [])
 
     return (
         <div className="App">
             {displayModeSelect ? <ModeSelect socket={socket}/> : <></>}
-            {playerObj ? <PlayerCard socket={socket} playerObj={playerObj}/> : <></>}
-            {allPlayers ? <TvCard socket={socket} allPlayers={allPlayers}/>: <></>}
+            {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj}/> : <></>}
+            {tvConnect ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}
         </div>
     );
 }
