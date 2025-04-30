@@ -46,6 +46,9 @@ export default function App() {
             setDisplayModeSelect(false)
             setTvConnect(true)
 
+            allPlayers = allPlayers || "{}"
+            console.log(allPlayers)
+
             const parsedAllPlayers = JSON.parse(allPlayers)
             const allPlayerObjs = {}
             for (const [socket_id, playerObj] of Object.entries(parsedAllPlayers)) {
@@ -60,6 +63,8 @@ export default function App() {
 
         function onPartyUpdate({allPlayers}) {
             console.log("Received party update")
+            allPlayers = allPlayers || "{}"
+            console.log(allPlayers)
             const parsedAllPlayers = JSON.parse(allPlayers)
             const allPlayerObjs = {}
             for (const [socket_id, playerObj] of Object.entries(parsedAllPlayers)) {
