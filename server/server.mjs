@@ -29,7 +29,7 @@ io.on(E.CONNECTION, socket => {
         }
         rooms[playerRoomId][connId] = playerObj
         console.log(`${playerName} has joined room: ${playerRoomId}`)
-        socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj)})
+        socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
         socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
     
@@ -64,7 +64,15 @@ io.on(E.CONNECTION, socket => {
     socket.on(E.TV_CONNECT, ({roomId}) => {
         playerRoomId = roomId
         socket.join(playerRoomId)
-        socket.emit(E.TV_CONNECT, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
+        socket.emit(E.TV_CONNECT, {"allPlayers": JSON.stringify(rooms[playerRoomId]), "roomId": playerRoomId})
+    })
+    // Reconnect
+    socket.on(E.PLAYER_RECONNECT, ({connId, roomId}) => {
+        playerRoomId = roomId
+        connId = connId
+        playerObj = rooms[playerRoomId][connId]
+        socket.join(playerRoomId)
+        socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
     })
 })
 io.on(E.DISCONNECTION, socket => {

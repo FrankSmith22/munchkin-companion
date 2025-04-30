@@ -3,9 +3,9 @@ import { EVENTS as E } from '../app/events.mjs';
 
 export default function TvCard({socket, allPlayers}){
 
-    function playerSlot(socketId, playerObj) {
+    function playerSlot(connId, playerObj) {
         return (
-            <div key={socketId}>
+            <div key={connId}>
                 <span>Name: {playerObj.name}</span>
                 <span>Level: {playerObj.level}</span>
                 <span>Total bonus: {playerObj.level + playerObj.gearBonus}</span>
@@ -14,8 +14,8 @@ export default function TvCard({socket, allPlayers}){
     }
 
     let playerSlots = []
-    for (const [socketId, playerObj] of Object.entries(allPlayers)){
-        playerSlots.push(playerSlot(socketId, playerObj))
+    for (const [connId, playerObj] of Object.entries(allPlayers)){
+        playerSlots.push(playerSlot(connId, playerObj))
     }
 
     return (

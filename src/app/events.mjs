@@ -11,5 +11,7 @@ export const EVENTS = deepFreeze({
     PLAYER_GEAR_INC: "player-gear-inc",
     PLAYER_GEAR_DEC: "player-gear-dec",
     PLAYER_UPDATE: "player-update",
-    PARTY_UPDATE: "party-update"
+    PARTY_UPDATE: "party-update",
+    TV_RECONNECT: "tv-reconnect",
+    PLAYER_RECONNECT: "player-reconnect"
 })
