@@ -5,20 +5,35 @@ import Player from './app/models.mjs';
 import ModeSelect from './components/ModeSelect';
 import PlayerCard from './components/PlayerCard';
 import TvCard from './components/TvCard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSignal } from '@fortawesome/free-solid-svg-icons/faSignal'
+
+function ConnectionState({ isConnected }) {
+    const color = isConnected ? 'green' : 'red'
+    return <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '2rem'}} icon={faSignal} />
+}
 
 export default function App() {
-    const [isConnected, setIsConnected] = useState(socket.connected)
+    const [isConnected, setIsConnected] = useState(false)
     const [displayModeSelect, setDisplayModeSelect] = useState(true)
     const [playerConnect, setPlayerConnect] = useState(false)
     const [tvConnect, setTvConnect] = useState(false)
     const [playerObj, setPlayerObj] = useState(null)
     const [allPlayers, setAllPlayers] = useState(null)
 
+    /* Handling refresh:
+    1. Upon player connect or tv connect, save playerConnect or tvConnect to localstorage
+
+    */
+
+
     useEffect(() => {
         function onConnect() {
+            console.log("Connected")
             setIsConnected(true)
         }
         function onDisconnect() {
+            console.log("Disconnected")
             setIsConnected(false)
         }
         function onPlayerConnect({playerObj}) {
@@ -53,6 +68,7 @@ export default function App() {
             setAllPlayers(allPlayerObjs)
         }
 
+        socket.connect()
 
         socket.on(E.CONNECTION, onConnect)
         socket.on(E.DISCONNECTION, onDisconnect)
@@ -74,6 +90,7 @@ export default function App() {
 
     return (
         <div className="App">
+            <ConnectionState isConnected={isConnected}/>
             {displayModeSelect ? <ModeSelect socket={socket}/> : <></>}
             {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj}/> : <></>}
             {tvConnect ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}

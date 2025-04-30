@@ -1,7 +1,7 @@
 import deepFreeze from "deep-freeze"
 
 export const EVENTS = deepFreeze({
-    CONNECTION: "connection",
+    CONNECTION: "connect",
     DISCONNECTION: "disconnect",
     PLAYER_CONNECT: "player-connect",
     PLAYER_JOIN: "player-join",
