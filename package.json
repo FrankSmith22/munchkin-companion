@@ -1,6 +1,7 @@
 {
   "name": "munchkin-companion",
   "version": "0.1.0",
+  "homepage": "https://franksmith22.github.io/munchkin-companion",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
