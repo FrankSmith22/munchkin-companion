@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.31d6cfe0.css",
-    "main.js": "/static/js/main.1631e689.js",
-    "static/js/453.6d235fcc.chunk.js": "/static/js/453.6d235fcc.chunk.js",
-    "index.html": "/index.html",
-    "main.1631e689.js.map": "/static/js/main.1631e689.js.map",
-    "453.6d235fcc.chunk.js.map": "/static/js/453.6d235fcc.chunk.js.map"
+    "main.css": "/munchkin-companion/static/css/main.31d6cfe0.css",
+    "main.js": "/munchkin-companion/static/js/main.83a9546a.js",
+    "static/js/453.6d235fcc.chunk.js": "/munchkin-companion/static/js/453.6d235fcc.chunk.js",
+    "index.html": "/munchkin-companion/index.html",
+    "main.83a9546a.js.map": "/munchkin-companion/static/js/main.83a9546a.js.map",
+    "453.6d235fcc.chunk.js.map": "/munchkin-companion/static/js/453.6d235fcc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.1631e689.js"
+    "static/js/main.83a9546a.js"
   ]
 }
