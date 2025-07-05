@@ -7,6 +7,9 @@ import PlayerCard from './components/PlayerCard';
 import TvCard from './components/TvCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignal } from '@fortawesome/free-solid-svg-icons/faSignal'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css'
+
 
 function ConnectionState({ isConnected }) {
     const color = isConnected ? 'green' : 'red'

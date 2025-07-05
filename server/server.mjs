@@ -78,3 +78,6 @@ io.on(E.CONNECTION, socket => {
 io.on(E.DISCONNECTION, socket => {
     console.log('client disconnected: ' + socket.id)
 })
+
+
+console.log("Server booted")

@@ -1,5 +1,7 @@
 import { io } from 'socket.io-client';
 
-// export let socket = io('http://localhost:4000', {autoConnect: false})
-export let socket = io('https://munchkin-companion-server.glitch.me', {autoConnect: false})
+// dev
+export let socket = io('http://192.168.1.169:4000', {autoConnect: false})
+// live
+// export let socket = io('https://munchkin-companion-server.glitch.me', {autoConnect: false})
 
