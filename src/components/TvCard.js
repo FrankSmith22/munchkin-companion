@@ -14,9 +14,11 @@ export default function TvCard({socket, allPlayers}){
     }
 
     let playerSlots = []
+    console.log(JSON.stringify(allPlayers))
     for (const [connId, playerObj] of Object.entries(allPlayers)){
         playerSlots.push(playerSlot(connId, playerObj))
     }
+
 
     return (
         <div>

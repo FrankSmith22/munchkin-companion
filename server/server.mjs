@@ -74,6 +74,16 @@ io.on(E.CONNECTION, socket => {
         socket.join(playerRoomId)
         socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
     })
+    // Disconnect from room
+    socket.on(E.DISCONNECT_ROOM, () => {
+        if (rooms[playerRoomId] != null){
+            delete rooms[playerRoomId][connId]
+        }
+        socket.leave(playerRoomId)
+        playerRoomId = null
+        playerObj = null
+        socket.emit(E.DISCONNECT_ROOM)
+    })
 })
 io.on(E.DISCONNECTION, socket => {
     console.log('client disconnected: ' + socket.id)

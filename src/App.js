@@ -3,6 +3,7 @@ import { socket } from './socket';
 import { EVENTS as E } from './app/events.mjs';
 import Player from './app/models.mjs';
 import ModeSelect from './components/ModeSelect';
+import BackButton from './components/BackButton';
 import PlayerCard from './components/PlayerCard';
 import TvCard from './components/TvCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,7 +14,7 @@ import './App.css'
 
 function ConnectionState({ isConnected }) {
     const color = isConnected ? 'green' : 'red'
-    return <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '2rem'}} icon={faSignal} />
+    return <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '1rem'}} icon={faSignal} />
 }
 
 export default function App() {
@@ -90,6 +91,17 @@ export default function App() {
             setAllPlayers(allPlayerObjs)
         }
 
+        function onDisconnectRoom(){
+            setDisplayModeSelect(true)
+            setPlayerConnect(false)
+            setTvConnect(false)
+            setAllPlayers(null)
+            setPlayerObj(null)
+            localStorage.setItem("connectionType", "")
+            localStorage.setItem("roomId", "")
+            localStorage.setItem("connId", "")
+        }
+
 
         socket.connect()
 
@@ -120,7 +132,7 @@ export default function App() {
         socket.on(E.TV_CONNECT, onTvConnect)
         socket.on(E.PLAYER_UPDATE, onPlayerUpdate)
         socket.on(E.PARTY_UPDATE, onPartyUpdate)
-        
+        socket.on(E.DISCONNECT_ROOM, onDisconnectRoom)
         
         return () => {
             socket.off(E.CONNECTION, onConnect)
@@ -129,12 +141,16 @@ export default function App() {
             socket.off(E.TV_CONNECT, onTvConnect)
             socket.off(E.PLAYER_UPDATE, onPlayerUpdate)
             socket.off(E.PARTY_UPDATE, onPartyUpdate)
+            socket.off(E.DISCONNECT_ROOM, onDisconnectRoom)
         }
     }, [])
 
     return (
         <div className="App">
             <ConnectionState isConnected={isConnected}/>
+            <br/>
+            {playerConnect || tvConnect ? <BackButton socket={socket}/> : <></>}
+            <br/>
             {displayModeSelect ? <ModeSelect socket={socket}/> : <></>}
             {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj}/> : <></>}
             {tvConnect ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}
