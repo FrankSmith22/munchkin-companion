@@ -3,31 +3,30 @@ import { EVENTS as E } from '../app/events.mjs';
 import BackButton from './BackButton';
 import '../sidebar.css';
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 export default function PlayerCard({socket, playerObj}){
 
     const [sidebarToggle, setSidebarToggle] = useState(true)
     const [sidebarWidth, setSidebarWidth] = useState("100px")
-    const [sidebarBtnPosition, setSidebarBtnPosition] = useState("75px")
-    const [sidebarBtnRotate, setSidebarBtnRotate] = useState("0deg")
+    const [sidebarCloseBtnPosition, setSidebarCloseBtnPosition] = useState("60px")
 
     const toggleSidebar = () => {
         setSidebarToggle(!sidebarToggle)
         if (sidebarToggle){
             setSidebarWidth("100px")
-            setSidebarBtnPosition("75px")
-            setSidebarBtnRotate("0deg")
+            setSidebarCloseBtnPosition("60px")
         }
         else{
             setSidebarWidth("0px")
-            setSidebarBtnPosition("20px")
-            setSidebarBtnRotate("180deg")
+            setSidebarCloseBtnPosition("-30px")
         }
     }
 
     return (
         <>
-        <button className='sidebarToggleBtn' style={{ left: sidebarBtnPosition, rotate: sidebarBtnRotate }} onClick={e => toggleSidebar()}>{"<"}</button>
+        <button className='sidebarCloseBtn' style={{ left: sidebarCloseBtnPosition }} onClick={e => toggleSidebar()}>{"X"}</button>
         <div id="mySidebar" class="sidebar" style={{ width: sidebarWidth }}>
             <ul>
                 <li>
@@ -43,6 +42,13 @@ export default function PlayerCard({socket, playerObj}){
             </ul>
         </div>
         {/* Main contents */}
+        <div>
+            <FontAwesomeIcon
+                icon={faBars}
+                style={{ fontSize: "30px", cursor: "pointer", color: "#441B06" }}
+                onClick={e => toggleSidebar()}
+            />
+        </div>
         <Container style={{ height: "100%" }}>
             <Row style={{ height: "100%" }}>
                 <Col className="offset-2">

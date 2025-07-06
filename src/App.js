@@ -17,7 +17,7 @@ const LS_CONN_ID = "connId"
 
 function ConnectionState({ isConnected }) {
     const color = isConnected ? 'green' : 'red'
-    return <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '1rem'}} icon={faSignal} />
+    return <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '1rem', float: "right"}} icon={faSignal} />
 }
 
 export default function App() {
