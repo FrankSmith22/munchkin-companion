@@ -16,3 +16,12 @@ body {
     box-sizing: border-box;
     font-family: Windlass, sans-serif;
 }
+
+.playerButton {
+    background-color: #E9BC6D;
+    border: 3px solid #441B06;
+    color: #441B06;
+    font-size: 2rem;
+    height: 60px;
+    width: 60px;
+}
