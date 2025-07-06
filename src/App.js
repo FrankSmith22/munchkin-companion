@@ -112,7 +112,7 @@ export default function App() {
             case "player":
                 let connId = localStorage.getItem("connId")
                 if(roomId && connId){
-                    socket.emit(E.PLAYER_RECONNECT, {connId, roomId})
+                    socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
                 }
                 break
             case "tv":

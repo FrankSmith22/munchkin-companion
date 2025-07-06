@@ -67,9 +67,9 @@ io.on(E.CONNECTION, socket => {
         socket.emit(E.TV_CONNECT, {"allPlayers": JSON.stringify(rooms[playerRoomId]), "roomId": playerRoomId})
     })
     // Reconnect
-    socket.on(E.PLAYER_RECONNECT, ({connId, roomId}) => {
+    socket.on(E.PLAYER_RECONNECT, ({localConnId, roomId}) => {
         playerRoomId = roomId
-        connId = connId
+        connId = localConnId
         playerObj = rooms[playerRoomId][connId]
         socket.join(playerRoomId)
         socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
