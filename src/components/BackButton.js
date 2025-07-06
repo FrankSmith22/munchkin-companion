@@ -4,11 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-export default function BackButton({socket}){
+export default function BackButton({socket, confirm}){
 
     const [isOpen, setIsOpen] = useState(false)
 
     const toggle = () => setIsOpen(!isOpen)
+
+    const sendDisconnect = () => socket.emit(E.DISCONNECT_ROOM)
 
     return (
         <div>
@@ -18,7 +20,7 @@ export default function BackButton({socket}){
                     Are you sure? Current stats will be lost.
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={e => socket.emit(E.DISCONNECT_ROOM)}>Yes</Button>
+                    <Button color="primary" onClick={sendDisconnect}>Yes</Button>
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
             </Modal>
@@ -26,7 +28,7 @@ export default function BackButton({socket}){
                 <FontAwesomeIcon
                 style={{ fontSize: "2rem", color: "#441B06", cursor: "pointer" }}
                 icon={faArrowLeft}
-                onClick={e => setIsOpen(true)}
+                onClick={e => confirm ? setIsOpen(true) : sendDisconnect()}
                 />
             </span>
         </div>

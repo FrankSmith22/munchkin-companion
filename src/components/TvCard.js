@@ -5,9 +5,9 @@ export default function TvCard({socket, allPlayers}){
     function playerSlot(connId, playerObj) {
         return (
             <div key={connId}>
-                <span>Name: {playerObj.name}</span>
-                <span>Level: {playerObj.level}</span>
-                <span>Total bonus: {playerObj.level + playerObj.gearBonus}</span>
+                <span>Name: {playerObj.name}</span><br/>
+                <span>Level: {playerObj.level}</span><br/>
+                <span>Total bonus: {playerObj.level + playerObj.gearBonus}</span><br/><br/>
             </div>
         )
     }
@@ -21,7 +21,7 @@ export default function TvCard({socket, allPlayers}){
 
     return (
         <div>
-            <BackButton socket={socket}/>
+            <BackButton socket={socket} confirm={false}/>
             {playerSlots}
         </div>
     )
