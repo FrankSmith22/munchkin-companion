@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { EVENTS as E } from '../app/events.mjs';
+import BackButton from './BackButton';
 
 export default function TvCard({socket, allPlayers}){
 
@@ -22,6 +21,7 @@ export default function TvCard({socket, allPlayers}){
 
     return (
         <div>
+            <BackButton socket={socket}/>
             {playerSlots}
         </div>
     )

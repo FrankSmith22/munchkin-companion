@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
 import { EVENTS as E } from '../app/events.mjs';
+import BackButton from './BackButton';
 
 export default function PlayerCard({socket, playerObj}){
 
     return (
         <div>
+            <BackButton socket={socket}/>
             Name: {playerObj.name}
             <br></br><br></br>
             level: {playerObj.level} <button onClick={e => socket.emit(E.PLAYER_LEVEL_INC)}>+</button> <button onClick={e => socket.emit(E.PLAYER_LEVEL_DEC)}>-</button>

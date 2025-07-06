@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { socket } from './socket';
 import { EVENTS as E } from './app/events.mjs';
 import Player from './app/models.mjs';
 import ModeSelect from './components/ModeSelect';
-import BackButton from './components/BackButton';
 import PlayerCard from './components/PlayerCard';
 import TvCard from './components/TvCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignal } from '@fortawesome/free-solid-svg-icons/faSignal'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
+
+const LS_CONN_TYPE = "connectionType"
+const LS_ROOM_ID = "roomId"
+const LS_CONN_ID = "connId"
 
 
 function ConnectionState({ isConnected }) {
@@ -53,9 +56,9 @@ export default function App() {
             setPlayerObj(playerObj)
 
             // Save to localStorage
-            localStorage.setItem("connectionType", "player")
-            localStorage.setItem("roomId", roomId)
-            localStorage.setItem("connId", playerObj.connId)
+            localStorage.setItem(LS_CONN_TYPE, "player")
+            localStorage.setItem(LS_ROOM_ID, roomId)
+            localStorage.setItem(LS_CONN_ID, playerObj.connId)
         }
 
         function onTvConnect({allPlayers, roomId}){
@@ -72,8 +75,8 @@ export default function App() {
             setAllPlayers(allPlayerObjs)
 
             // Save to localStorage
-            localStorage.setItem("connectionType", "tv")
-            localStorage.setItem("roomId", roomId)
+            localStorage.setItem(LS_CONN_TYPE, "tv")
+            localStorage.setItem(LS_ROOM_ID, roomId)
         }
 
         function onPlayerUpdate({playerObj}) {
@@ -97,20 +100,20 @@ export default function App() {
             setTvConnect(false)
             setAllPlayers(null)
             setPlayerObj(null)
-            localStorage.setItem("connectionType", "")
-            localStorage.setItem("roomId", "")
-            localStorage.setItem("connId", "")
+            localStorage.setItem(LS_CONN_TYPE, "")
+            localStorage.setItem(LS_ROOM_ID, "")
+            localStorage.setItem(LS_CONN_ID, "")
         }
 
 
         socket.connect()
 
         // Attempt reconnect using localstorage
-        let connectionType = localStorage.getItem("connectionType")
-        let roomId = localStorage.getItem("roomId")
+        let connectionType = localStorage.getItem(LS_CONN_TYPE)
+        let roomId = localStorage.getItem(LS_ROOM_ID)
         switch(connectionType){
             case "player":
-                let connId = localStorage.getItem("connId")
+                let connId = localStorage.getItem(LS_CONN_ID)
                 if(roomId && connId){
                     socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
                 }
@@ -148,9 +151,6 @@ export default function App() {
     return (
         <div className="App">
             <ConnectionState isConnected={isConnected}/>
-            <br/>
-            {playerConnect || tvConnect ? <BackButton socket={socket}/> : <></>}
-            <br/>
             {displayModeSelect ? <ModeSelect socket={socket}/> : <></>}
             {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj}/> : <></>}
             {tvConnect ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}

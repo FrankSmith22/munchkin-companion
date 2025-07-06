@@ -79,6 +79,7 @@ io.on(E.CONNECTION, socket => {
         if (rooms[playerRoomId] != null){
             delete rooms[playerRoomId][connId]
         }
+        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
         socket.leave(playerRoomId)
         playerRoomId = null
         playerObj = null
