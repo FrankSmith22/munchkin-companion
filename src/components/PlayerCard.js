@@ -52,7 +52,7 @@ export default function PlayerCard({socket, playerObj, allPlayers}){
         </div>
         <div className="container-fluid" style={{ height: "100%" }}>
             <Row style={{ height: "100%" }}>
-                <Col className="offset-3">
+                <Col className="offset-3" style={{ wordWrap: "break-word" }}>
                     <BackButton socket={socket} confirm={true}/>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
                     <br></br><br></br>

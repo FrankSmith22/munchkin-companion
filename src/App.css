@@ -29,3 +29,9 @@ body {
     vertical-align: middle;
     line-height: 20px;
 }
+
+.roomIdSpan {
+    display: inline-block;
+    width: 100px;
+    word-wrap: break-word;
+}

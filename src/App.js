@@ -21,7 +21,7 @@ function ConnectionState({ isConnected, roomId }) {
         <div style={{ float: "right" }}>
             <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '1rem'}} icon={faSignal} />
             <br/>
-            {roomId ? <span>Room ID: {roomId}</span> : <></>}
+            {roomId ? <span className="roomIdSpan">Room ID: {roomId}</span> : <></>}
         </div>
     )
 }
