@@ -27,7 +27,6 @@ export default function PlayerCard({socket, playerObj, allPlayers}){
     let allPlayersList = []
     if (allPlayers){
         allPlayersList = Object.entries(allPlayers).filter(element => element[0] != playerObj.connId)
-        console.log(JSON.stringify(allPlayersList))
     }
 
     return (
@@ -51,20 +50,20 @@ export default function PlayerCard({socket, playerObj, allPlayers}){
                 onClick={e => toggleSidebar()}
             />
         </div>
-        <Container style={{ height: "100%" }}>
+        <div className="container-fluid" style={{ height: "100%" }}>
             <Row style={{ height: "100%" }}>
-                <Col className="offset-2">
+                <Col className="offset-3">
                     <BackButton socket={socket} confirm={true}/>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
                     <br></br><br></br>
-                    level: {playerObj.level} <Button className="playerButton" onClick={e => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="playerButton" onClick={e => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
+                    Level: {playerObj.level} <Button className="playerButton" onClick={e => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="playerButton" onClick={e => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
                     <br></br><br></br>
-                    gear bonus: {playerObj.gearBonus} <Button className="playerButton" onClick={e => socket.emit(E.PLAYER_GEAR_INC)}>+</Button> <Button className="playerButton" onClick={e => socket.emit(E.PLAYER_GEAR_DEC)}>-</Button>
+                    Gear: {playerObj.gearBonus} <Button className="playerButton" onClick={e => socket.emit(E.PLAYER_GEAR_INC)}>+</Button> <Button className="playerButton" onClick={e => socket.emit(E.PLAYER_GEAR_DEC)}>-</Button>
                     <br></br><br></br>
                     <b>total: {playerObj.level + playerObj.gearBonus}</b>
                 </Col>
             </Row>
-        </Container>
+        </div>
         </>
     )
 }

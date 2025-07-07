@@ -24,6 +24,8 @@ body {
     border: 3px solid #441B06;
     color: #441B06;
     font-size: 2rem;
-    height: 60px;
-    width: 60px;
+    height: 40px;
+    width: 40px;
+    vertical-align: middle;
+    line-height: 20px;
 }

@@ -15,9 +15,15 @@ const LS_ROOM_ID = "roomId"
 const LS_CONN_ID = "connId"
 
 
-function ConnectionState({ isConnected }) {
+function ConnectionState({ isConnected, roomId }) {
     const color = isConnected ? 'green' : 'red'
-    return <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '1rem', float: "right"}} icon={faSignal} />
+    return (
+        <div style={{ float: "right" }}>
+            <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '1rem'}} icon={faSignal} />
+            <br/>
+            {roomId ? <span>Room ID: {roomId}</span> : <></>}
+        </div>
+    )
 }
 
 export default function App() {
@@ -27,6 +33,7 @@ export default function App() {
     const [tvConnect, setTvConnect] = useState(false)
     const [playerObj, setPlayerObj] = useState(null)
     const [allPlayers, setAllPlayers] = useState(null)
+    const [roomId, setRoomId] = useState("")
 
     /* Handling refresh:
     1. Upon player connect or tv connect, save to localstorage:
@@ -54,6 +61,7 @@ export default function App() {
             setPlayerConnect(true)
             playerObj = Object.assign(new Player(), JSON.parse(playerObj))
             setPlayerObj(playerObj)
+            setRoomId(roomId)
 
             // Save to localStorage
             localStorage.setItem(LS_CONN_TYPE, "player")
@@ -64,6 +72,7 @@ export default function App() {
         function onTvConnect({allPlayers, roomId}){
             setDisplayModeSelect(false)
             setTvConnect(true)
+            setRoomId(roomId)
 
             allPlayers = allPlayers || "{}"
 
@@ -100,6 +109,7 @@ export default function App() {
             setTvConnect(false)
             setAllPlayers(null)
             setPlayerObj(null)
+            setRoomId("")
             localStorage.setItem(LS_CONN_TYPE, "")
             localStorage.setItem(LS_ROOM_ID, "")
             localStorage.setItem(LS_CONN_ID, "")
@@ -153,7 +163,7 @@ export default function App() {
 
     return (
         <div className="App">
-            <ConnectionState isConnected={isConnected}/>
+            <ConnectionState isConnected={isConnected} roomId={roomId}/>
             {displayModeSelect ? <ModeSelect socket={socket}/> : <></>}
             {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers}/> : <></>}
             {tvConnect ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}
