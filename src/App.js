@@ -19,9 +19,9 @@ function ConnectionState({ isConnected, roomId }) {
     const color = isConnected ? 'green' : 'red'
     return (
         <div style={{ float: "right" }}>
-            <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '1rem'}} icon={faSignal} />
+            <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '1rem', float: "right"}} icon={faSignal} />
             <br/>
-            {roomId ? <span className="roomIdSpan">Room ID: {roomId}</span> : <></>}
+            {roomId ? <span className="roomIdSpan">Room ID: <b>{roomId}</b></span> : <></>}
         </div>
     )
 }

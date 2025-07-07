@@ -2,17 +2,19 @@ import { useState, useEffect } from 'react';
 import { EVENTS as E } from '../app/events.mjs';
 
 const LS_DEFAULT_ROOM_ID = "defaultRoomId"
+const LS_DEFAULT_PLAYER_NAME = "defaultPlayerName"
 
 export default function ModeSelect({socket}){
 
-    const [playerName, setPlayerName] = useState("")
+    let defaultPlayerName = localStorage.getItem(LS_DEFAULT_PLAYER_NAME)
+    const [playerName, setPlayerName] = useState(defaultPlayerName)
     let defaultRoomId = localStorage.getItem(LS_DEFAULT_ROOM_ID)
     const [roomId, setRoomId] = useState(defaultRoomId ? defaultRoomId : "")
 
     useEffect(() => {
-        console.log("I am running")
         localStorage.setItem(LS_DEFAULT_ROOM_ID, roomId)
-    }, [roomId])
+        localStorage.setItem(LS_DEFAULT_PLAYER_NAME, playerName)
+    }, [roomId, playerName])
 
     function onModeSelect(mode, roomId) {
         // TODO display loading icon
