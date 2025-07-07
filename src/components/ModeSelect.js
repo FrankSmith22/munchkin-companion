@@ -33,17 +33,6 @@ export default function ModeSelect({socket}){
     }
 
     return (
-        // <div>
-        //     <br/>
-        //     <h1 className="text-center">Munchkin Companion</h1>
-        //     <br/>
-        //     <label>Room ID:</label><input type="text" value={roomId} onChange={e => setRoomId(e.target.value)}/>
-        //     <br></br><br></br>
-        //     <button onClick={e => onModeSelect('tv', roomId)}>TV mode</button>
-        //     <br></br>
-        //     <button onClick={e => onModeSelect('player', roomId)}>Player mode</button>
-        //     <input type="text" value={playerName} onChange={e => setPlayerName(e.target.value)}/>
-        // </div>
         <Container>
             <Row className="mt-3">
                 <Col className="text-center" xs="12"><h1>Munchkin Companion</h1></Col>
