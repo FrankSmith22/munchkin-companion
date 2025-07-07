@@ -1,16 +1,17 @@
 {
   "files": {
-    "main.css": "/munchkin-companion/static/css/main.f56a0fda.css",
-    "main.js": "/munchkin-companion/static/js/main.43aa02dd.js",
+    "main.css": "/munchkin-companion/static/css/main.8c1a08a7.css",
+    "main.js": "/munchkin-companion/static/js/main.668670d7.js",
     "static/js/453.6d235fcc.chunk.js": "/munchkin-companion/static/js/453.6d235fcc.chunk.js",
+    "static/media/munchkin-guy.png": "/munchkin-companion/static/media/munchkin-guy.c04e1a8d397263ab624e.png",
     "static/media/Windlass.ttf": "/munchkin-companion/static/media/Windlass.ae635d48178d5ee3b2cc.ttf",
     "index.html": "/munchkin-companion/index.html",
-    "main.f56a0fda.css.map": "/munchkin-companion/static/css/main.f56a0fda.css.map",
-    "main.43aa02dd.js.map": "/munchkin-companion/static/js/main.43aa02dd.js.map",
+    "main.8c1a08a7.css.map": "/munchkin-companion/static/css/main.8c1a08a7.css.map",
+    "main.668670d7.js.map": "/munchkin-companion/static/js/main.668670d7.js.map",
     "453.6d235fcc.chunk.js.map": "/munchkin-companion/static/js/453.6d235fcc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f56a0fda.css",
-    "static/js/main.43aa02dd.js"
+    "static/css/main.8c1a08a7.css",
+    "static/js/main.668670d7.js"
   ]
 }
