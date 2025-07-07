@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
-export default function PlayerCard({socket, playerObj}){
+export default function PlayerCard({socket, playerObj, allPlayers}){
 
     const [sidebarToggle, setSidebarToggle] = useState(true)
     const [sidebarWidth, setSidebarWidth] = useState("100px")
@@ -24,24 +24,26 @@ export default function PlayerCard({socket, playerObj}){
         }
     }
 
+    let allPlayersList = []
+    if (allPlayers){
+        allPlayersList = Object.entries(allPlayers).filter(element => element[0] != playerObj.connId)
+        console.log(JSON.stringify(allPlayersList))
+    }
+
     return (
         <>
         <button className='sidebarCloseBtn' style={{ left: sidebarCloseBtnPosition }} onClick={e => toggleSidebar()}>{"X"}</button>
-        <div id="mySidebar" class="sidebar" style={{ width: sidebarWidth }}>
+        <div id="mySidebar" className="sidebar" style={{ width: sidebarWidth }}>
             <ul>
-                <li>
-                Name:  Elegos<br/>
-                Level: 5<br/>
-                Total: 16<br/><br/>
-                </li>
-                <li>
-                Name:  Mononoke<br/>
-                Level: 3<br/>
-                Total: 20<br/>
-                </li>
+                {allPlayersList ? allPlayersList.map((item) => {
+                    return <li key={item[1].connId}>
+                        {item[1].name}<br/>
+                        Level: {item[1].level}<br/>
+                        Total: {item[1].level + item[1].gearBonus}<br/><br/>
+                        </li>
+                }) : <></>}
             </ul>
         </div>
-        {/* Main contents */}
         <div>
             <FontAwesomeIcon
                 icon={faBars}

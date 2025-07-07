@@ -30,35 +30,35 @@ io.on(E.CONNECTION, socket => {
         rooms[playerRoomId][connId] = playerObj
         console.log(`${playerName} has joined room: ${playerRoomId}`)
         socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
-        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
+        io.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
     
     socket.on(E.PLAYER_LEVEL_INC, () => {
         playerObj.level++
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
-        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
+        io.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
 
     socket.on(E.PLAYER_LEVEL_DEC, () => {
         playerObj.level = Math.max(playerObj.level - 1, 1)
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
-        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
+        io.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
 
     socket.on(E.PLAYER_GEAR_INC, () => {
         playerObj.gearBonus++
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
-        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
+        io.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
 
     socket.on(E.PLAYER_GEAR_DEC, () => {
         playerObj.gearBonus = Math.max(playerObj.gearBonus - 1, 0)
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
-        socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
+        io.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
     // Connected as TV
     socket.on(E.TV_CONNECT, ({roomId}) => {
@@ -68,11 +68,16 @@ io.on(E.CONNECTION, socket => {
     })
     // Reconnect
     socket.on(E.PLAYER_RECONNECT, ({localConnId, roomId}) => {
-        playerRoomId = roomId
         connId = localConnId
-        playerObj = rooms[playerRoomId][connId]
-        socket.join(playerRoomId)
-        socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
+        if (roomId in rooms) {
+            playerRoomId = roomId
+            playerObj = rooms[playerRoomId][connId]
+            socket.join(playerRoomId)
+            socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
+        }
+    })
+    socket.on(E.PARTY_UPDATE, () => {
+        io.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
     // Disconnect from room
     socket.on(E.DISCONNECT_ROOM, () => {

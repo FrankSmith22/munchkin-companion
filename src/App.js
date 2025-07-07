@@ -112,15 +112,18 @@ export default function App() {
         let connectionType = localStorage.getItem(LS_CONN_TYPE)
         let roomId = localStorage.getItem(LS_ROOM_ID)
         switch(connectionType){
+            // TODO If either, need to request party update from server
             case "player":
                 let connId = localStorage.getItem(LS_CONN_ID)
                 if(roomId && connId){
                     socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
+                    socket.emit(E.PARTY_UPDATE)
                 }
                 break
             case "tv":
                 if (roomId){
                     socket.emit(E.TV_CONNECT, {roomId})
+                    socket.emit(E.PARTY_UPDATE)
                 }
                 break
             default:
@@ -152,7 +155,7 @@ export default function App() {
         <div className="App">
             <ConnectionState isConnected={isConnected}/>
             {displayModeSelect ? <ModeSelect socket={socket}/> : <></>}
-            {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj}/> : <></>}
+            {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers}/> : <></>}
             {tvConnect ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}
         </div>
     );
