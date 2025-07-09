@@ -1,17 +1,18 @@
 {
   "files": {
-    "main.css": "/munchkin-companion/static/css/main.8c1a08a7.css",
-    "main.js": "/munchkin-companion/static/js/main.668670d7.js",
+    "main.css": "/munchkin-companion/static/css/main.54b9b37d.css",
+    "main.js": "/munchkin-companion/static/js/main.70772aff.js",
     "static/js/453.6d235fcc.chunk.js": "/munchkin-companion/static/js/453.6d235fcc.chunk.js",
     "static/media/munchkin-guy.png": "/munchkin-companion/static/media/munchkin-guy.c04e1a8d397263ab624e.png",
     "static/media/Windlass.ttf": "/munchkin-companion/static/media/Windlass.ae635d48178d5ee3b2cc.ttf",
+    "static/media/sword_shield.png": "/munchkin-companion/static/media/sword_shield.8cc802cf4567201e2654.png",
     "index.html": "/munchkin-companion/index.html",
-    "main.8c1a08a7.css.map": "/munchkin-companion/static/css/main.8c1a08a7.css.map",
-    "main.668670d7.js.map": "/munchkin-companion/static/js/main.668670d7.js.map",
+    "main.54b9b37d.css.map": "/munchkin-companion/static/css/main.54b9b37d.css.map",
+    "main.70772aff.js.map": "/munchkin-companion/static/js/main.70772aff.js.map",
     "453.6d235fcc.chunk.js.map": "/munchkin-companion/static/js/453.6d235fcc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.8c1a08a7.css",
-    "static/js/main.668670d7.js"
+    "static/css/main.54b9b37d.css",
+    "static/js/main.70772aff.js"
   ]
 }
