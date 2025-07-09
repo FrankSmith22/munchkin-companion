@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { socket } from './socket';
 import { EVENTS as E } from './app/events.mjs';
-import Player from './app/models.mjs';
+import { Player } from './app/models.mjs';
 import ModeSelect from './components/ModeSelect';
 import PlayerCard from './components/PlayerCard';
 import TvCard from './components/TvCard';

@@ -1,7 +1,7 @@
 import { Server } from "socket.io"
 import { createServer } from 'http'
 import { EVENTS as E} from "./events.mjs"
-import Player from "./models.mjs"
+import { Player } from "./models.mjs"
 import { v4 as uuidv4 } from 'uuid';
 
 const httpServer = createServer()
@@ -33,6 +33,8 @@ io.on(E.CONNECTION, socket => {
         io.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
     
+    // level and modifier inc/dec
+    // Player
     socket.on(E.PLAYER_LEVEL_INC, () => {
         playerObj.level++
         rooms[playerRoomId][connId] = playerObj
@@ -60,6 +62,28 @@ io.on(E.CONNECTION, socket => {
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
         io.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
+
+    // Combat
+    socket.on(E.COMBAT_PARTY_MOD_INC, () => {
+        playerObj.combat.partyModifier++
+        rooms[playerRoomId][connId] = playerObj
+        socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
+    })
+    socket.on(E.COMBAT_PARTY_MOD_DEC, () => {
+        playerObj.combat.partyModifier = Math.max(playerObj.combat.partyModifier - 1, 0)
+        rooms[playerRoomId][connId] = playerObj
+        socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
+    })
+    socket.on(E.COMBAT_MONSTER_MOD_INC, () => {
+        playerObj.combat.monsterModifier++
+        rooms[playerRoomId][connId] = playerObj
+        socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
+    })
+    socket.on(E.COMBAT_MONSTER_MOD_DEC, () => {
+        playerObj.combat.monsterModifier = Math.max(playerObj.combat.monsterModifier - 1, 0)
+        rooms[playerRoomId][connId] = playerObj
+        socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
+    })
     // Connected as TV
     socket.on(E.TV_CONNECT, ({roomId}) => {
         playerRoomId = roomId
@@ -69,11 +93,17 @@ io.on(E.CONNECTION, socket => {
     // Reconnect
     socket.on(E.PLAYER_RECONNECT, ({localConnId, roomId}) => {
         connId = localConnId
-        if (roomId in rooms) {
+        if (roomId in rooms && connId in rooms[roomId]) {
             playerRoomId = roomId
             playerObj = rooms[playerRoomId][connId]
             socket.join(playerRoomId)
+            console.log(`Player reconnecting: ${JSON.stringify(playerObj)}`)
             socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
+        }
+        else {
+            // If the room ID the player tried to connect to doesn't exist, or the connId doesnt exist in that room,
+            // send room disconnect
+            socket.emit(E.DISCONNECT_ROOM)
         }
     })
     socket.on(E.PARTY_UPDATE, () => {
@@ -89,6 +119,20 @@ io.on(E.CONNECTION, socket => {
         playerRoomId = null
         playerObj = null
         socket.emit(E.DISCONNECT_ROOM)
+    })
+    socket.on(E.SEND_HELP, ({helperConnIds}) => {
+        for (let connId in rooms[playerRoomId]){
+            let selectedPlayer = rooms[playerRoomId][connId]
+            if (helperConnIds.includes(connId)){
+                selectedPlayer.helping = true
+            }
+            else {
+                selectedPlayer.helping = false
+            }
+            rooms[playerRoomId][connId] = selectedPlayer
+            // else set helping to false
+        }
+        io.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
     })
 })
 io.on(E.DISCONNECTION, socket => {
