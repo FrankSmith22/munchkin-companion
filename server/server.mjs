@@ -143,7 +143,10 @@ io.on(E.CONNECTION, socket => {
         }
     })
     socket.on(E.PARTY_UPDATE, () => {
-        if (!playerRoomId) socket.emit(E.DISCONNECT_ROOM)
+        if (!playerRoomId){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
         emitAllPlayersUpdate(io, rooms, playerRoomId)
     })
     // Disconnect from room

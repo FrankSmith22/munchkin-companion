@@ -7,6 +7,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
 
     const [isCombatOpen, setIsCombatOpen] = useState(false)
     const [isHelpSelectOpen, setIsHelpSelectOpen] = useState(false)
+    console.log(`allPlayersList=${JSON.stringify(allPlayersList)}`)
     const [playersHelping, setPlayersHelping] = useState(allPlayersList.filter(player => player.helping))
     const [combatPartyTotal, setCombatPartyTotal] = useState(playerObj.level + playerObj.gearBonus)
     const [monsterLevel, setMonsterLevel] = useState(0)
@@ -20,6 +21,10 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
         setIsHelpSelectOpen(false)
     }
 
+    // useEffect(() => {
+    //     socket.emit(E.PARTY_UPDATE)
+    // }, [])
+
 
     useEffect(() => {
         // Party
@@ -31,6 +36,21 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
             }
         })
         setCombatPartyTotal(playerTotal)
+
+        let updatedPlayersHelping = []
+        allPlayersList.forEach(player => {
+            if(playersHelping.some(helper => helper.connId === player.connId)){
+                updatedPlayersHelping.push(player)
+                return
+            }
+            // The !isCombatOpen is a bit hacky. Basically allows me to set the playersHelping with the known
+            // helpers coming from the server when the page first loads, regardless of whatever temporary decisions
+            // that have been made in the help select modal. Probably a hook I could be using somewhere here...
+            else if (player.helping && !isHelpSelectOpen) {
+                updatedPlayersHelping.push(player)
+            }
+        })
+        setPlayersHelping(updatedPlayersHelping)
 
         // Monster
         setCombatMonsterTotal(monsterLevel + playerObj.combat.monsterModifier)
@@ -56,7 +76,6 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
         setCombatPartyTotal(playerObj.level + playerObj.gearBonus)
         setMonsterLevel(0)
         setCombatMonsterTotal(0)
-        setPlayersHelping([])
         socket.emit(E.RESOLVE_COMBAT)
         setTimeout(toggleCombat, 500)
     }
@@ -138,8 +157,8 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
             </Modal>
 
 
-            <Modal size="sm" isOpen={isHelpSelectOpen} toggle={toggleHelpSelect}>
-                <ModalHeader toggle={toggleHelpSelect}>Party Members</ModalHeader>
+            <Modal size="sm" isOpen={isHelpSelectOpen}>
+                <ModalHeader>Party Members</ModalHeader>
                 <ModalBody>
                     {allPlayersList ? allPlayersList.map((player) => {
                         let isHelper = playersHelping.some(helper => helper.connId === player.connId)
