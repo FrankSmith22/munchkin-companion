@@ -51,6 +51,16 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
 
     }
 
+    const resolveCombat = () => {
+        setPlayersHelping([])
+        setCombatPartyTotal(playerObj.level + playerObj.gearBonus)
+        setMonsterLevel(0)
+        setCombatMonsterTotal(0)
+        setPlayersHelping([])
+        socket.emit(E.RESOLVE_COMBAT)
+        setTimeout(toggleCombat, 500)
+    }
+
     return (
         <>
             <Button className="munchkinButton" style={{ width: "unset" }} onClick={toggleCombat}>Combat</Button>
@@ -78,10 +88,10 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
                                 <Row>
                                     <Col className="text-end"><Button className="munchkinButton" onClick={e => socket.emit(E.COMBAT_PARTY_MOD_INC)}>+</Button> <Button className="munchkinButton" onClick={e => socket.emit(E.COMBAT_PARTY_MOD_DEC)}>-</Button></Col>
                                 </Row>
-                                {allPlayersList.map(player => (
-                                    player.helping ? <Row key={player.connId} className="mt-4">
+                                {allPlayersList.filter(player => player.helping).map(player => (
+                                    <Row key={player.connId} className="mt-4">
                                         <Col>{player.name}</Col><Col className="text-end">{player.gearBonus + player.level}</Col>
-                                    </Row> : <></>
+                                    </Row>
                                 ))}
                                 <Row className="mt-4">
                                     <Col className="text-end">
@@ -123,7 +133,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button className="munchkinButton" style={{ width: "unset", fontSize: "1.5rem" }} onClick={toggleCombat}>Resolve</Button>
+                    <Button className="munchkinButton" style={{ width: "unset", fontSize: "1.5rem" }} onClick={resolveCombat}>Resolve</Button>
                 </ModalFooter>
             </Modal>
 

@@ -19,7 +19,7 @@ const io = new Server(4000, {
 const rooms = {}
 
 io.on(E.CONNECTION, socket => {
-    logger.info('client connected: ' + socket.id)
+    console.log('client connected: ' + socket.id)
     let playerRoomId
     let playerObj
     let connId = uuidv4()
@@ -32,7 +32,7 @@ io.on(E.CONNECTION, socket => {
             rooms[playerRoomId] = {}
         }
         rooms[playerRoomId][connId] = playerObj
-        logger.info(`${playerName} has joined room: ${playerRoomId}`)
+        console.log(`${playerName} has joined room: ${playerRoomId}`)
         socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
         emitAllPlayersUpdate(io, rooms, playerRoomId)
     })
@@ -40,7 +40,10 @@ io.on(E.CONNECTION, socket => {
     // level and modifier inc/dec
     // Player
     socket.on(E.PLAYER_LEVEL_INC, () => {
-        if (!playerObj) socket.emit(E.DISCONNECT_ROOM)
+        if (!playerObj){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
         playerObj.level++
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -48,7 +51,10 @@ io.on(E.CONNECTION, socket => {
     })
 
     socket.on(E.PLAYER_LEVEL_DEC, () => {
-        if (!playerObj) socket.emit(E.DISCONNECT_ROOM)
+        if (!playerObj){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
         playerObj.level = Math.max(playerObj.level - 1, 1)
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -56,7 +62,10 @@ io.on(E.CONNECTION, socket => {
     })
 
     socket.on(E.PLAYER_GEAR_INC, () => {
-        if (!playerObj) socket.emit(E.DISCONNECT_ROOM)
+        if (!playerObj){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
         playerObj.gearBonus++
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -64,7 +73,10 @@ io.on(E.CONNECTION, socket => {
     })
 
     socket.on(E.PLAYER_GEAR_DEC, () => {
-        if (!playerObj) socket.emit(E.DISCONNECT_ROOM)
+        if (!playerObj){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
         playerObj.gearBonus = Math.max(playerObj.gearBonus - 1, 0)
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -73,25 +85,37 @@ io.on(E.CONNECTION, socket => {
 
     // Combat
     socket.on(E.COMBAT_PARTY_MOD_INC, () => {
-        if (!playerObj) socket.emit(E.DISCONNECT_ROOM)
+        if (!playerObj){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
         playerObj.combat.partyModifier++
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
     })
     socket.on(E.COMBAT_PARTY_MOD_DEC, () => {
-        if (!playerObj) socket.emit(E.DISCONNECT_ROOM)
+        if (!playerObj){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
         playerObj.combat.partyModifier = Math.max(playerObj.combat.partyModifier - 1, 0)
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
     })
     socket.on(E.COMBAT_MONSTER_MOD_INC, () => {
-        if (!playerObj) socket.emit(E.DISCONNECT_ROOM)
+        if (!playerObj){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
         playerObj.combat.monsterModifier++
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
     })
     socket.on(E.COMBAT_MONSTER_MOD_DEC, () => {
-        if (!playerObj) socket.emit(E.DISCONNECT_ROOM)
+        if (!playerObj){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
         playerObj.combat.monsterModifier = Math.max(playerObj.combat.monsterModifier - 1, 0)
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -109,7 +133,7 @@ io.on(E.CONNECTION, socket => {
             playerRoomId = roomId
             playerObj = rooms[playerRoomId][connId]
             socket.join(playerRoomId)
-            logger.info(`Player reconnecting: ${JSON.stringify(playerObj)}`)
+            console.log(`Player reconnecting: ${JSON.stringify(playerObj)}`)
             socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
         }
         else {
@@ -134,7 +158,10 @@ io.on(E.CONNECTION, socket => {
         socket.emit(E.DISCONNECT_ROOM)
     })
     socket.on(E.SEND_HELP, ({helperConnIds}) => {
-        if (!playerObj) socket.emit(E.DISCONNECT_ROOM)
+        if (!playerObj){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
         for (let connId in rooms[playerRoomId]){
             let selectedPlayer = rooms[playerRoomId][connId]
             if (helperConnIds.includes(connId)){
@@ -148,10 +175,26 @@ io.on(E.CONNECTION, socket => {
         }
         emitAllPlayersUpdate(io, rooms, playerRoomId)
     })
+    socket.on(E.RESOLVE_COMBAT, () => {
+        if (!playerObj){
+            socket.emit(E.DISCONNECT_ROOM)
+            return
+        }
+        playerObj.combat.partyModifier = 0
+        playerObj.combat.monsterModifier = 0
+        rooms[playerRoomId][connId] = playerObj
+        socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
+        for (let connId in rooms[playerRoomId]){
+            let player = rooms[playerRoomId][connId]
+            player.helping = false
+            rooms[playerRoomId][connId] = player
+        }
+        emitAllPlayersUpdate(io, rooms, playerRoomId)
+    })
 })
 io.on(E.DISCONNECTION, socket => {
-    logger.info('client disconnected: ' + socket.id)
+    console.log('client disconnected: ' + socket.id)
 })
 
 
-logger.info("Server booted")
+console.log("Server booted")

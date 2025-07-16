@@ -19,5 +19,6 @@ export const EVENTS = deepFreeze({
     PARTY_UPDATE: "party-update",
     TV_RECONNECT: "tv-reconnect",
     PLAYER_RECONNECT: "player-reconnect",
-    SEND_HELP: "send-help"
+    SEND_HELP: "send-help",
+    RESOLVE_COMBAT: "resolve-combat"
 })
