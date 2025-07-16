@@ -104,7 +104,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
                             {/* Monster column */}
                             <Col xs="5">
                                 <Row>
-                                    <Col>Monster</Col><Col className="text-end"><input type="text" style={{ height: "24px" }} className="form-control" value={monsterLevel} onChange={e => setMonsterLevel(Number(e.target.value))} /></Col>
+                                    <Col>Monster</Col><Col className="text-end"><input type="number" style={{ height: "24px" }} className="form-control" value={monsterLevel > 0 ? monsterLevel : ""} onChange={e => setMonsterLevel(Number(e.target.value))} /></Col>
                                 </Row>
                                 <Row className="mt-4">
                                     <Col>Modifier</Col><Col className="text-end">{playerObj.combat.monsterModifier}</Col>
