@@ -10,19 +10,19 @@ import CombatButton from './CombatButton';
 export default function PlayerCard({socket, playerObj, allPlayers}){
 
     const [sidebarToggle, setSidebarToggle] = useState(true)
-    const [sidebarWidth, setSidebarWidth] = useState("100px")
-    const [sidebarCloseBtnPosition, setSidebarCloseBtnPosition] = useState("60px")
+    const [sidebarPosition, setSidebarPosition] = useState("0px")
+    const [sidebarCloseBtnPosition, setSidebarCloseBtnPosition] = useState("40px")
 
     const toggleSidebar = () => {
-        setSidebarToggle(!sidebarToggle)
         if (sidebarToggle){
-            setSidebarWidth("100px")
-            setSidebarCloseBtnPosition("60px")
+            setSidebarPosition("-120px")
+            setSidebarCloseBtnPosition("-80px")
         }
         else{
-            setSidebarWidth("0px")
-            setSidebarCloseBtnPosition("-30px")
+            setSidebarPosition("0px")
+            setSidebarCloseBtnPosition("40px")
         }
+        setSidebarToggle(!sidebarToggle)
     }
 
     let allPlayersList = []
@@ -33,7 +33,7 @@ export default function PlayerCard({socket, playerObj, allPlayers}){
     return (
         <>
         <button className='sidebarCloseBtn' style={{ left: sidebarCloseBtnPosition }} onClick={e => toggleSidebar()}>{"X"}</button>
-        <div id="mySidebar" className="sidebar" style={{ width: sidebarWidth }}>
+        <div id="mySidebar" className="sidebar" style={{ left: sidebarPosition }}>
             <ul>
                 {allPlayersList ? allPlayersList.map((player) => {
                     return <li key={player.connId}>
