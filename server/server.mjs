@@ -165,16 +165,17 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
-        for (let connId in rooms[playerRoomId]){
-            let selectedPlayer = rooms[playerRoomId][connId]
-            if (helperConnIds.includes(connId)){
-                selectedPlayer.helping = true
+        for (let roomConnId in rooms[playerRoomId]){
+            let selectedPlayer = rooms[playerRoomId][roomConnId]
+            if (helperConnIds.includes(roomConnId)){
+                if (!selectedPlayer.helping.includes(connId)){
+                    selectedPlayer.helping.push(connId)
+                }
             }
             else {
-                selectedPlayer.helping = false
+                selectedPlayer.helping = selectedPlayer.helping.filter(helper => helper !== connId)
             }
-            rooms[playerRoomId][connId] = selectedPlayer
-            // else set helping to false
+            rooms[playerRoomId][roomConnId] = selectedPlayer
         }
         emitAllPlayersUpdate(io, rooms, playerRoomId)
     })
@@ -187,10 +188,10 @@ io.on(E.CONNECTION, socket => {
         playerObj.combat.monsterModifier = 0
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
-        for (let connId in rooms[playerRoomId]){
-            let player = rooms[playerRoomId][connId]
-            player.helping = false
-            rooms[playerRoomId][connId] = player
+        for (let roomConnId in rooms[playerRoomId]){
+            let player = rooms[playerRoomId][roomConnId]
+            player.helping = player.helping.filter(helper => helper !== connId)
+            rooms[playerRoomId][roomConnId] = player
         }
         emitAllPlayersUpdate(io, rooms, playerRoomId)
     })

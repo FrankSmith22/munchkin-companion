@@ -8,7 +8,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
     const [isCombatOpen, setIsCombatOpen] = useState(false)
     const [isHelpSelectOpen, setIsHelpSelectOpen] = useState(false)
     console.log(`allPlayersList=${JSON.stringify(allPlayersList)}`)
-    const [playersHelping, setPlayersHelping] = useState(allPlayersList.filter(player => player.helping))
+    const [playersHelping, setPlayersHelping] = useState(allPlayersList.filter(player => player.helping.includes(playerObj.connId)))
     const [combatPartyTotal, setCombatPartyTotal] = useState(playerObj.level + playerObj.gearBonus)
     const [monsterLevel, setMonsterLevel] = useState(0)
     const [combatMonsterTotal, setCombatMonsterTotal] = useState(monsterLevel + playerObj.combat.monsterModifier)
@@ -21,16 +21,12 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
         setIsHelpSelectOpen(false)
     }
 
-    // useEffect(() => {
-    //     socket.emit(E.PARTY_UPDATE)
-    // }, [])
-
 
     useEffect(() => {
         // Party
         let playerTotal = playerObj.level + playerObj.gearBonus + playerObj.combat.partyModifier
         allPlayersList.forEach(player => {
-            if (player.helping) {
+            if (player.helping.includes(playerObj.connId)) {
                 playerTotal += player.gearBonus
                 playerTotal += player.level
             }
@@ -43,10 +39,10 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
                 updatedPlayersHelping.push(player)
                 return
             }
-            // The !isCombatOpen is a bit hacky. Basically allows me to set the playersHelping with the known
+            // The !isHelpSelectOpen is a bit hacky. Basically allows me to set the playersHelping with the known
             // helpers coming from the server when the page first loads, regardless of whatever temporary decisions
             // that have been made in the help select modal. Probably a hook I could be using somewhere here...
-            else if (player.helping && !isHelpSelectOpen) {
+            else if (player.helping.includes(playerObj.connId) && !isHelpSelectOpen) {
                 updatedPlayersHelping.push(player)
             }
         })
@@ -55,8 +51,6 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
         // Monster
         setCombatMonsterTotal(monsterLevel + playerObj.combat.monsterModifier)
     }, [allPlayersList, playerObj, monsterLevel])
-
-    // TODO Need to use useEffect or something to update playersHelping with any allPlayersList[@].helping === true
 
     const toggleHelper = (selectedConnId) => {
         let selectedPlayer = allPlayersList.find(player => player.connId === selectedConnId)
@@ -107,7 +101,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
                                 <Row>
                                     <Col className="text-end"><Button className="munchkinButton" onClick={e => socket.emit(E.COMBAT_PARTY_MOD_INC)}>+</Button> <Button className="munchkinButton" onClick={e => socket.emit(E.COMBAT_PARTY_MOD_DEC)}>-</Button></Col>
                                 </Row>
-                                {allPlayersList.filter(player => player.helping).map(player => (
+                                {allPlayersList.filter(player => player.helping.includes(playerObj.connId)).map(player => (
                                     <Row key={player.connId} className="mt-4">
                                         <Col>{player.name}</Col><Col className="text-end">{player.gearBonus + player.level}</Col>
                                     </Row>

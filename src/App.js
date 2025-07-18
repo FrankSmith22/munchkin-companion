@@ -100,6 +100,7 @@ export default function App() {
             for (const [socket_id, playerObj] of Object.entries(parsedAllPlayers)) {
                 allPlayerObjs[socket_id] = Object.assign(new Player(), playerObj)
             }
+            console.log(`allPlayerObjs=${allPlayerObjs}`)
             setAllPlayers(allPlayerObjs)
         }
 
