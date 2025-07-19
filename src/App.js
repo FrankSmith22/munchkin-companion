@@ -64,9 +64,14 @@ export default function App() {
             setRoomId(roomId)
 
             // Save to localStorage
-            localStorage.setItem(LS_CONN_TYPE, "player")
-            localStorage.setItem(LS_ROOM_ID, roomId)
-            localStorage.setItem(LS_CONN_ID, playerObj.connId)
+            try {
+                localStorage.setItem(LS_CONN_TYPE, "player")
+                localStorage.setItem(LS_ROOM_ID, roomId)
+                localStorage.setItem(LS_CONN_ID, playerObj.connId)
+            }
+            catch (error) {
+                console.warn("Could not access localstorage")
+            }
         }
 
         function onTvConnect({allPlayers, roomId}){
@@ -84,8 +89,13 @@ export default function App() {
             setAllPlayers(allPlayerObjs)
 
             // Save to localStorage
-            localStorage.setItem(LS_CONN_TYPE, "tv")
-            localStorage.setItem(LS_ROOM_ID, roomId)
+            try {
+                localStorage.setItem(LS_CONN_TYPE, "tv")
+                localStorage.setItem(LS_ROOM_ID, roomId)
+            }
+            catch (error) {
+                console.warn("Could not access localstorage")
+            }
         }
 
         function onPlayerUpdate({playerObj}) {
@@ -111,34 +121,43 @@ export default function App() {
             setAllPlayers(null)
             setPlayerObj(null)
             setRoomId("")
-            localStorage.setItem(LS_CONN_TYPE, "")
-            localStorage.setItem(LS_ROOM_ID, "")
-            localStorage.setItem(LS_CONN_ID, "")
+            try {
+                localStorage.setItem(LS_CONN_TYPE, "")
+                localStorage.setItem(LS_ROOM_ID, "")
+                localStorage.setItem(LS_CONN_ID, "")
+            }
+            catch (error) {
+                console.warn("Could not access localstorage")
+            }
         }
 
 
         socket.connect()
 
         // Attempt reconnect using localstorage
-        let connectionType = localStorage.getItem(LS_CONN_TYPE)
-        let roomId = localStorage.getItem(LS_ROOM_ID)
-        switch(connectionType){
-            // TODO If either, need to request party update from server
-            case "player":
-                let connId = localStorage.getItem(LS_CONN_ID)
-                if(roomId && connId){
-                    socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
-                    socket.emit(E.PARTY_UPDATE)
-                }
-                break
-            case "tv":
-                if (roomId){
-                    socket.emit(E.TV_CONNECT, {roomId})
-                    socket.emit(E.PARTY_UPDATE)
-                }
-                break
-            default:
-                console.log("No localStorage, starting fresh session")
+        try {
+            let connectionType = localStorage.getItem(LS_CONN_TYPE)
+            let roomId = localStorage.getItem(LS_ROOM_ID)
+            switch(connectionType){
+                case "player":
+                    let connId = localStorage.getItem(LS_CONN_ID)
+                    if(roomId && connId){
+                        socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
+                        socket.emit(E.PARTY_UPDATE)
+                    }
+                    break
+                case "tv":
+                    if (roomId){
+                        socket.emit(E.TV_CONNECT, {roomId})
+                        socket.emit(E.PARTY_UPDATE)
+                    }
+                    break
+                default:
+                    console.log("No localStorage, starting fresh session")
+            }
+        }
+        catch (error) {
+            console.warn("Could not access localstorage")
         }
 
 
