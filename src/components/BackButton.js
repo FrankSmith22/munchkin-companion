@@ -13,7 +13,7 @@ export default function BackButton({socket, confirm}){
     const sendDisconnect = () => socket.emit(E.DISCONNECT_ROOM)
 
     return (
-        <div>
+        <div style={{ display: "inline" }}>
             <Modal isOpen={isOpen} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Are you sure?</ModalHeader>
                 <ModalBody>
@@ -26,9 +26,9 @@ export default function BackButton({socket, confirm}){
             </Modal>
             <span>
                 <FontAwesomeIcon
-                style={{ fontSize: "2rem", color: "#441B06", cursor: "pointer" }}
-                icon={faArrowLeft}
-                onClick={e => confirm ? setIsOpen(true) : sendDisconnect()}
+                    style={{ fontSize: "2rem", color: "#441B06", cursor: "pointer" }}
+                    icon={faArrowLeft}
+                    onClick={e => confirm ? setIsOpen(true) : sendDisconnect()}
                 />
             </span>
         </div>

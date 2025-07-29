@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { Server } from "socket.io"
 import { createServer } from 'http'
 import { EVENTS as E} from "./events.mjs"
@@ -5,6 +6,8 @@ import { Player } from "./models.mjs"
 import { v4 as uuidv4 } from 'uuid';
 import { emitAllPlayersUpdate } from "./helper.mjs"
 import { logger } from "./logger.mjs";
+import { initializeApp, applicationDefault, cert } from 'firebase-admin/app'
+import { getFirestore, Timestamp, FieldValue, Filter } from 'firebase-admin/firestore'
 
 
 
@@ -12,11 +15,20 @@ const httpServer = createServer()
 
 const io = new Server(4000, {
     cors: {
-        origin: ["http://localhost:3000", "http://192.168.1.169:3000", "http://192.168.1.155:3000", "http://192.168.1.176:3000", "https://franksmith22.github.io"]
+        origin: ["http://localhost:3000", "http://192.168.1.169:3000", "http://192.168.1.161:3000", "http://192.168.1.155:3000", "http://192.168.1.176:3000", "https://franksmith22.github.io"]
     }
 })
 
 const rooms = {}
+
+// db setup
+const serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS
+const RULES_COLLECTION_NAME = "house-rules"
+initializeApp({
+    credential: cert(serviceAccount)
+});
+
+const DB = getFirestore();
 
 io.on(E.CONNECTION, socket => {
     console.log('client connected: ' + socket.id)
@@ -194,6 +206,21 @@ io.on(E.CONNECTION, socket => {
             rooms[playerRoomId][roomConnId] = player
         }
         emitAllPlayersUpdate(io, rooms, playerRoomId)
+    })
+    socket.on(E.GET_RULES, async () => {
+        try {
+            const snapshot = await DB.collection(RULES_COLLECTION_NAME).get()
+            let allRules = []
+            snapshot.forEach((doc) => {
+                allRules.push({id: doc.id, data: doc.data()})
+            })
+            console.log(`allRules: ${JSON.stringify(allRules)}`)
+            socket.emit(E.GET_RULES, JSON.stringify(allRules)) 
+        }
+        catch (error) {
+            console.error(`There was a problem getting the rules: ${error}`)
+            socket.emit(E.RULES_ERROR, {"message": "There was an issue retrieving the house rules, double check connection to database."})
+        }
     })
 })
 io.on(E.DISCONNECTION, socket => {

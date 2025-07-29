@@ -133,6 +133,7 @@ export default function App() {
 
 
         socket.connect()
+        socket.emit(E.GET_RULES)
 
         // Attempt reconnect using localstorage
         try {
@@ -185,7 +186,7 @@ export default function App() {
         <div className="App">
             <ConnectionState isConnected={isConnected} roomId={roomId}/>
             {displayModeSelect ? <ModeSelect socket={socket}/> : <></>}
-            {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers}/> : <></>}
+            {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers} /> : <></>}
             {tvConnect ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}
         </div>
     );

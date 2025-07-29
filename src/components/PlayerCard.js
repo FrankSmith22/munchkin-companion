@@ -1,10 +1,11 @@
 import { Button, Row, Col } from 'reactstrap';
 import { EVENTS as E } from '../app/events.mjs';
 import BackButton from './BackButton';
+import RulesButton from './RulesButton';
 import '../sidebar.css';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faBook } from '@fortawesome/free-solid-svg-icons';
 import CombatButton from './CombatButton';
 
 export default function PlayerCard({socket, playerObj, allPlayers}){
@@ -51,10 +52,10 @@ export default function PlayerCard({socket, playerObj, allPlayers}){
                 onClick={e => toggleSidebar()}
             />
         </div>
-        <div className="container-fluid" style={{ height: "100%" }}>
+        <div className="container-fluid mt-5" style={{ height: "100%" }}>
             <Row>
                 <Col className="offset-3" style={{ wordWrap: "break-word" }}>
-                    <BackButton socket={socket} confirm={true}/>
+                    <span><BackButton socket={socket} confirm={true}/><RulesButton socket={socket}/></span>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
                     <br></br><br></br>
                     Level: {playerObj.level} <Button className="munchkinButton" onClick={e => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="munchkinButton" onClick={e => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
