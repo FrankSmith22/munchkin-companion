@@ -7,7 +7,6 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
 
     const [isCombatOpen, setIsCombatOpen] = useState(false)
     const [isHelpSelectOpen, setIsHelpSelectOpen] = useState(false)
-    console.log(`allPlayersList=${JSON.stringify(allPlayersList)}`)
     const [playersHelping, setPlayersHelping] = useState(allPlayersList.filter(player => player.helping.includes(playerObj.connId)))
     const [combatPartyTotal, setCombatPartyTotal] = useState(playerObj.level + playerObj.gearBonus)
     const [monsterLevel, setMonsterLevel] = useState(0)

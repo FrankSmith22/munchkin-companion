@@ -8,11 +8,11 @@ export default function RulesButton({socket}){
 
     const [isOpen, setIsOpen] = useState(false)
     const [allRules, setAllRules] = useState([])
+    const [searchField, setSearchField] = useState("")
+    const [filteredRules, setFilteredRules] = useState(allRules)
     const [rulesErrorMsg, setRulesErrorMsg] = useState("")
 
     const toggle = () => setIsOpen(!isOpen)
-
-    console.log(`allRules=${allRules}`)
 
     useEffect(() => {
         function onGetRules(allRules) {
@@ -32,19 +32,34 @@ export default function RulesButton({socket}){
         }
     })
 
+    function searchRules(e){
+        const searchStr = e.target.value
+        setSearchField(searchStr)
+        setFilteredRules(allRules.filter(rule => rule.data.title.includes(searchStr) || rule.data.description.includes(searchStr)))
+    }
+
+    useEffect(()=>{
+        setFilteredRules(allRules.filter(rule => rule.data.title.includes(searchField) || rule.data.description.includes(searchField)))
+    }, [allRules])
+
     return (
         <div style={{ display: "inline" }}>
             <Modal isOpen={isOpen} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Rules</ModalHeader>
                 <ModalBody>
                     <Container>
+                        <Row>
+                            <Col>
+                                <input type="text" placeholder="search..." className="form-control" value={searchField} onChange={e => searchRules(e)}/>
+                            </Col>
+                        </Row>
                         {rulesErrorMsg ? <Row>
                             <Col style={{ color: "red" }}>
                                 Sorry, something went wrong interacting with the rules    
                             </Col>
                         </Row> : ""}
-                        {allRules.map(rule => {
-                            return <Row key={rule.id}>
+                        {filteredRules.map(rule => {
+                            return <Row key={rule.id} className="mt-3">
                                 <Col>
                                     <Card>
                                         <CardHeader>
