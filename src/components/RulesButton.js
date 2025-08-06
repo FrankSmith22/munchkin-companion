@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react';
 import { EVENTS as E } from '../app/events.mjs';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBook } from '@fortawesome/free-solid-svg-icons';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Card, CardHeader, CardTitle, CardBody } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Card, CardHeader, CardTitle, CardBody, Collapse, CardFooter } from 'reactstrap';
 
 export default function RulesButton({socket, allRules, rulesErrorMsg}){
 
-    const [isOpen, setIsOpen] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const [searchField, setSearchField] = useState("")
     const [filteredRules, setFilteredRules] = useState(allRules)
+    const [isNewRuleBoxOpen, setIsNewRuleBoxOpen] = useState(false)
 
-    const toggle = () => setIsOpen(!isOpen)
+    const toggleModal = () => setIsModalOpen(!isModalOpen)
+
+    const toggleCollapse = () => setIsNewRuleBoxOpen(!isNewRuleBoxOpen)
 
     function searchRules(e){
         const searchStr = e.target.value
@@ -25,10 +28,26 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
 
     return (
         <div style={{ display: "inline" }}>
-            <Modal isOpen={isOpen} toggle={toggle}>
-                <ModalHeader toggle={toggle}>Rules</ModalHeader>
+            <Modal isOpen={isModalOpen} toggle={toggleModal}>
+                <ModalHeader toggle={toggleModal}>Rules</ModalHeader>
                 <ModalBody>
                     <Container>
+                        <Row>
+                            <Col>
+                                <Button onClick={toggleCollapse} color="primary" className="mb-2" style={{ width: "100%", height: "25px", fontSize: ".8rem" }}>New Rule +</Button>
+                                <Collapse isOpen={isNewRuleBoxOpen} className="mb-3">
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle><input type="text" placeholder="Rule title..." className="form-control"/></CardTitle>
+                                        </CardHeader>
+                                        <CardBody>
+                                            <textarea placeholder="Rule description..." rows="3" className="form-control"></textarea>
+                                        </CardBody>
+                                        <CardFooter><Button color="primary" style={{ float: "right" }}>Add</Button></CardFooter>
+                                    </Card>
+                                </Collapse>
+                            </Col>
+                        </Row>
                         <Row>
                             <Col>
                                 <input type="text" placeholder="search..." className="form-control" value={searchField} onChange={e => searchRules(e)}/>
@@ -56,14 +75,14 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                     </Container>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={toggle}>Close</Button>
+                    <Button color="secondary" onClick={toggleModal}>Close</Button>
                 </ModalFooter>
             </Modal>
             <span>
                 <FontAwesomeIcon
                     style={{ fontSize: "2rem", color: "#441B06", cursor: "pointer", float: "right" }}
                     icon={faBook}
-                    onClick={toggle}
+                    onClick={toggleModal}
                 />
             </span>
         </div>
