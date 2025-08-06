@@ -4,37 +4,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Card, CardHeader, CardTitle, CardBody } from 'reactstrap';
 
-export default function RulesButton({socket}){
+export default function RulesButton({socket, allRules, rulesErrorMsg}){
 
     const [isOpen, setIsOpen] = useState(false)
-    const [allRules, setAllRules] = useState([])
     const [searchField, setSearchField] = useState("")
     const [filteredRules, setFilteredRules] = useState(allRules)
-    const [rulesErrorMsg, setRulesErrorMsg] = useState("")
 
     const toggle = () => setIsOpen(!isOpen)
-
-    useEffect(() => {
-        function onGetRules(allRules) {
-            setAllRules(JSON.parse(allRules))
-            setRulesErrorMsg("")
-        }
-
-        function onRulesError({message}) {
-            setRulesErrorMsg(message)
-        }
-
-        socket.on(E.GET_RULES, onGetRules)
-        socket.on(E.RULES_ERROR, onRulesError)
-        return () => {
-            socket.off(E.GET_RULES, onGetRules)
-            socket.off(E.RULES_ERROR, onRulesError)
-        }
-    })
 
     function searchRules(e){
         const searchStr = e.target.value
         setSearchField(searchStr)
+        console.log(JSON.stringify(allRules.filter(rule => rule.data.title.includes(searchStr) || rule.data.description.includes(searchStr))))
         setFilteredRules(allRules.filter(rule => rule.data.title.includes(searchStr) || rule.data.description.includes(searchStr)))
     }
 

@@ -34,6 +34,8 @@ export default function App() {
     const [playerObj, setPlayerObj] = useState(null)
     const [allPlayers, setAllPlayers] = useState(null)
     const [roomId, setRoomId] = useState("")
+    const [allRules, setAllRules] = useState([])
+    const [rulesErrorMsg, setRulesErrorMsg] = useState("")
 
     /* Handling refresh:
     1. Upon player connect or tv connect, save to localstorage:
@@ -161,6 +163,17 @@ export default function App() {
             console.warn("Could not access localstorage")
         }
 
+        function onGetRules(allRules) {
+            console.log("Got rules from server:")
+            console.log(allRules)
+            setAllRules(JSON.parse(allRules))
+            setRulesErrorMsg("")
+        }
+
+        function onRulesError({message}) {
+            setRulesErrorMsg(message)
+        }
+
 
 
         socket.on(E.CONNECTION, onConnect)
@@ -170,6 +183,8 @@ export default function App() {
         socket.on(E.PLAYER_UPDATE, onPlayerUpdate)
         socket.on(E.PARTY_UPDATE, onPartyUpdate)
         socket.on(E.DISCONNECT_ROOM, onDisconnectRoom)
+        socket.on(E.GET_RULES, onGetRules)
+        socket.on(E.RULES_ERROR, onRulesError)
         
         return () => {
             socket.off(E.CONNECTION, onConnect)
@@ -179,6 +194,8 @@ export default function App() {
             socket.off(E.PLAYER_UPDATE, onPlayerUpdate)
             socket.off(E.PARTY_UPDATE, onPartyUpdate)
             socket.off(E.DISCONNECT_ROOM, onDisconnectRoom)
+            socket.off(E.GET_RULES, onGetRules)
+            socket.off(E.RULES_ERROR, onRulesError)
         }
     }, [])
 
@@ -186,7 +203,7 @@ export default function App() {
         <div className="App">
             <ConnectionState isConnected={isConnected} roomId={roomId}/>
             {displayModeSelect ? <ModeSelect socket={socket}/> : <></>}
-            {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers} /> : <></>}
+            {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/> : <></>}
             {tvConnect ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}
         </div>
     );
