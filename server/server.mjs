@@ -30,6 +30,24 @@ initializeApp({
 
 const DB = getFirestore();
 
+async function getRulesToClient(socketObj) {
+    try {
+        const snapshot = await DB.collection(RULES_COLLECTION_NAME).get()
+        let allRules = []
+        snapshot.forEach((doc) => {
+            allRules.push({id: doc.id, data: doc.data()})
+        })
+        console.log(`allRules: ${JSON.stringify(allRules)}`)
+        socketObj.emit(E.GET_RULES, JSON.stringify(allRules))
+        return ""
+    }
+    catch (error) {
+        const errMsg = `There was a problem getting the rules: ${error}`
+        console.error(errMsg)
+        return errMsg
+    }
+}
+
 io.on(E.CONNECTION, socket => {
     console.log('client connected: ' + socket.id)
     let playerRoomId
@@ -208,18 +226,21 @@ io.on(E.CONNECTION, socket => {
         emitAllPlayersUpdate(io, rooms, playerRoomId)
     })
     socket.on(E.GET_RULES, async () => {
-        try {
-            const snapshot = await DB.collection(RULES_COLLECTION_NAME).get()
-            let allRules = []
-            snapshot.forEach((doc) => {
-                allRules.push({id: doc.id, data: doc.data()})
-            })
-            console.log(`allRules: ${JSON.stringify(allRules)}`)
-            socket.emit(E.GET_RULES, JSON.stringify(allRules)) 
+        const errMsg = getRulesToClient(socket)
+        if (errMsg) {
+            socket.emit(E.RULES_ERROR, {"message": errMsg})
         }
-        catch (error) {
-            console.error(`There was a problem getting the rules: ${error}`)
-            socket.emit(E.RULES_ERROR, {"message": "There was an issue retrieving the house rules, double check connection to database."})
+    })
+    socket.on(E.NEW_RULE, async ({ruleTitle, ruleDesc}) => {
+        const response = await DB.collection(RULES_COLLECTION_NAME).add({
+            title: ruleTitle,
+            description: ruleDesc
+        })
+        console.log(`New rule added with id: ${response.id}`)
+        socket.emit(E.NEW_RULE_SUCCESS)
+        const errMsg = getRulesToClient(io)
+        if (errMsg) {
+            socket.emit(E.RULES_ERROR, {"message": errMsg})
         }
     })
 })

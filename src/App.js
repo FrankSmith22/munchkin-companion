@@ -171,6 +171,7 @@ export default function App() {
         }
 
         function onRulesError({message}) {
+            console.log(`Got error message from server for getting rules: ${message}`)
             setRulesErrorMsg(message)
         }
 

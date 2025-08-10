@@ -10,6 +10,9 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
     const [searchField, setSearchField] = useState("")
     const [filteredRules, setFilteredRules] = useState(allRules)
     const [isNewRuleBoxOpen, setIsNewRuleBoxOpen] = useState(false)
+    const [isNewRuleButtonDisabled, setIsNewRuleButtonDisabled] = useState(false)
+    const [newRuleTitle, setNewRuleTitle] = useState("")
+    const [newRuleDesc, setNewRuleDesc] = useState("")
 
     const toggleModal = () => setIsModalOpen(!isModalOpen)
 
@@ -22,9 +25,26 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
         setFilteredRules(allRules.filter(rule => rule.data.title.includes(searchStr) || rule.data.description.includes(searchStr)))
     }
 
+    function addNewRule() {
+        setIsNewRuleButtonDisabled(true)
+        socket.emit(E.NEW_RULE, {ruleTitle: newRuleTitle, ruleDesc: newRuleDesc})
+    }
+
     useEffect(()=>{
         setFilteredRules(allRules.filter(rule => rule.data.title.includes(searchField) || rule.data.description.includes(searchField)))
     }, [allRules])
+
+    function onNewRuleSuccess() {
+        setIsNewRuleButtonDisabled(false)
+    }
+
+    useEffect(() => {
+        socket.on(E.NEW_RULE_SUCCESS, onNewRuleSuccess)
+
+        return () => {
+            socket.off(E.NEW_RULE_SUCCESS, onNewRuleSuccess)
+        }
+    }, [])
 
     return (
         <div style={{ display: "inline" }}>
@@ -38,12 +58,12 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                                 <Collapse isOpen={isNewRuleBoxOpen} className="mb-3">
                                     <Card>
                                         <CardHeader>
-                                            <CardTitle><input type="text" placeholder="Rule title..." className="form-control"/></CardTitle>
+                                            <CardTitle><input type="text" value={newRuleTitle} onChange={e => setNewRuleTitle(e.target.value)} placeholder="Rule title..." className="form-control"/></CardTitle>
                                         </CardHeader>
                                         <CardBody>
-                                            <textarea placeholder="Rule description..." rows="3" className="form-control"></textarea>
+                                            <textarea value={newRuleDesc} onChange={e => setNewRuleDesc(e.target.value)} placeholder="Rule description..." rows="3" className="form-control"></textarea>
                                         </CardBody>
-                                        <CardFooter><Button color="primary" style={{ float: "right" }}>Add</Button></CardFooter>
+                                        <CardFooter><Button color="primary" onClick={addNewRule} disabled={isNewRuleButtonDisabled} style={{ float: "right" }}>Add</Button></CardFooter>
                                     </Card>
                                 </Collapse>
                             </Col>
@@ -58,6 +78,7 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                                 Sorry, something went wrong interacting with the rules    
                             </Col>
                         </Row> : ""}
+                        {/* TODO Make it so rule descriptions are a collapse element */}
                         {filteredRules.map(rule => {
                             return <Row key={rule.id} className="mt-3">
                                 <Col>

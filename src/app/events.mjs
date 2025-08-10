@@ -22,5 +22,7 @@ export const EVENTS = deepFreeze({
     SEND_HELP: "send-help",
     RESOLVE_COMBAT: "resolve-combat",
     GET_RULES: "get-rules",
-    RULES_ERROR: "rules-error"
+    RULES_ERROR: "rules-error",
+    NEW_RULE: "new-rule",
+    NEW_RULE_SUCCESS: "new-rule-success"
 })
