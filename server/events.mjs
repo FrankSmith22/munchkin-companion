@@ -24,5 +24,6 @@ export const EVENTS = deepFreeze({
     GET_RULES: "get-rules",
     RULES_ERROR: "rules-error",
     NEW_RULE: "new-rule",
-    NEW_RULE_SUCCESS: "new-rule-success"
+    NEW_RULE_SUCCESS: "new-rule-success",
+    DELETE_RULE: "delete-rule"
 })

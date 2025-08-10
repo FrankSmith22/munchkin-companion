@@ -243,6 +243,15 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.RULES_ERROR, {"message": errMsg})
         }
     })
+    socket.on(E.DELETE_RULE, async ({ruleId}) => {
+        if (!ruleId) return
+        await DB.collection(RULES_COLLECTION_NAME).doc(ruleId).delete()
+        console.log(`Rule id ${ruleId} deleted`)
+        const errMsg = getRulesToClient(io)
+        if (errMsg) {
+            socket.emit(E.RULES_ERROR, {"message": errMsg})
+        }
+    })
 })
 io.on(E.DISCONNECTION, socket => {
     console.log('client disconnected: ' + socket.id)

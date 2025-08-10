@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { EVENTS as E } from '../app/events.mjs';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBook } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Card, CardHeader, CardTitle, CardBody, Collapse, CardFooter } from 'reactstrap';
 
 export default function RulesButton({socket, allRules, rulesErrorMsg}){
 
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+    const [deletingRule, setDeletingRule] = useState("")
     const [searchField, setSearchField] = useState("")
     const [filteredRules, setFilteredRules] = useState(allRules)
     const [isNewRuleBoxOpen, setIsNewRuleBoxOpen] = useState(false)
@@ -15,6 +17,13 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
     const [newRuleDesc, setNewRuleDesc] = useState("")
 
     const toggleModal = () => setIsModalOpen(!isModalOpen)
+    
+    const toggleConfirmModal = (ruleId = null) => {
+        setIsConfirmModalOpen(!isConfirmModalOpen)
+        if (ruleId) {
+            setDeletingRule(ruleId)
+        }
+    }
 
     const toggleCollapse = () => setIsNewRuleBoxOpen(!isNewRuleBoxOpen)
 
@@ -38,6 +47,11 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
         setIsNewRuleButtonDisabled(false)
     }
 
+    function sendDeleteRule() {
+        toggleConfirmModal()
+        socket.emit(E.DELETE_RULE, {ruleId: deletingRule})
+    }
+
     useEffect(() => {
         socket.on(E.NEW_RULE_SUCCESS, onNewRuleSuccess)
 
@@ -48,6 +62,16 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
 
     return (
         <div style={{ display: "inline" }}>
+            <Modal isOpen={isConfirmModalOpen} toggle={toggleConfirmModal} size="sm">
+                <ModalHeader toggle={toggleConfirmModal}>Are you sure?</ModalHeader>
+                <ModalBody>
+                    Are you sure you want to permanently delete this rule?
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={sendDeleteRule}>Yes</Button>
+                    <Button color="secondary" onClick={toggleConfirmModal}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
             <Modal isOpen={isModalOpen} toggle={toggleModal}>
                 <ModalHeader toggle={toggleModal}>Rules</ModalHeader>
                 <ModalBody>
@@ -84,7 +108,14 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                                 <Col>
                                     <Card>
                                         <CardHeader>
-                                            <CardTitle>{rule.data.title}</CardTitle>
+                                            <CardTitle style={{ display: "inline" }}>{rule.data.title}</CardTitle>
+                                            <div style={{ display: "inline", float: "right" }}>
+                                                <FontAwesomeIcon
+                                                    style={{ color: "#441B06", cursor: "pointer" }}
+                                                    icon={faTrashCan}
+                                                    onClick={() => toggleConfirmModal(rule.id)}
+                                                />
+                                            </div>
                                         </CardHeader>
                                         <CardBody>
                                             {rule.data.description}
