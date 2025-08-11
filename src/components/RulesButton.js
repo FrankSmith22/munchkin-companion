@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { EVENTS as E } from '../app/events.mjs';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBook, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faTrashCan, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Card, CardHeader, CardTitle, CardBody, Collapse, CardFooter } from 'reactstrap';
 
 export default function RulesButton({socket, allRules, rulesErrorMsg}){
@@ -15,6 +15,9 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
     const [isNewRuleButtonDisabled, setIsNewRuleButtonDisabled] = useState(false)
     const [newRuleTitle, setNewRuleTitle] = useState("")
     const [newRuleDesc, setNewRuleDesc] = useState("")
+    const [ruleEditing, setRuleEditing] = useState(null)
+    const [editingRuleTitle, setEditingRuleTitle] = useState("")
+    const [editingRuleDesc, setEditingRuleDesc] = useState("")
 
     const toggleModal = () => setIsModalOpen(!isModalOpen)
     
@@ -45,6 +48,8 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
 
     function onNewRuleSuccess() {
         setIsNewRuleButtonDisabled(false)
+        setNewRuleTitle("")
+        setNewRuleDesc("")
     }
 
     function sendDeleteRule() {
@@ -52,13 +57,36 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
         socket.emit(E.DELETE_RULE, {ruleId: deletingRule})
     }
 
+    function beginEditing(ruleId) {
+        let editingRule = filteredRules.filter(rule => rule.id === ruleId)
+        if (editingRule.length === 0) return
+        setRuleEditing(ruleId)
+        console.log(editingRule[0])
+        setEditingRuleTitle(editingRule[0].data.title)
+        setEditingRuleDesc(editingRule[0].data.description)
+    }
+
+    function endEditing() {
+        setRuleEditing(null)
+        setEditingRuleTitle("")
+        setEditingRuleDesc("")
+    }
+
+    function submitEdit() {
+        socket.emit(E.UPDATE_RULE, {ruleId: ruleEditing, title: editingRuleTitle, desc: editingRuleDesc})
+    }
+
+
     useEffect(() => {
         socket.on(E.NEW_RULE_SUCCESS, onNewRuleSuccess)
+        socket.on(E.UPDATE_RULE_SUCCESS, endEditing)
 
         return () => {
             socket.off(E.NEW_RULE_SUCCESS, onNewRuleSuccess)
+            socket.off(E.UPDATE_RULE_SUCCESS, endEditing)
         }
     }, [])
+
 
     return (
         <div style={{ display: "inline" }}>
@@ -108,8 +136,19 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                                 <Col>
                                     <Card>
                                         <CardHeader>
-                                            <CardTitle style={{ display: "inline" }}>{rule.data.title}</CardTitle>
+                                            <CardTitle style={{ display: "inline" }}>
+                                                {
+                                                    ruleEditing === rule.id
+                                                    ? <input type="text" className="form-control" value={editingRuleTitle} onChange={e => setEditingRuleTitle(e.target.value)}/>
+                                                    : rule.data.title
+                                                }
+                                            </CardTitle>
                                             <div style={{ display: "inline", float: "right" }}>
+                                                <FontAwesomeIcon
+                                                    style={{ color: "#441B06", cursor: "pointer", marginRight: "25px" }}
+                                                    icon={faPencil}
+                                                    onClick={() => ruleEditing === rule.id ? endEditing() : beginEditing(rule.id)}
+                                                />
                                                 <FontAwesomeIcon
                                                     style={{ color: "#441B06", cursor: "pointer" }}
                                                     icon={faTrashCan}
@@ -118,8 +157,17 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                                             </div>
                                         </CardHeader>
                                         <CardBody>
-                                            {rule.data.description}
+                                            {
+                                                ruleEditing === rule.id
+                                                ? <textarea value={editingRuleDesc} onChange={e => setEditingRuleDesc(e.target.value)} rows="3" className="form-control"></textarea>
+                                                : rule.data.description
+                                            }
                                         </CardBody>
+                                        {
+                                            ruleEditing === rule.id
+                                            ? <CardFooter><Button onClick={submitEdit} size="sm" color="primary" style={{ float: "right" }}>Update</Button><Button onClick={endEditing}size="sm" color="secondary" className="me-3" style={{ float: "right" }}>Cancel</Button></CardFooter>
+                                            : <></>
+                                        }
                                     </Card>
                                 </Col>
                             </Row>

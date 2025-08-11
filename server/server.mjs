@@ -252,6 +252,20 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.RULES_ERROR, {"message": errMsg})
         }
     })
+    socket.on(E.UPDATE_RULE, async ({ruleId, title, desc}) => {
+        if (!title || !desc) {
+            socket.emit(E.RULES_ERROR, {"message": "A rule must have a title and a description"})
+            return
+        }
+        const newRule = {title: title, description: desc}
+        await DB.collection(RULES_COLLECTION_NAME).doc(ruleId).set(newRule)
+        console.log("Rule updated")
+        socket.emit(E.UPDATE_RULE_SUCCESS)
+        const errMsg = getRulesToClient(io)
+        if (errMsg) {
+            socket.emit(E.RULES_ERROR, {"message": errMsg})
+        }
+    })
 })
 io.on(E.DISCONNECTION, socket => {
     console.log('client disconnected: ' + socket.id)
