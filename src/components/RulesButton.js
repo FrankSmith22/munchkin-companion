@@ -3,6 +3,7 @@ import { EVENTS as E } from '../app/events.mjs';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBook, faTrashCan, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Card, CardHeader, CardTitle, CardBody, Collapse, CardFooter } from 'reactstrap';
+import loading from '../res/loading.gif';
 
 export default function RulesButton({socket, allRules, rulesErrorMsg}){
 
@@ -12,7 +13,7 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
     const [searchField, setSearchField] = useState("")
     const [filteredRules, setFilteredRules] = useState(allRules)
     const [isNewRuleBoxOpen, setIsNewRuleBoxOpen] = useState(false)
-    const [isNewRuleButtonDisabled, setIsNewRuleButtonDisabled] = useState(false)
+    const [isNewRuleButtonLoading, setIsNewRuleButtonLoading] = useState(false)
     const [newRuleTitle, setNewRuleTitle] = useState("")
     const [newRuleDesc, setNewRuleDesc] = useState("")
     const [ruleEditing, setRuleEditing] = useState(null)
@@ -31,14 +32,13 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
     const toggleCollapse = () => setIsNewRuleBoxOpen(!isNewRuleBoxOpen)
 
     function searchRules(e){
-        const searchStr = e.target.value
+        const searchStr = e.target.value.toLowerCase()
         setSearchField(searchStr)
-        console.log(JSON.stringify(allRules.filter(rule => rule.data.title.includes(searchStr) || rule.data.description.includes(searchStr))))
-        setFilteredRules(allRules.filter(rule => rule.data.title.includes(searchStr) || rule.data.description.includes(searchStr)))
+        setFilteredRules(allRules.filter(rule => rule.data.title.toLowerCase().includes(searchStr) || rule.data.description.toLowerCase().includes(searchStr)))
     }
 
     function addNewRule() {
-        setIsNewRuleButtonDisabled(true)
+        setIsNewRuleButtonLoading(true)
         socket.emit(E.NEW_RULE, {ruleTitle: newRuleTitle, ruleDesc: newRuleDesc})
     }
 
@@ -47,7 +47,7 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
     }, [allRules])
 
     function onNewRuleSuccess() {
-        setIsNewRuleButtonDisabled(false)
+        setIsNewRuleButtonLoading(false)
         setNewRuleTitle("")
         setNewRuleDesc("")
     }
@@ -106,17 +106,21 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                     <Container>
                         <Row>
                             <Col>
-                                <Button onClick={toggleCollapse} color="primary" className="mb-2" style={{ width: "100%", height: "25px", fontSize: ".8rem" }}>New Rule +</Button>
+                                <Button onClick={toggleCollapse} className="mb-2 munchkinButton" style={{ width: "100%", height: "25px", fontSize: ".8rem", lineHeight: "10px" }}>New Rule +</Button>
                                 <Collapse isOpen={isNewRuleBoxOpen} className="mb-3">
-                                    <Card>
-                                        <CardHeader>
-                                            <CardTitle><input type="text" value={newRuleTitle} onChange={e => setNewRuleTitle(e.target.value)} placeholder="Rule title..." className="form-control"/></CardTitle>
-                                        </CardHeader>
-                                        <CardBody>
-                                            <textarea value={newRuleDesc} onChange={e => setNewRuleDesc(e.target.value)} placeholder="Rule description..." rows="3" className="form-control"></textarea>
-                                        </CardBody>
-                                        <CardFooter><Button color="primary" onClick={addNewRule} disabled={isNewRuleButtonDisabled} style={{ float: "right" }}>Add</Button></CardFooter>
-                                    </Card>
+                                    <form action={addNewRule}>
+                                        <Card>
+                                            <CardHeader>
+                                                <CardTitle><input type="text" required={true} value={newRuleTitle} onChange={e => setNewRuleTitle(e.target.value)} placeholder="Rule title..." className="form-control"/></CardTitle>
+                                            </CardHeader>
+                                            <CardBody>
+                                                <textarea required={true} value={newRuleDesc} onChange={e => setNewRuleDesc(e.target.value)} placeholder="Rule description..." rows="3" className="form-control"></textarea>
+                                            </CardBody>
+                                            <CardFooter><Button className="munchkinButton" type="submit" disabled={isNewRuleButtonLoading} style={{ float: "right", width: "unset" }}>
+                                                { isNewRuleButtonLoading ? <img src={loading} style={{ width: "24px" }}/> : "Add"}
+                                            </Button></CardFooter>
+                                        </Card>
+                                    </form>
                                 </Collapse>
                             </Col>
                         </Row>
@@ -125,11 +129,12 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                                 <input type="text" placeholder="search..." className="form-control" value={searchField} onChange={e => searchRules(e)}/>
                             </Col>
                         </Row>
-                        {rulesErrorMsg ? <Row>
+                        {/* TODO this message flashes whenever this component hot reloads, disabling for now */}
+                        {/* {rulesErrorMsg ? <Row>
                             <Col style={{ color: "red" }}>
                                 Sorry, something went wrong interacting with the rules    
                             </Col>
-                        </Row> : ""}
+                        </Row> : ""} */}
                         {/* TODO Make it so rule descriptions are a collapse element */}
                         {filteredRules.map(rule => {
                             return <Row key={rule.id} className="mt-3">
