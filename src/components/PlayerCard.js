@@ -58,9 +58,9 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                     <span><BackButton socket={socket} confirm={true}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/></span>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
                     <br></br><br></br>
-                    Level: {playerObj.level} <Button className="munchkinButton" onClick={e => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="munchkinButton" onClick={e => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
+                    Level: {playerObj.level} <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
                     <br></br><br></br>
-                    Gear: {playerObj.gearBonus} <Button className="munchkinButton" onClick={e => socket.emit(E.PLAYER_GEAR_INC)}>+</Button> <Button className="munchkinButton" onClick={e => socket.emit(E.PLAYER_GEAR_DEC)}>-</Button>
+                    Gear: {playerObj.gearBonus} <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.PLAYER_GEAR_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.PLAYER_GEAR_DEC)}>-</Button>
                     <br></br><br></br>
                     <b>total: {playerObj.level + playerObj.gearBonus}</b>
                 </Col>

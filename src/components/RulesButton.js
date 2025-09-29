@@ -91,18 +91,18 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
     return (
         <div style={{ display: "inline" }}>
             <Modal isOpen={isConfirmModalOpen} toggle={toggleConfirmModal} size="sm">
-                <ModalHeader toggle={toggleConfirmModal}>Are you sure?</ModalHeader>
-                <ModalBody>
+                <ModalHeader className="doorCardColor" toggle={toggleConfirmModal}>Are you sure?</ModalHeader>
+                <ModalBody className="doorCardColor">
                     Are you sure you want to permanently delete this rule?
                 </ModalBody>
-                <ModalFooter>
+                <ModalFooter className="doorCardColor">
                     <Button color="primary" onClick={sendDeleteRule}>Yes</Button>
                     <Button color="secondary" onClick={toggleConfirmModal}>Cancel</Button>
                 </ModalFooter>
             </Modal>
             <Modal isOpen={isModalOpen} toggle={toggleModal}>
-                <ModalHeader toggle={toggleModal}>Rules</ModalHeader>
-                <ModalBody>
+                <ModalHeader className="doorCardColor" toggle={toggleModal}>Rules</ModalHeader>
+                <ModalBody className="doorCardColor">
                     <Container>
                         <Row>
                             <Col>
@@ -116,7 +116,7 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                                             <CardBody>
                                                 <textarea required={true} value={newRuleDesc} onChange={e => setNewRuleDesc(e.target.value)} placeholder="Rule description..." rows="3" className="form-control"></textarea>
                                             </CardBody>
-                                            <CardFooter><Button className="munchkinButton" type="submit" disabled={isNewRuleButtonLoading} style={{ float: "right", width: "unset" }}>
+                                            <CardFooter><Button className="munchkinButton" type="submit" disabled={isNewRuleButtonLoading} style={{ float: "right" }}>
                                                 { isNewRuleButtonLoading ? <img src={loading} style={{ width: "24px" }}/> : "Add"}
                                             </Button></CardFooter>
                                         </Card>
@@ -170,7 +170,10 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                                         </CardBody>
                                         {
                                             ruleEditing === rule.id
-                                            ? <CardFooter><Button onClick={submitEdit} size="sm" color="primary" style={{ float: "right" }}>Update</Button><Button onClick={endEditing}size="sm" color="secondary" className="me-3" style={{ float: "right" }}>Cancel</Button></CardFooter>
+                                            ? <CardFooter>
+                                                <Button onClick={submitEdit} size="sm" color="primary" className="munchkinButton" style={{ float: "right" }}>Update</Button>
+                                                <Button onClick={endEditing} size="sm" color="secondary" className="me-3 munchkinButton" style={{ float: "right" }}>Cancel</Button>
+                                            </CardFooter>
                                             : <></>
                                         }
                                     </Card>
@@ -179,8 +182,8 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                         })}
                     </Container>
                 </ModalBody>
-                <ModalFooter>
-                    <Button color="secondary" onClick={toggleModal}>Close</Button>
+                <ModalFooter className="doorCardColor">
+                    <Button className="munchkinButton" color="secondary" onClick={toggleModal}>Close</Button>
                 </ModalFooter>
             </Modal>
             <span>

@@ -98,7 +98,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
                                     <Col>Modifier</Col><Col className="text-end">{playerObj.combat.partyModifier}</Col>
                                 </Row>
                                 <Row>
-                                    <Col className="text-end"><Button className="munchkinButton" onClick={e => socket.emit(E.COMBAT_PARTY_MOD_INC)}>+</Button> <Button className="munchkinButton" onClick={e => socket.emit(E.COMBAT_PARTY_MOD_DEC)}>-</Button></Col>
+                                    <Col className="text-end"><Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.COMBAT_PARTY_MOD_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.COMBAT_PARTY_MOD_DEC)}>-</Button></Col>
                                 </Row>
                                 {allPlayersList.filter(player => player.helping.includes(playerObj.connId)).map(player => (
                                     <Row key={player.connId} className="mt-4">
@@ -122,7 +122,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
                                     <Col>Modifier</Col><Col className="text-end">{playerObj.combat.monsterModifier}</Col>
                                 </Row>
                                 <Row>
-                                    <Col className="text-end"><Button className="munchkinButton" onClick={e => socket.emit(E.COMBAT_MONSTER_MOD_INC)}>+</Button> <Button className="munchkinButton" onClick={e => socket.emit(E.COMBAT_MONSTER_MOD_DEC)}>-</Button></Col>
+                                    <Col className="text-end"><Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.COMBAT_MONSTER_MOD_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.COMBAT_MONSTER_MOD_DEC)}>-</Button></Col>
                                 </Row>
                             </Col>
                         </Row>

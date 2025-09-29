@@ -23,6 +23,9 @@ body {
     background-color: #E9BC6D;
     border: 3px solid #441B06;
     color: #441B06;
+}
+
+.plusMinusButton {
     font-size: 2rem;
     height: 40px;
     width: 40px;
@@ -49,4 +52,17 @@ body {
     border: 3px solid #441B06;
     border-radius: 2px;
     opacity: 1;
+}
+
+.doorCardColor {
+    background-color: #FBF3E5;
+}
+
+.profilePicture {
+    height: 50%;
+    width: auto;
+}
+
+.tvCardText {
+    font-size: 2rem;
 }
