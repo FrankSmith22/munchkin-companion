@@ -9,10 +9,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignal } from '@fortawesome/free-solid-svg-icons/faSignal'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
+import deepFreeze from "deep-freeze"
 
 const LS_CONN_TYPE = "connectionType"
 const LS_ROOM_ID = "roomId"
 const LS_CONN_ID = "connId"
+
+const DISPLAY_MODES = deepFreeze({
+    MODE_SELECT: "mode-select",
+    PLAYER_CHOOSING: "player-choosing",
+    PLAYER_MODE: "player-mode",
+    TV_MODE: "tv-mode"
+})
 
 
 function ConnectionState({ isConnected, roomId }) {
@@ -28,9 +36,7 @@ function ConnectionState({ isConnected, roomId }) {
 
 export default function App() {
     const [isConnected, setIsConnected] = useState(false)
-    const [displayModeSelect, setDisplayModeSelect] = useState(true)
-    const [playerConnect, setPlayerConnect] = useState(false)
-    const [tvConnect, setTvConnect] = useState(false)
+    const [pageToDisplay, setPageToDisplay] = useState(DISPLAY_MODES.MODE_SELECT)
     const [playerObj, setPlayerObj] = useState(null)
     const [allPlayers, setAllPlayers] = useState(null)
     const [roomId, setRoomId] = useState("")
@@ -59,8 +65,7 @@ export default function App() {
             setIsConnected(false)
         }
         function onPlayerConnect({playerObj, roomId}) {
-            setDisplayModeSelect(false)
-            setPlayerConnect(true)
+            setPageToDisplay(DISPLAY_MODES.PLAYER_MODE)
             playerObj = Object.assign(new Player(), JSON.parse(playerObj))
             setPlayerObj(playerObj)
             setRoomId(roomId)
@@ -77,8 +82,7 @@ export default function App() {
         }
 
         function onTvConnect({allPlayers, roomId}){
-            setDisplayModeSelect(false)
-            setTvConnect(true)
+            setPageToDisplay(DISPLAY_MODES.TV_MODE)
             setRoomId(roomId)
 
             allPlayers = allPlayers || "{}"
@@ -117,9 +121,7 @@ export default function App() {
         }
 
         function onDisconnectRoom(){
-            setDisplayModeSelect(true)
-            setPlayerConnect(false)
-            setTvConnect(false)
+            setPageToDisplay(DISPLAY_MODES.MODE_SELECT)
             setAllPlayers(null)
             setPlayerObj(null)
             setRoomId("")
@@ -203,9 +205,9 @@ export default function App() {
     return (
         <div className="App">
             <ConnectionState isConnected={isConnected} roomId={roomId}/>
-            {displayModeSelect ? <ModeSelect socket={socket}/> : <></>}
-            {playerConnect ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/> : <></>}
-            {tvConnect ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.MODE_SELECT ? <ModeSelect socket={socket}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.TV_MODE ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}
         </div>
     );
 }
