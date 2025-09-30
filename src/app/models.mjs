@@ -6,9 +6,10 @@ export class Combat {
 }
 
 export class Player {
-    constructor(connId, name, level = 1, gearBonus = 0, helping = []){
+    constructor(connId, name, picture, level = 1, gearBonus = 0, helping = []){
         this.connId = connId
         this.name = name
+        this.picture = picture
         this.level = level
         this.gearBonus = gearBonus
         this.helping = helping

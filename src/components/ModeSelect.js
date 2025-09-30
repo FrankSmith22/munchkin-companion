@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { EVENTS as E } from '../app/events.mjs';
-import { Container, Row, Col, Button } from 'reactstrap';
+import { Container, Row, Col, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import munchkinGuy from "../res/munchkin-guy.png"
+import { PICTURES as P } from '../app/pictureMapping';
 
 const LS_DEFAULT_ROOM_ID = "defaultRoomId"
 const LS_DEFAULT_PLAYER_NAME = "defaultPlayerName"
@@ -14,6 +15,10 @@ export default function ModeSelect({socket}){
     const [playerName, setPlayerName] = useState(defaultPlayerName)
     let defaultRoomId = localStorage.getItem(LS_DEFAULT_ROOM_ID)
     const [roomId, setRoomId] = useState(defaultRoomId ? defaultRoomId : "")
+    const [isPictureSelectModalOpen, setIsPictureSelectModalOpen] = useState(false)
+    const [selectedPicture, setSelectedPicture] = useState(null)
+
+    const togglePictureSelectModal = () => setIsPictureSelectModalOpen(!isPictureSelectModalOpen)
 
     useEffect(() => {
         localStorage.setItem(LS_DEFAULT_ROOM_ID, roomId)
@@ -25,14 +30,54 @@ export default function ModeSelect({socket}){
         mode = mode.toLowerCase()
         roomId = roomId.toLowerCase()
         if (mode === "player"){
-            socket.emit(E.PLAYER_CONNECT, {playerName, roomId})
+            socket.emit(E.PLAYER_CONNECT, {playerName, selectedPicture, roomId})
         }
         else {
             socket.emit(E.TV_CONNECT, {roomId})
         }
     }
 
+    function submitButton(){
+        onModeSelect('player', roomId)
+        setIsPictureSelectModalOpen(false)
+    }
+
+    function pictureSelect(picture){
+        console.log(picture)
+        setSelectedPicture(picture)
+    }
+
+    function formPictureCards(){
+        let allImgs = []
+        for (const [key, val] of Object.entries(P)){
+            allImgs.push(
+                <Col xs="5" md="3" key={key} className="mt-2 mx-auto">
+                    <img
+                        src={val}
+                        className={key === selectedPicture ? "playerPictureSelected img-thumbnail" : "playerPictureSelect img-thumbnail"}
+                        onClick={() => pictureSelect(key)}></img>
+                </Col> 
+            )
+        }
+        return allImgs
+    }
+
     return (
+        <>
+        <Modal isOpen={isPictureSelectModalOpen} toggle={togglePictureSelectModal}>
+            <ModalHeader toggle={togglePictureSelectModal}>Select Picture</ModalHeader>
+            <ModalBody>
+                <Container>
+                    <Row className="text-center">
+                        {formPictureCards()}
+                    </Row>
+                </Container>
+            </ModalBody>
+            <ModalFooter>
+                <Button className='munchkinButton' onClick={submitButton}>Submit</Button>
+                <Button className='munchkinButton' onClick={togglePictureSelectModal}>Cancel</Button>
+            </ModalFooter>
+        </Modal>
         <Container>
             <Row className="mt-3">
                 <Col className="text-center" xs="12"><h1>Munchkin Companion</h1></Col>
@@ -67,11 +112,12 @@ export default function ModeSelect({socket}){
                     </Button>
                 </Col>
                 <Col className="text-center" xs="6">
-                    <Button className="munchkinButton" style={{ fontSize: "1rem" }} onClick={e => onModeSelect('player', roomId)}>
+                    <Button className="munchkinButton" style={{ fontSize: "1rem" }} onClick={togglePictureSelectModal}>
                         <FontAwesomeIcon style={{color: "#441B06", cursor: "pointer" }} icon={faArrowRight}/>
                     </Button>
                 </Col>
             </Row>
         </Container>
+        </>
     )
 }

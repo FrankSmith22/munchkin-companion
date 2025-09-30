@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faBook } from '@fortawesome/free-solid-svg-icons';
 import CombatButton from './CombatButton';
+import { PICTURES as P } from '../app/pictureMapping';
 
 export default function PlayerCard({socket, playerObj, allPlayers, allRules, rulesErrorMsg}){
 
@@ -57,6 +58,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                 <Col className="offset-3" style={{ wordWrap: "break-word" }}>
                     <span><BackButton socket={socket} confirm={true}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/></span>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
+                    <img src={P[playerObj.picture]}></img>
                     <br></br><br></br>
                     Level: {playerObj.level} <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
                     <br></br><br></br>

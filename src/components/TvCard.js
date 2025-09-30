@@ -9,7 +9,7 @@ export default function TvCard({socket, allPlayers}){
             <Col xs="6" md="3" key={connId} style={{ border: "1px dashed #441B06", height: "40vh" }}>
                 <div className="d-flex align-items-center flex-column h-100">
                     <div className="tvCardText">{playerObj.name}</div>
-                    <img src={munchkinGuy} className="profilePicture"></img>
+                    <img src={munchkinGuy} className="playerPicture"></img>
                     <div className='mt-auto d-flex flex-row justify-content-between w-100'>
                         <div className="tvCardText" style={{ color: playerObj.level >= 9 ? "red": "inherit" }}>L{playerObj.level}</div>
                         <div className="tvCardText">{playerObj.level + playerObj.gearBonus}</div>

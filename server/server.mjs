@@ -54,9 +54,9 @@ io.on(E.CONNECTION, socket => {
     let playerObj
     let connId = uuidv4()
     // Connected as PLAYER
-    socket.on(E.PLAYER_CONNECT, ({playerName, roomId}) => {
+    socket.on(E.PLAYER_CONNECT, ({playerName, selectedPicture, roomId}) => {
         playerRoomId = roomId
-        playerObj = new Player(connId, playerName)
+        playerObj = new Player(connId, playerName, selectedPicture)
         socket.join(playerRoomId)
         if (! (playerRoomId in rooms)) {
             rooms[playerRoomId] = {}
