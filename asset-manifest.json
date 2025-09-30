@@ -1,19 +1,23 @@
 {
   "files": {
-    "main.css": "/munchkin-companion/static/css/main.d59c0767.css",
-    "main.js": "/munchkin-companion/static/js/main.c8ceff40.js",
+    "main.css": "/munchkin-companion/static/css/main.4009625d.css",
+    "main.js": "/munchkin-companion/static/js/main.28e1e6ed.js",
     "static/js/453.6d235fcc.chunk.js": "/munchkin-companion/static/js/453.6d235fcc.chunk.js",
     "static/media/munchkin-guy.png": "/munchkin-companion/static/media/munchkin-guy.c04e1a8d397263ab624e.png",
     "static/media/Windlass.ttf": "/munchkin-companion/static/media/Windlass.ae635d48178d5ee3b2cc.ttf",
+    "static/media/dragon_fixed.jpg": "/munchkin-companion/static/media/dragon_fixed.c5ab7c8084f7737e5190.jpg",
     "static/media/loading.gif": "/munchkin-companion/static/media/loading.952a8b90328e46f562ee.gif",
+    "static/media/Bullrog_fixed.jpg": "/munchkin-companion/static/media/Bullrog_fixed.11ed5e3416499cf0b075.jpg",
     "static/media/sword_shield.png": "/munchkin-companion/static/media/sword_shield.8cc802cf4567201e2654.png",
+    "static/media/baby_fixed.jpg": "/munchkin-companion/static/media/baby_fixed.d298596e3124b0be77ea.jpg",
+    "static/media/staff_of_napalm_fixed.jpg": "/munchkin-companion/static/media/staff_of_napalm_fixed.aec2fbf265060e9c7b5c.jpg",
     "index.html": "/munchkin-companion/index.html",
-    "main.d59c0767.css.map": "/munchkin-companion/static/css/main.d59c0767.css.map",
-    "main.c8ceff40.js.map": "/munchkin-companion/static/js/main.c8ceff40.js.map",
+    "main.4009625d.css.map": "/munchkin-companion/static/css/main.4009625d.css.map",
+    "main.28e1e6ed.js.map": "/munchkin-companion/static/js/main.28e1e6ed.js.map",
     "453.6d235fcc.chunk.js.map": "/munchkin-companion/static/js/453.6d235fcc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d59c0767.css",
-    "static/js/main.c8ceff40.js"
+    "static/css/main.4009625d.css",
+    "static/js/main.28e1e6ed.js"
   ]
 }
