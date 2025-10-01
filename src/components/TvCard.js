@@ -4,6 +4,20 @@ import { PICTURES as P } from '../app/pictureMapping';
 
 export default function TvCard({socket, allPlayers}){
 
+    function levelStyleObj(level){
+        level = String(level)
+        let color = "inherit"
+        if (level.endsWith("9")) {
+            color = "red"
+        }
+        else if (level.endsWith("0")) {
+            color = "#d19a02"
+        }
+        return {
+            color
+        }
+    }
+
     function playerSlot(connId, playerObj) {
         return (
             <Col xs="6" md="3" key={connId} style={{ border: "1px dashed #441B06", height: "40vh" }}>
@@ -11,7 +25,7 @@ export default function TvCard({socket, allPlayers}){
                     <div className="tvCardText">{playerObj.name}</div>
                     <img src={P[playerObj.picture]} className="img-thumbnail w-50 playerPictureThumbnail"></img>
                     <div className='mt-auto d-flex flex-row justify-content-between w-100'>
-                        <div className="tvCardText" style={{ color: playerObj.level === 9 ? "red": playerObj.level >= 10 ? "#d19a02" : "inherit" }}>L{playerObj.level}</div>
+                        <div className="tvCardText" style={levelStyleObj(playerObj.level)}>L{playerObj.level}</div>
                         <div className="tvCardText">{playerObj.level + playerObj.gearBonus}</div>
                     </div>
                 </div>

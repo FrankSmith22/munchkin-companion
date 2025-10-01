@@ -45,7 +45,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
             <ul>
                 {allPlayersList ? allPlayersList.map((player, i, a) => {
                     return (<li key={player.connId}>
-                                {i == 0 ? <></> : <hr></hr>}
+                                {i == 0 ? "" : <hr/>}
                                 {player.name}<br/>
                                 <img src={P[player.picture]} className="img-thumbnail w-75 playerPictureThumbnail"></img><br/>
                                 Level: {player.level}<br/>
