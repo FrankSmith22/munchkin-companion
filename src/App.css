@@ -58,9 +58,12 @@ body {
     background-color: #FBF3E5;
 }
 
-.playerPicture {
-    height: 10vh;
-    width: auto;
+.playerPictureThumbnail {
+    background-color: #441B06;
+    border-color: #441B06;
+    border-radius: 15px;
+    padding: .15rem;
+    box-shadow: 2px 2px 5px 0px black;
 }
 
 .playerPictureSelect {

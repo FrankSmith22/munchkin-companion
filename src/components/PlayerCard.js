@@ -31,18 +31,26 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
     if (allPlayers){
         allPlayersList = Object.entries(allPlayers).map(element => element[1]).filter(player => player.connId != playerObj.connId)
     }
+    // allPlayersList.push(allPlayersList[0])
+    // allPlayersList.push(allPlayersList[0])
+    // allPlayersList.push(allPlayersList[0])
+    // allPlayersList.push(allPlayersList[0])
+    // allPlayersList.push(allPlayersList[0])
+    // allPlayersList.push(allPlayersList[0])
 
     return (
         <>
-        <button className='sidebarCloseBtn' style={{ left: sidebarCloseBtnPosition }} onClick={e => toggleSidebar()}>{"X"}</button>
-        <div id="mySidebar" className="sidebar" style={{ left: sidebarPosition }}>
+        <button className='sidebarCloseBtn' style={{ left: sidebarCloseBtnPosition }} onClick={() => toggleSidebar()}>{"X"}</button>
+        <div id="mySidebar" className="sidebar overflow-auto" style={{ left: sidebarPosition }}>
             <ul>
-                {allPlayersList ? allPlayersList.map((player) => {
-                    return <li key={player.connId}>
-                        {player.name}<br/>
-                        Level: {player.level}<br/>
-                        Total: {player.level + player.gearBonus}<br/><br/>
-                        </li>
+                {allPlayersList ? allPlayersList.map((player, i, a) => {
+                    return (<li key={player.connId}>
+                                {i == 0 ? <></> : <hr></hr>}
+                                {player.name}<br/>
+                                <img src={P[player.picture]} className="img-thumbnail w-75 playerPictureThumbnail"></img><br/>
+                                Level: {player.level}<br/>
+                                Total: {player.level + player.gearBonus}
+                            </li>)
                 }) : <></>}
             </ul>
         </div>
@@ -50,19 +58,21 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
             <FontAwesomeIcon
                 icon={faBars}
                 style={{ fontSize: "30px", cursor: "pointer", color: "#441B06" }}
-                onClick={e => toggleSidebar()}
+                onClick={() => toggleSidebar()}
             />
         </div>
         <div className="container-fluid mt-5" style={{ height: "100%" }}>
             <Row>
                 <Col className="offset-3" style={{ wordWrap: "break-word" }}>
                     <span><BackButton socket={socket} confirm={true}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/></span>
+                    <br/>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
-                    <img src={P[playerObj.picture]}></img>
+                    <br/>
+                    <img src={P[playerObj.picture]} className="img-thumbnail w-50 playerPictureThumbnail"></img>
                     <br></br><br></br>
-                    Level: {playerObj.level} <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
+                    Level: {playerObj.level} <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
                     <br></br><br></br>
-                    Gear: {playerObj.gearBonus} <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.PLAYER_GEAR_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.PLAYER_GEAR_DEC)}>-</Button>
+                    Gear: {playerObj.gearBonus} <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_GEAR_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_GEAR_DEC)}>-</Button>
                     <br></br><br></br>
                     <b>total: {playerObj.level + playerObj.gearBonus}</b>
                 </Col>
