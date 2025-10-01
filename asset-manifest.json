@@ -1,23 +1,27 @@
 {
   "files": {
     "main.css": "/munchkin-companion/static/css/main.c6748641.css",
-    "main.js": "/munchkin-companion/static/js/main.fe3518c9.js",
+    "main.js": "/munchkin-companion/static/js/main.ce812c80.js",
     "static/js/453.6d235fcc.chunk.js": "/munchkin-companion/static/js/453.6d235fcc.chunk.js",
+    "static/media/elf_fixed.jpg": "/munchkin-companion/static/media/elf_fixed.2a4f7e711f18331d49a4.jpg",
     "static/media/munchkin-guy.png": "/munchkin-companion/static/media/munchkin-guy.c04e1a8d397263ab624e.png",
+    "static/media/orc_fixed.jpg": "/munchkin-companion/static/media/orc_fixed.76b75e273e8abe3baf3b.jpg",
     "static/media/Windlass.ttf": "/munchkin-companion/static/media/Windlass.ae635d48178d5ee3b2cc.ttf",
+    "static/media/gazebo_fixed.jpg": "/munchkin-companion/static/media/gazebo_fixed.7500e0d470e95153807d.jpg",
     "static/media/dragon_fixed.jpg": "/munchkin-companion/static/media/dragon_fixed.c5ab7c8084f7737e5190.jpg",
     "static/media/loading.gif": "/munchkin-companion/static/media/loading.952a8b90328e46f562ee.gif",
     "static/media/Bullrog_fixed.jpg": "/munchkin-companion/static/media/Bullrog_fixed.11ed5e3416499cf0b075.jpg",
     "static/media/sword_shield.png": "/munchkin-companion/static/media/sword_shield.8cc802cf4567201e2654.png",
     "static/media/baby_fixed.jpg": "/munchkin-companion/static/media/baby_fixed.d298596e3124b0be77ea.jpg",
+    "static/media/dwarf_fixed.jpg": "/munchkin-companion/static/media/dwarf_fixed.04a3494e0288c56f3f97.jpg",
     "static/media/staff_of_napalm_fixed.jpg": "/munchkin-companion/static/media/staff_of_napalm_fixed.aec2fbf265060e9c7b5c.jpg",
     "index.html": "/munchkin-companion/index.html",
     "main.c6748641.css.map": "/munchkin-companion/static/css/main.c6748641.css.map",
-    "main.fe3518c9.js.map": "/munchkin-companion/static/js/main.fe3518c9.js.map",
+    "main.ce812c80.js.map": "/munchkin-companion/static/js/main.ce812c80.js.map",
     "453.6d235fcc.chunk.js.map": "/munchkin-companion/static/js/453.6d235fcc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c6748641.css",
-    "static/js/main.fe3518c9.js"
+    "static/js/main.ce812c80.js"
   ]
 }
