@@ -76,7 +76,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
     return (
         <>
             <Button className="munchkinButton" style={{ width: "unset" }} onClick={toggleCombat}>Combat</Button>
-            <Modal isOpen={isCombatOpen} toggle={toggleCombat}>
+            <Modal isOpen={isCombatOpen} toggle={toggleCombat} className="munchkinModal">
                 <ModalHeader toggle={toggleCombat}>Combat</ModalHeader>
                 <ModalBody>
                     <div className="container-fluid">
@@ -150,7 +150,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
             </Modal>
 
 
-            <Modal size="sm" isOpen={isHelpSelectOpen}>
+            <Modal size="sm" isOpen={isHelpSelectOpen} className="munchkinModal">
                 <ModalHeader>Party Members</ModalHeader>
                 <ModalBody>
                     {allPlayersList ? allPlayersList.map((player) => {

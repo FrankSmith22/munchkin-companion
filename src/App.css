@@ -86,3 +86,34 @@ body {
 .tvCardText {
     font-size: 2rem;
 }
+
+.munchkinModal .modal-content{
+    border: unset;
+    background-color: unset;
+}
+
+.munchkinModal .modal-header {
+    background-color: #E9BC6D;
+    border-left: 15px solid #441B06;
+    border-top: 15px solid #441B06;
+    border-right: 15px solid #441B06;
+    border-top-left-radius: 60px;
+    border-top-right-radius: 60px;
+    border-bottom: 1px solid #441B06;
+}
+
+.munchkinModal .modal-body {
+    background-color: #E9BC6D;
+    border-left: 15px solid #441B06;
+    border-right: 15px solid #441B06;
+}
+
+.munchkinModal .modal-footer {
+    background-color: #E9BC6D;
+    border-left: 15px solid #441B06;
+    border-bottom: 15px solid #441B06;
+    border-right: 15px solid #441B06;
+    border-bottom-left-radius: 60px;
+    border-bottom-right-radius: 60px;
+    border-top: 1px solid #441B06;
+}

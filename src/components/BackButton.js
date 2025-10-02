@@ -14,7 +14,7 @@ export default function BackButton({socket, confirm}){
 
     return (
         <div style={{ display: "inline" }}>
-            <Modal isOpen={isOpen} toggle={toggle}>
+            <Modal isOpen={isOpen} toggle={toggle} className="munchkinModal">
                 <ModalHeader toggle={toggle}>Are you sure?</ModalHeader>
                 <ModalBody>
                     Are you sure? Current stats will be lost.

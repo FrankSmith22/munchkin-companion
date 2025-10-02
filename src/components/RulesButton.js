@@ -90,20 +90,20 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
 
     return (
         <div style={{ display: "inline" }}>
-            <Modal isOpen={isConfirmModalOpen} toggle={toggleConfirmModal} size="sm">
-                <ModalHeader className="doorCardColor" toggle={toggleConfirmModal}>Are you sure?</ModalHeader>
-                <ModalBody className="doorCardColor">
+            <Modal isOpen={isConfirmModalOpen} toggle={toggleConfirmModal} size="sm" className="munchkinModal">
+                <ModalHeader toggle={toggleConfirmModal}>Are you sure?</ModalHeader>
+                <ModalBody>
                     Are you sure you want to permanently delete this rule?
                 </ModalBody>
-                <ModalFooter className="doorCardColor">
-                    <Button color="primary" onClick={sendDeleteRule}>Yes</Button>
-                    <Button color="secondary" onClick={toggleConfirmModal}>Cancel</Button>
+                <ModalFooter>
+                    <Button className="munchkinButton" onClick={sendDeleteRule}>Yes</Button>
+                    <Button className="munchkinButton" style={{ backgroundColor: "#f48d5aff" }} onClick={toggleConfirmModal}>Cancel</Button>
                 </ModalFooter>
             </Modal>
-            <Modal isOpen={isModalOpen} toggle={toggleModal}>
-                <ModalHeader className="doorCardColor" toggle={toggleModal}>Rules</ModalHeader>
-                <ModalBody className="doorCardColor">
-                    <Container>
+            <Modal isOpen={isModalOpen} toggle={toggleModal} className="munchkinModal">
+                <ModalHeader toggle={toggleModal}>Rules</ModalHeader>
+                <ModalBody>
+                    <Container className="overflow-auto" style={{ maxHeight: "60vh" }}>
                         <Row>
                             <Col>
                                 <Button onClick={toggleCollapse} className="mb-2 munchkinButton" style={{ width: "100%", height: "25px", fontSize: ".8rem", lineHeight: "10px" }}>New Rule +</Button>
@@ -126,7 +126,7 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                         </Row>
                         <Row>
                             <Col>
-                                <input type="text" placeholder="search..." className="form-control" value={searchField} onChange={e => searchRules(e)}/>
+                                <input type="text" style={{ backgroundColor: "#eab353" }} placeholder="search..." className="form-control" value={searchField} onChange={e => searchRules(e)}/>
                             </Col>
                         </Row>
                         {/* TODO this message flashes whenever this component hot reloads, disabling for now */}
@@ -182,7 +182,7 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                         })}
                     </Container>
                 </ModalBody>
-                <ModalFooter className="doorCardColor">
+                <ModalFooter>
                     <Button className="munchkinButton" color="secondary" onClick={toggleModal}>Close</Button>
                 </ModalFooter>
             </Modal>

@@ -64,7 +64,7 @@ export default function ModeSelect({socket}){
 
     return (
         <>
-        <Modal isOpen={isPictureSelectModalOpen} toggle={togglePictureSelectModal}>
+        <Modal isOpen={isPictureSelectModalOpen} toggle={togglePictureSelectModal} className="munchkinModal">
             <ModalHeader toggle={togglePictureSelectModal}>Select Picture</ModalHeader>
             <ModalBody>
                 <Container className="overflow-auto" style={{ maxHeight: "60vh" }}>
