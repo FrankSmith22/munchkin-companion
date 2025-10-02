@@ -47,7 +47,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                     return (<li key={player.connId}>
                                 {i == 0 ? "" : <hr/>}
                                 {player.name}<br/>
-                                <img src={P[player.picture]} className="img-thumbnail w-75 playerPictureThumbnail"></img><br/>
+                                <img src={P[player.picture]} className="img-thumbnail w-75 playerPictureThumbnail mb-1"></img>
                                 Level: {player.level}<br/>
                                 Total: {player.level + player.gearBonus}
                             </li>)
@@ -61,24 +61,21 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                 onClick={() => toggleSidebar()}
             />
         </div>
-        <div className="container-fluid mt-5" style={{ height: "100%" }}>
+        <div className="container-fluid mt-3" style={{ height: "80%" }}>
             <Row>
                 <Col className="offset-3" style={{ wordWrap: "break-word" }}>
                     <span><BackButton socket={socket} confirm={true}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/></span>
                     <br/>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
                     <br/>
-                    <img src={P[playerObj.picture]} className="img-thumbnail w-50 playerPictureThumbnail"></img>
+                    <img src={P[playerObj.picture]} className="img-thumbnail w-75 playerPictureThumbnail" style={{ maxWidth: "170px" }}></img>
                     <br></br><br></br>
                     Level: {playerObj.level} <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
                     <br></br><br></br>
                     Gear: {playerObj.gearBonus} <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_GEAR_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_GEAR_DEC)}>-</Button>
                     <br></br><br></br>
                     <b>total: {playerObj.level + playerObj.gearBonus}</b>
-                </Col>
-            </Row>
-            <Row className="mt-5">
-                <Col className="offset-3 p-0">
+                    <br></br><br></br>
                     <CombatButton socket={socket} allPlayersList={allPlayersList} playerObj={playerObj}/>
                 </Col>
             </Row>

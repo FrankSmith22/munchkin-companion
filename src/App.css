@@ -17,12 +17,19 @@ body {
     border-radius: 60px;
     box-sizing: border-box;
     font-family: Windlass, sans-serif;
+    overflow-y: auto;
 }
 
 .munchkinButton {
     background-color: #E9BC6D;
     border: 3px solid #441B06;
     color: #441B06;
+}
+
+.munchkinButton:hover {
+    background-color: #441B06 !important;
+    border-color: #441B06 !important;
+    color: white !important;
 }
 
 .plusMinusButton {

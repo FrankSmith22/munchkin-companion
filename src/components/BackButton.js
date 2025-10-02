@@ -20,8 +20,8 @@ export default function BackButton({socket, confirm}){
                     Are you sure? Current stats will be lost.
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={sendDisconnect}>Yes</Button>
-                    <Button color="secondary" onClick={toggle}>Cancel</Button>
+                    <Button className="munchkinButton" onClick={sendDisconnect}>Yes</Button>
+                    <Button className="munchkinButton" style={{ backgroundColor: "#f48d5aff" }} onClick={toggle}>Cancel</Button>
                 </ModalFooter>
             </Modal>
             <span>

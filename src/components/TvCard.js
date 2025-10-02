@@ -35,56 +35,56 @@ export default function TvCard({socket, allPlayers}){
 
     let playerSlots = []
     // Uncomment for test data
-    // allPlayers = {
-    //     "blah1": {
-    //         name: "test1",
-    //         profilePicture: "munchkin-guy.png",
-    //         level: 9,
-    //         gearBonus: 4
-    //     },
-    //     "blah2": {
-    //         name: "test2",
-    //         profilePicture: "munchkin-guy.png",
-    //         level: 9,
-    //         gearBonus: 4
-    //     },
-    //     "blah3": {
-    //         name: "test3",
-    //         profilePicture: "munchkin-guy.png",
-    //         level: 9,
-    //         gearBonus: 4
-    //     },
-    //     "blah4": {
-    //         name: "test4",
-    //         profilePicture: "munchkin-guy.png",
-    //         level: 9,
-    //         gearBonus: 4
-    //     },
-    //     "blah5": {
-    //         name: "test5",
-    //         profilePicture: "munchkin-guy.png",
-    //         level: 9,
-    //         gearBonus: 4
-    //     },
-    //     "blah6": {
-    //         name: "test6",
-    //         profilePicture: "munchkin-guy.png",
-    //         level: 9,
-    //         gearBonus: 4
-    //     },
-    //     "blah7": {
-    //         name: "test7",
-    //         profilePicture: "munchkin-guy.png",
-    //         level: 9,
-    //         gearBonus: 4
-    //     },
-    //     "blah8": {
-    //         name: "test8",
-    //         profilePicture: "munchkin-guy.png",
-    //         level: 9,
-    //         gearBonus: 4
-    //     },
-    // }
+    allPlayers = {
+        "blah1": {
+            name: "test1",
+            profilePicture: "munchkin-guy.png",
+            level: 9,
+            gearBonus: 4
+        },
+        "blah2": {
+            name: "test2",
+            profilePicture: "munchkin-guy.png",
+            level: 9,
+            gearBonus: 4
+        },
+        "blah3": {
+            name: "test3",
+            profilePicture: "munchkin-guy.png",
+            level: 9,
+            gearBonus: 4
+        },
+        "blah4": {
+            name: "test4",
+            profilePicture: "munchkin-guy.png",
+            level: 9,
+            gearBonus: 4
+        },
+        "blah5": {
+            name: "test5",
+            profilePicture: "munchkin-guy.png",
+            level: 9,
+            gearBonus: 4
+        },
+        "blah6": {
+            name: "test6",
+            profilePicture: "munchkin-guy.png",
+            level: 9,
+            gearBonus: 4
+        },
+        "blah7": {
+            name: "test7",
+            profilePicture: "munchkin-guy.png",
+            level: 9,
+            gearBonus: 4
+        },
+        "blah8": {
+            name: "test8",
+            profilePicture: "munchkin-guy.png",
+            level: 9,
+            gearBonus: 4
+        },
+    }
     console.log(JSON.stringify(allPlayers))
     for (const [connId, playerObj] of Object.entries(allPlayers)){
         playerSlots.push(playerSlot(connId, playerObj))
@@ -94,8 +94,8 @@ export default function TvCard({socket, allPlayers}){
     return (
         <div>
             <BackButton socket={socket} confirm={false}/>
-            <div className="container-fluid">
-                <Row>
+            <div className="container-fluid overflow-auto">
+                <Row className='overflow-auto'>
                     {playerSlots}
                 </Row>
             </div>

@@ -67,15 +67,15 @@ export default function ModeSelect({socket}){
         <Modal isOpen={isPictureSelectModalOpen} toggle={togglePictureSelectModal}>
             <ModalHeader toggle={togglePictureSelectModal}>Select Picture</ModalHeader>
             <ModalBody>
-                <Container>
+                <Container className="overflow-auto" style={{ maxHeight: "60vh" }}>
                     <Row className="text-center">
                         {formPictureCards()}
                     </Row>
                 </Container>
             </ModalBody>
             <ModalFooter>
-                <Button className='munchkinButton' onClick={submitButton}>Submit</Button>
-                <Button className='munchkinButton' onClick={togglePictureSelectModal}>Cancel</Button>
+                <Button className='munchkinButton' disabled={!selectedPicture} onClick={submitButton}>Submit</Button>
+                <Button className='munchkinButton' style={{ backgroundColor: "#f48d5aff" }} onClick={togglePictureSelectModal}>Cancel</Button>
             </ModalFooter>
         </Modal>
         <Container>
