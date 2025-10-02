@@ -106,8 +106,13 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                     <Container className="overflow-auto" style={{ maxHeight: "60vh" }}>
                         <Row>
                             <Col>
-                                <Button onClick={toggleCollapse} className="mb-2 munchkinButton" style={{ width: "100%", height: "25px", fontSize: ".8rem", lineHeight: "10px" }}>New Rule +</Button>
-                                <Collapse isOpen={isNewRuleBoxOpen} className="mb-3">
+                                <input type="text" placeholder="search..." className="form-control" value={searchField} onChange={e => searchRules(e)}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Button onClick={toggleCollapse} className="munchkinButton mt-3" style={{ width: "100%", height: "25px", fontSize: ".8rem", lineHeight: "10px" }}>New Rule +</Button>
+                                <Collapse isOpen={isNewRuleBoxOpen}>
                                     <form action={addNewRule}>
                                         <Card>
                                             <CardHeader>
@@ -122,11 +127,6 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
                                         </Card>
                                     </form>
                                 </Collapse>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <input type="text" style={{ backgroundColor: "#eab353" }} placeholder="search..." className="form-control" value={searchField} onChange={e => searchRules(e)}/>
                             </Col>
                         </Row>
                         {/* TODO this message flashes whenever this component hot reloads, disabling for now */}

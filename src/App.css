@@ -8,6 +8,11 @@ body {
     box-sizing: border-box;
     overflow-x: hidden;
 }
+
+input::placeholder {
+    overflow: visible;
+}
+
 .App{
     padding: 1rem;
     height: 100vh;
