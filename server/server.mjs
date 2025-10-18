@@ -9,7 +9,8 @@ import { logger } from "./logger.mjs";
 import { initializeApp, applicationDefault, cert } from 'firebase-admin/app'
 import { getFirestore, Timestamp, FieldValue, Filter } from 'firebase-admin/firestore'
 
-
+const AFK_TIMEOUT_MILLIS = 10800000 // 3 hr
+// const AFK_TIMEOUT_MILLIS = 10000 // 10 sec (for testing purposes)
 
 const httpServer = createServer()
 
@@ -53,6 +54,22 @@ io.on(E.CONNECTION, socket => {
     let playerRoomId
     let playerObj
     let connId = uuidv4()
+
+    let intervalId = setInterval(()=>{
+        if (playerObj) {
+            if (Date.now() - playerObj.lastInteractedTime >= AFK_TIMEOUT_MILLIS) {
+                console.log("It has been too long since the player interacted")
+                if (rooms[playerRoomId] != null){
+                    delete rooms[playerRoomId][connId]
+                }
+                socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
+                socket.leave(playerRoomId)
+                playerRoomId = null
+                playerObj = null
+                socket.emit(E.DISCONNECT_ROOM)
+            }
+        }
+    }, 5000)
     // Connected as PLAYER
     socket.on(E.PLAYER_CONNECT, ({playerName, selectedPicture, roomId}) => {
         playerRoomId = roomId
@@ -74,6 +91,7 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
+        playerObj.lastInteractedTime = Date.now()
         playerObj.level++
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -85,6 +103,7 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
+        playerObj.lastInteractedTime = Date.now()
         playerObj.level = Math.max(playerObj.level - 1, 1)
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -96,6 +115,7 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
+        playerObj.lastInteractedTime = Date.now()
         playerObj.gearBonus++
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -107,6 +127,7 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
+        playerObj.lastInteractedTime = Date.now()
         playerObj.gearBonus = Math.max(playerObj.gearBonus - 1, 0)
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -119,6 +140,7 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
+        playerObj.lastInteractedTime = Date.now()
         playerObj.combat.partyModifier++
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -128,6 +150,7 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
+        playerObj.lastInteractedTime = Date.now()
         playerObj.combat.partyModifier = Math.max(playerObj.combat.partyModifier - 1, 0)
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -137,6 +160,7 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
+        playerObj.lastInteractedTime = Date.now()
         playerObj.combat.monsterModifier++
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -146,6 +170,7 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
+        playerObj.lastInteractedTime = Date.now()
         playerObj.combat.monsterModifier = Math.max(playerObj.combat.monsterModifier - 1, 0)
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
@@ -162,6 +187,7 @@ io.on(E.CONNECTION, socket => {
         if (roomId in rooms && connId in rooms[roomId]) {
             playerRoomId = roomId
             playerObj = rooms[playerRoomId][connId]
+            playerObj.lastInteractedTime = Date.now()
             socket.join(playerRoomId)
             console.log(`Player reconnecting: ${JSON.stringify(playerObj)}`)
             socket.emit(E.PLAYER_CONNECT, {"playerObj": JSON.stringify(playerObj), "roomId": playerRoomId})
@@ -195,6 +221,7 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
+        playerObj.lastInteractedTime = Date.now()
         for (let roomConnId in rooms[playerRoomId]){
             let selectedPlayer = rooms[playerRoomId][roomConnId]
             if (helperConnIds.includes(roomConnId)){
@@ -214,6 +241,7 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.DISCONNECT_ROOM)
             return
         }
+        playerObj.lastInteractedTime = Date.now()
         playerObj.combat.partyModifier = 0
         playerObj.combat.monsterModifier = 0
         rooms[playerRoomId][connId] = playerObj
@@ -226,12 +254,16 @@ io.on(E.CONNECTION, socket => {
         emitAllPlayersUpdate(io, rooms, playerRoomId)
     })
     socket.on(E.GET_RULES, async () => {
+        if (playerObj){
+            playerObj.lastInteractedTime = Date.now()
+        }
         const errMsg = getRulesToClient(socket)
         if (errMsg) {
             socket.emit(E.RULES_ERROR, {"message": errMsg})
         }
     })
     socket.on(E.NEW_RULE, async ({ruleTitle, ruleDesc}) => {
+        playerObj.lastInteractedTime = Date.now()
         const response = await DB.collection(RULES_COLLECTION_NAME).add({
             title: ruleTitle,
             description: ruleDesc
@@ -244,6 +276,7 @@ io.on(E.CONNECTION, socket => {
         }
     })
     socket.on(E.DELETE_RULE, async ({ruleId}) => {
+        playerObj.lastInteractedTime = Date.now()
         if (!ruleId) return
         await DB.collection(RULES_COLLECTION_NAME).doc(ruleId).delete()
         console.log(`Rule id ${ruleId} deleted`)
@@ -253,6 +286,7 @@ io.on(E.CONNECTION, socket => {
         }
     })
     socket.on(E.UPDATE_RULE, async ({ruleId, title, desc}) => {
+        playerObj.lastInteractedTime = Date.now()
         if (!title || !desc) {
             socket.emit(E.RULES_ERROR, {"message": "A rule must have a title and a description"})
             return
@@ -266,9 +300,10 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.RULES_ERROR, {"message": errMsg})
         }
     })
-})
-io.on(E.DISCONNECTION, socket => {
-    console.log('client disconnected: ' + socket.id)
+    socket.on(E.DISCONNECTION, ()=>{
+        console.log("client has disconnected")
+        clearInterval(intervalId)
+    })
 })
 
 
