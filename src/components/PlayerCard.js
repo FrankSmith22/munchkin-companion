@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faBook } from '@fortawesome/free-solid-svg-icons';
 import CombatButton from './CombatButton';
 import { PICTURES as P } from '../app/pictureMapping';
+import bellLow from "../res/Synth_Bell_A_lo.wav";
+import bellHigh from "../res/Synth_Bell_A_hi.wav";
 
 export default function PlayerCard({socket, playerObj, allPlayers, allRules, rulesErrorMsg}){
 
@@ -25,6 +27,16 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
             setSidebarCloseBtnPosition("40px")
         }
         setSidebarToggle(!sidebarToggle)
+    }
+
+    
+    const playChimeLow = () => {
+        let audioLow = new Audio(bellLow)
+        audioLow.play()
+    }
+    const playChimeHigh = () => {
+        let audioHigh = new Audio(bellHigh)
+        audioHigh.play()
     }
 
     let allPlayersList = []
@@ -47,7 +59,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                     return (<li key={player.connId}>
                                 {i == 0 ? "" : <hr/>}
                                 {player.name}<br/>
-                                <img src={P[player.picture]} className="img-thumbnail w-75 playerPictureThumbnail mb-1"></img>
+                                <img src={P[player.picture]} onClick={playChimeHigh} className="img-thumbnail w-75 playerPictureThumbnail mb-1"></img>
                                 Level: {player.level}<br/>
                                 Total: {player.level + player.gearBonus}
                             </li>)
@@ -68,7 +80,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                     <br/>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
                     <br/>
-                    <img src={P[playerObj.picture]} className="img-thumbnail w-75 playerPictureThumbnail" style={{ maxWidth: "170px" }}></img>
+                    <img src={P[playerObj.picture]} onClick={playChimeLow} className="img-thumbnail w-75 playerPictureThumbnail" style={{ maxWidth: "170px" }}></img>
                     <br></br><br></br>
                     Level: {playerObj.level} <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
                     <br></br><br></br>
