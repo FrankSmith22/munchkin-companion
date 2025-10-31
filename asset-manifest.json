@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/munchkin-companion/static/css/main.eaa8a21f.css",
-    "main.js": "/munchkin-companion/static/js/main.8d8f75ca.js",
+    "main.css": "/munchkin-companion/static/css/main.c78b053e.css",
+    "main.js": "/munchkin-companion/static/js/main.96ca2a75.js",
     "static/js/453.6d235fcc.chunk.js": "/munchkin-companion/static/js/453.6d235fcc.chunk.js",
     "static/media/elf_fixed.jpg": "/munchkin-companion/static/media/elf_fixed.2a4f7e711f18331d49a4.jpg",
     "static/media/munchkin-guy.png": "/munchkin-companion/static/media/munchkin-guy.c04e1a8d397263ab624e.png",
@@ -9,6 +9,8 @@
     "static/media/Windlass.ttf": "/munchkin-companion/static/media/Windlass.ae635d48178d5ee3b2cc.ttf",
     "static/media/gazebo_fixed.jpg": "/munchkin-companion/static/media/gazebo_fixed.7500e0d470e95153807d.jpg",
     "static/media/dragon_fixed.jpg": "/munchkin-companion/static/media/dragon_fixed.c5ab7c8084f7737e5190.jpg",
+    "static/media/Synth_Bell_A_hi.wav": "/munchkin-companion/static/media/Synth_Bell_A_hi.bed02e532bc3a0ae8cf1.wav",
+    "static/media/Synth_Bell_A_lo.wav": "/munchkin-companion/static/media/Synth_Bell_A_lo.1da8491b13f7c387a1dc.wav",
     "static/media/loading.gif": "/munchkin-companion/static/media/loading.952a8b90328e46f562ee.gif",
     "static/media/Bullrog_fixed.jpg": "/munchkin-companion/static/media/Bullrog_fixed.11ed5e3416499cf0b075.jpg",
     "static/media/sword_shield.png": "/munchkin-companion/static/media/sword_shield.8cc802cf4567201e2654.png",
@@ -16,12 +18,12 @@
     "static/media/dwarf_fixed.jpg": "/munchkin-companion/static/media/dwarf_fixed.04a3494e0288c56f3f97.jpg",
     "static/media/staff_of_napalm_fixed.jpg": "/munchkin-companion/static/media/staff_of_napalm_fixed.aec2fbf265060e9c7b5c.jpg",
     "index.html": "/munchkin-companion/index.html",
-    "main.eaa8a21f.css.map": "/munchkin-companion/static/css/main.eaa8a21f.css.map",
-    "main.8d8f75ca.js.map": "/munchkin-companion/static/js/main.8d8f75ca.js.map",
+    "main.c78b053e.css.map": "/munchkin-companion/static/css/main.c78b053e.css.map",
+    "main.96ca2a75.js.map": "/munchkin-companion/static/js/main.96ca2a75.js.map",
     "453.6d235fcc.chunk.js.map": "/munchkin-companion/static/js/453.6d235fcc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.eaa8a21f.css",
-    "static/js/main.8d8f75ca.js"
+    "static/css/main.c78b053e.css",
+    "static/js/main.96ca2a75.js"
   ]
 }
