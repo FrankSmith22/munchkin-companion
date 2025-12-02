@@ -3,21 +3,25 @@ import { EVENTS as E } from '../app/events.mjs';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { DISPLAY_MODES } from '../App';
 
-export default function BackButton({socket, confirm}){
+export default function BackButton({socket, confirm, setDisplayMode}){
 
     const [isOpen, setIsOpen] = useState(false)
 
     const toggle = () => setIsOpen(!isOpen)
 
-    const sendDisconnect = () => socket.emit(E.DISCONNECT_ROOM)
+    const sendDisconnect = () => {
+        socket.emit(E.DISCONNECT_ROOM)
+        setDisplayMode(DISPLAY_MODES.MODE_SELECT)
+    }
 
     return (
         <div style={{ display: "inline" }}>
             <Modal isOpen={isOpen} toggle={toggle} className="munchkinModal">
                 <ModalHeader toggle={toggle}>Are you sure?</ModalHeader>
                 <ModalBody>
-                    Are you sure? Current stats will be lost.
+                    Are you sure? Your progress will be lost.
                 </ModalBody>
                 <ModalFooter>
                     <Button className="munchkinButton" onClick={sendDisconnect}>Yes</Button>

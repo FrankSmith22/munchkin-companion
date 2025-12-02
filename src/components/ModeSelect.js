@@ -5,11 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import munchkinGuy from "../res/munchkin-guy.png"
 import { PICTURES as P } from '../app/pictureMapping';
+import CardCreatorButton from './CardCreatorButton';
 
 const LS_DEFAULT_ROOM_ID = "defaultRoomId"
 const LS_DEFAULT_PLAYER_NAME = "defaultPlayerName"
 
-export default function ModeSelect({socket}){
+export default function ModeSelect({socket, setDisplayMode}){
 
     let defaultPlayerName = localStorage.getItem(LS_DEFAULT_PLAYER_NAME)
     const [playerName, setPlayerName] = useState(defaultPlayerName)
@@ -118,6 +119,8 @@ export default function ModeSelect({socket}){
                 </Col>
             </Row>
         </Container>
+        {/* floating card creator button */}
+        <CardCreatorButton setDisplayMode={setDisplayMode}/>
         </>
     )
 }

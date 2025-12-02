@@ -11,7 +11,7 @@ import { PICTURES as P } from '../app/pictureMapping';
 import bellLow from "../res/Synth_Bell_A_lo.wav";
 import bellHigh from "../res/Synth_Bell_A_hi.wav";
 
-export default function PlayerCard({socket, playerObj, allPlayers, allRules, rulesErrorMsg}){
+export default function PlayerCard({socket, setDisplayMode, playerObj, allPlayers, allRules, rulesErrorMsg}){
 
     const [sidebarToggle, setSidebarToggle] = useState(true)
     const [sidebarPosition, setSidebarPosition] = useState("0px")
@@ -76,7 +76,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
         <div className="container-fluid mt-3" style={{ height: "80%" }}>
             <Row>
                 <Col className="offset-3" style={{ wordWrap: "break-word" }}>
-                    <span><BackButton socket={socket} confirm={true}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/></span>
+                    <span><BackButton socket={socket} confirm={true} setDisplayMode={setDisplayMode}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/></span>
                     <br/>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
                     <br/>

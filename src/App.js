@@ -10,16 +10,18 @@ import { faSignal } from '@fortawesome/free-solid-svg-icons/faSignal'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import deepFreeze from "deep-freeze"
+import CardCreator from './components/CardCreator';
 
 const LS_CONN_TYPE = "connectionType"
 const LS_ROOM_ID = "roomId"
 const LS_CONN_ID = "connId"
 
-const DISPLAY_MODES = deepFreeze({
+export const DISPLAY_MODES = deepFreeze({
     MODE_SELECT: "mode-select",
     PLAYER_CHOOSING: "player-choosing",
     PLAYER_MODE: "player-mode",
-    TV_MODE: "tv-mode"
+    TV_MODE: "tv-mode",
+    CARD_CREATOR_MODE: "card-creator-mode"
 })
 
 
@@ -42,6 +44,11 @@ export default function App() {
     const [roomId, setRoomId] = useState("")
     const [allRules, setAllRules] = useState([])
     const [rulesErrorMsg, setRulesErrorMsg] = useState("")
+
+    const setDisplayMode = (displayMode) => {
+        setPageToDisplay(displayMode)
+        localStorage.setItem(LS_CONN_TYPE, displayMode)
+    }
 
     /* Handling refresh:
     1. Upon player connect or tv connect, save to localstorage:
@@ -72,7 +79,7 @@ export default function App() {
 
             // Save to localStorage
             try {
-                localStorage.setItem(LS_CONN_TYPE, "player")
+                localStorage.setItem(LS_CONN_TYPE, DISPLAY_MODES.PLAYER_MODE)
                 localStorage.setItem(LS_ROOM_ID, roomId)
                 localStorage.setItem(LS_CONN_ID, playerObj.connId)
             }
@@ -96,7 +103,7 @@ export default function App() {
 
             // Save to localStorage
             try {
-                localStorage.setItem(LS_CONN_TYPE, "tv")
+                localStorage.setItem(LS_CONN_TYPE, DISPLAY_MODES.TV_MODE)
                 localStorage.setItem(LS_ROOM_ID, roomId)
             }
             catch (error) {
@@ -144,19 +151,21 @@ export default function App() {
             let connectionType = localStorage.getItem(LS_CONN_TYPE)
             let roomId = localStorage.getItem(LS_ROOM_ID)
             switch(connectionType){
-                case "player":
+                case DISPLAY_MODES.PLAYER_MODE:
                     let connId = localStorage.getItem(LS_CONN_ID)
                     if(roomId && connId){
                         socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
                         socket.emit(E.PARTY_UPDATE)
                     }
                     break
-                case "tv":
+                case DISPLAY_MODES.TV_MODE:
                     if (roomId){
                         socket.emit(E.TV_CONNECT, {roomId})
                         socket.emit(E.PARTY_UPDATE)
                     }
                     break
+                case DISPLAY_MODES.CARD_CREATOR_MODE:
+                    setPageToDisplay(DISPLAY_MODES.CARD_CREATOR_MODE)
                 default:
                     console.log("No localStorage, starting fresh session")
             }
@@ -205,9 +214,10 @@ export default function App() {
     return (
         <div className="App">
             <ConnectionState isConnected={isConnected} roomId={roomId}/>
-            {pageToDisplay === DISPLAY_MODES.MODE_SELECT ? <ModeSelect socket={socket}/> : <></>}
-            {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/> : <></>}
-            {pageToDisplay === DISPLAY_MODES.TV_MODE ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.MODE_SELECT ? <ModeSelect socket={socket} setDisplayMode={setDisplayMode}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} setDisplayMode={setDisplayMode} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.TV_MODE ? <TvCard socket={socket} setDisplayMode={setDisplayMode} allPlayers={allPlayers}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.CARD_CREATOR_MODE ? <CardCreator socket={socket} setDisplayMode={setDisplayMode}/> : <></>}
         </div>
     );
 }

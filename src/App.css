@@ -29,6 +29,7 @@ input::placeholder {
     background-color: #E9BC6D;
     border: 3px solid #441B06;
     color: #441B06;
+    cursor: pointer;
 }
 
 .munchkinButton:hover {
@@ -126,4 +127,15 @@ input::placeholder {
     border-bottom-left-radius: 60px;
     border-bottom-right-radius: 60px;
     border-top: 1px solid #441B06;
+}
+
+/* Floating card creator button */
+.floating-button {
+  position: fixed; /* Positions the element relative to the viewport */
+  bottom: 30px;    /* Sets the distance from the bottom edge */
+  right: 30px;     /* Sets the distance from the right edge */
+  z-index: 999;    /* Ensures the button stays on top of other content */
+  /* Optional: Add styling for appearance */
+  border-radius: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
