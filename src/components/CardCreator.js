@@ -6,27 +6,48 @@ import { useState } from "react";
 export default function CardCreator({socket, setDisplayMode}){
 
     const [cardTypeSelectIsOpen, setCardTypeSelectIsOpen] = useState(false)
-    const [cardType, setCardType] = useState(null)
+    const [cardType, setCardType] = useState("")
 
     const toggleCardTypeSelect = () => setCardTypeSelectIsOpen(!cardTypeSelectIsOpen)
+
+    const cardSetupModal = () => {
+        return (
+            <Modal
+                size="sm"
+                toggle={toggleCardTypeSelect}
+                isOpen={cardTypeSelectIsOpen}
+                className={cardType === "door"
+                    ? "munchkinModal munchkinModalDoorCard"
+                    : cardType === "treasure"
+                    ? "munchkinModal munchkinModalTreasureCard"
+                    : "munchkinModal cardTypeSelect"
+                }
+            >
+                <ModalHeader onChange={() => console.log("new changes")} contentEditable={cardType != ""} className="text-center" toggle={toggleCardTypeSelect}>
+                    {cardType ? "title..." : "New card type"}
+                </ModalHeader>
+                <ModalBody>
+                    {cardType
+                        ? ""
+                        : <FormSelect value={cardType} onChange={e => setCardType(e.target.value)}>
+                            <option value="" disabled>Card type...</option>
+                            <option value="door">Door</option>
+                            <option value="treasure">Treasure</option>
+                        </FormSelect>
+                    }
+                </ModalBody>
+                <ModalFooter>
+                </ModalFooter>
+            </Modal>
+            // TODO just define this modal manually.. reactstrap working its 'magic' is causing more heartache than I need for this more dynamic modal
+        )
+    }
+    
 
     return (
         <>
         <BackButton socket={socket} confirm={false} setDisplayMode={setDisplayMode}/>
-        <Modal size="sm" isOpen={cardTypeSelectIsOpen} className="munchkinModal">
-            <ModalHeader toggle={toggleCardTypeSelect}>New card type</ModalHeader>
-            <ModalBody>
-                <FormSelect value={cardType} onChange={e => setCardType(e.target.value)}>
-                    <option selected disabled>Card type...</option>
-                    <option value="door">Door</option>
-                    <option value="treasure">Treasure</option>
-                </FormSelect>
-            </ModalBody>
-            <ModalFooter>
-                <Button className='munchkinButton' disabled={!cardType} onClick={toggleCardTypeSelect}>Submit</Button>
-                <Button className='munchkinButton' style={{ backgroundColor: "#f48d5aff" }} onClick={toggleCardTypeSelect}>Cancel</Button>
-            </ModalFooter>
-        </Modal>
+        {cardSetupModal()}
         <Container>
             <Row className="text-center">
                 <Col xs="10" className="mx-auto">
