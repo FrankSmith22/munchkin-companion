@@ -8,6 +8,7 @@ import TvCard from './components/TvCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignal } from '@fortawesome/free-solid-svg-icons/faSignal'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Toast, ToastContainer } from 'react-bootstrap';
 import './App.css'
 import deepFreeze from "deep-freeze"
 
@@ -23,14 +24,27 @@ const DISPLAY_MODES = deepFreeze({
 })
 
 
-function ConnectionState({ isConnected, roomId }) {
+function ConnectionState({ isConnected, roomId, setShowDisconnectedToast, showDisconnectedToast }) {
     const color = isConnected ? 'green' : 'red'
     return (
+        <>
         <div style={{ float: "right" }}>
             <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '1rem', float: "right"}} icon={faSignal} />
             <br/>
             {roomId ? <span className="roomIdSpan">Room ID: <b>{roomId}</b></span> : <></>}
         </div>
+        <ToastContainer position="top-center" className="p-3">
+            <Toast onClose={() => setShowDisconnectedToast(false)} show={showDisconnectedToast} delay={3000} autohide>
+            <Toast.Header>
+                <strong className="me-auto">Reconnecting...</strong>
+                <small>Just now</small>
+            </Toast.Header>
+            <Toast.Body>
+                Action ignored while reconnecting to server...
+            </Toast.Body>
+            </Toast>
+        </ToastContainer>
+        </>
     )
 }
 
@@ -42,6 +56,7 @@ export default function App() {
     const [roomId, setRoomId] = useState("")
     const [allRules, setAllRules] = useState([])
     const [rulesErrorMsg, setRulesErrorMsg] = useState("")
+    const [showDisconnectedToast, setShowDisconnectedToast] = useState(false)
 
     /* Handling refresh:
     1. Upon player connect or tv connect, save to localstorage:
@@ -60,6 +75,7 @@ export default function App() {
             console.log("Connected")
             attemptReconnect()
             setIsConnected(true)
+            setShowDisconnectedToast(false)
         }
         function onDisconnect() {
             console.log("Disconnected")
@@ -206,10 +222,10 @@ export default function App() {
 
     return (
         <div className="App">
-            <ConnectionState isConnected={isConnected} roomId={roomId}/>
-            {pageToDisplay === DISPLAY_MODES.MODE_SELECT ? <ModeSelect socket={socket}/> : <></>}
-            {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/> : <></>}
-            {pageToDisplay === DISPLAY_MODES.TV_MODE ? <TvCard socket={socket} allPlayers={allPlayers}/> : <></>}
+            <ConnectionState isConnected={isConnected} roomId={roomId} setShowDisconnectedToast={setShowDisconnectedToast} showDisconnectedToast={showDisconnectedToast}/>
+            {pageToDisplay === DISPLAY_MODES.MODE_SELECT ? <ModeSelect socket={socket} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.TV_MODE ? <TvCard socket={socket} allPlayers={allPlayers} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
         </div>
     );
 }

@@ -4,13 +4,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-export default function BackButton({socket, confirm}){
+export default function BackButton({socket, confirm, isConnected, setShowDisconnectedToast}){
 
     const [isOpen, setIsOpen] = useState(false)
 
     const toggle = () => setIsOpen(!isOpen)
 
-    const sendDisconnect = () => socket.emit(E.DISCONNECT_ROOM)
+    const sendDisconnect = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.DISCONNECT_ROOM)
+    }
 
     return (
         <div style={{ display: "inline" }}>

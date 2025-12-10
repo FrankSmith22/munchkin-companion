@@ -11,7 +11,7 @@ import { PICTURES as P } from '../app/pictureMapping';
 import bellLow from "../res/Synth_Bell_A_lo.wav";
 import bellHigh from "../res/Synth_Bell_A_hi.wav";
 
-export default function PlayerCard({socket, playerObj, allPlayers, allRules, rulesErrorMsg}){
+export default function PlayerCard({socket, playerObj, allPlayers, allRules, rulesErrorMsg, isConnected, setShowDisconnectedToast}){
 
     const [sidebarToggle, setSidebarToggle] = useState(true)
     const [sidebarPosition, setSidebarPosition] = useState("0px")
@@ -46,19 +46,34 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
     
 
     const incLevel = () => {
-        // TODO show a message popup when user tries to interact but we are currently disconnected
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
         socket.emit(E.PLAYER_LEVEL_INC)
     }
 
     const decLevel = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
         socket.emit(E.PLAYER_LEVEL_DEC)
     }
 
     const incGear = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
         socket.emit(E.PLAYER_GEAR_INC)
     }
 
     const decGear = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
         socket.emit(E.PLAYER_GEAR_DEC)
     }
 
@@ -88,7 +103,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
         <div className="container-fluid mt-3" style={{ height: "80%" }}>
             <Row>
                 <Col className="offset-3" style={{ wordWrap: "break-word" }}>
-                    <span><BackButton socket={socket} confirm={true}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/></span>
+                    <span><BackButton socket={socket} confirm={true} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/></span>
                     <br/>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
                     <br/>
@@ -100,7 +115,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                     <br></br><br></br>
                     <b>total: {playerObj.level + playerObj.gearBonus}</b>
                     <br></br><br></br>
-                    <CombatButton socket={socket} allPlayersList={allPlayersList} playerObj={playerObj}/>
+                    <CombatButton socket={socket} allPlayersList={allPlayersList} playerObj={playerObj} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/>
                 </Col>
             </Row>
         </div>

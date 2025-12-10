@@ -3,7 +3,7 @@ import { EVENTS as E } from '../app/events.mjs';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap';
 import combatIcon from "../res/sword_shield.png"
 
-export default function CombatModal({ socket, allPlayersList, playerObj }) {
+export default function CombatModal({ socket, allPlayersList, playerObj, isConnected, setShowDisconnectedToast }) {
 
     const [isCombatOpen, setIsCombatOpen] = useState(false)
     const [isHelpSelectOpen, setIsHelpSelectOpen] = useState(false)
@@ -12,12 +12,62 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
     const [monsterLevel, setMonsterLevel] = useState(0)
     const [combatMonsterTotal, setCombatMonsterTotal] = useState(monsterLevel + playerObj.combat.monsterModifier)
 
-    const toggleCombat = () => setIsCombatOpen(!isCombatOpen)
-    const toggleHelpSelect = () => setIsHelpSelectOpen(!isHelpSelectOpen)
+    const toggleCombat = () => {
+        if (!isConnected && !isCombatOpen){
+            setShowDisconnectedToast()
+            return
+        }
+        setIsCombatOpen(!isCombatOpen)
+    }
+    const toggleHelpSelect = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_LEVEL_DEC)
+        setIsHelpSelectOpen(!isHelpSelectOpen)
+    }
 
     const sendHelp = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_LEVEL_DEC)
         socket.emit(E.SEND_HELP, { helperConnIds: playersHelping.map(player => player.connId) })
         setIsHelpSelectOpen(false)
+    }
+
+    const incParty = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.COMBAT_PARTY_MOD_INC)
+    }
+
+    const decParty = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.COMBAT_PARTY_MOD_DEC)
+    }
+
+    const incMonster = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.COMBAT_MONSTER_MOD_INC)
+    }
+
+    const decMonster = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.COMBAT_MONSTER_MOD_DEC)
     }
 
 
@@ -52,6 +102,11 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
     }, [allPlayersList, playerObj, monsterLevel])
 
     const toggleHelper = (selectedConnId) => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_LEVEL_DEC)
         let selectedPlayer = allPlayersList.find(player => player.connId === selectedConnId)
         if (!playersHelping.some(helper => helper.connId === selectedPlayer.connId)) {
             let playersHelpingClone = [...playersHelping]
@@ -65,6 +120,11 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
     }
 
     const resolveCombat = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_LEVEL_DEC)
         setPlayersHelping([])
         setCombatPartyTotal(playerObj.level + playerObj.gearBonus)
         setMonsterLevel(0)
@@ -98,7 +158,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
                                     <Col>Modifier</Col><Col className="text-end">{playerObj.combat.partyModifier}</Col>
                                 </Row>
                                 <Row>
-                                    <Col className="text-end"><Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.COMBAT_PARTY_MOD_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.COMBAT_PARTY_MOD_DEC)}>-</Button></Col>
+                                    <Col className="text-end"><Button className="munchkinButton plusMinusButton" onClick={incParty}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={decParty}>-</Button></Col>
                                 </Row>
                                 {allPlayersList.filter(player => player.helping.includes(playerObj.connId)).map(player => (
                                     <Row key={player.connId} className="mt-4">
@@ -122,7 +182,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj }) {
                                     <Col>Modifier</Col><Col className="text-end">{playerObj.combat.monsterModifier}</Col>
                                 </Row>
                                 <Row>
-                                    <Col className="text-end"><Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.COMBAT_MONSTER_MOD_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={e => socket.emit(E.COMBAT_MONSTER_MOD_DEC)}>-</Button></Col>
+                                    <Col className="text-end"><Button className="munchkinButton plusMinusButton" onClick={incMonster}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={decMonster}>-</Button></Col>
                                 </Row>
                             </Col>
                         </Row>
