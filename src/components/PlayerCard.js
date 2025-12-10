@@ -43,12 +43,24 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
     if (allPlayers){
         allPlayersList = Object.entries(allPlayers).map(element => element[1]).filter(player => player.connId != playerObj.connId)
     }
-    // allPlayersList.push(allPlayersList[0])
-    // allPlayersList.push(allPlayersList[0])
-    // allPlayersList.push(allPlayersList[0])
-    // allPlayersList.push(allPlayersList[0])
-    // allPlayersList.push(allPlayersList[0])
-    // allPlayersList.push(allPlayersList[0])
+    
+
+    const incLevel = () => {
+        // TODO show a message popup when user tries to interact but we are currently disconnected
+        socket.emit(E.PLAYER_LEVEL_INC)
+    }
+
+    const decLevel = () => {
+        socket.emit(E.PLAYER_LEVEL_DEC)
+    }
+
+    const incGear = () => {
+        socket.emit(E.PLAYER_GEAR_INC)
+    }
+
+    const decGear = () => {
+        socket.emit(E.PLAYER_GEAR_DEC)
+    }
 
     return (
         <>
@@ -82,9 +94,9 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                     <br/>
                     <img src={P[playerObj.picture]} onClick={playChimeLow} className="img-thumbnail w-75 playerPictureThumbnail" style={{ maxWidth: "170px" }}></img>
                     <br></br><br></br>
-                    Level: {playerObj.level} <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
+                    Level: {playerObj.level} <Button className="munchkinButton plusMinusButton" onClick={incLevel}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={decLevel}>-</Button>
                     <br></br><br></br>
-                    Gear: {playerObj.gearBonus} <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_GEAR_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_GEAR_DEC)}>-</Button>
+                    Gear: {playerObj.gearBonus} <Button className="munchkinButton plusMinusButton" onClick={incGear}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={decGear}>-</Button>
                     <br></br><br></br>
                     <b>total: {playerObj.level + playerObj.gearBonus}</b>
                     <br></br><br></br>

@@ -1,9 +1,9 @@
 import { io } from 'socket.io-client';
 
-// dev
-// export let socket = io('http://192.168.1.169:4000', {autoConnect: false})
-// export let socket = io('http://192.168.1.161:4000', {autoConnect: false})
-// export let socket = io('http://localhost:4000', {autoConnect: false})
-// live
-export let socket = io('https://munchkin-companion-server.onrender.com', {autoConnect: false})
+let socket_url = process.env.REACT_APP_MUNCHKIN_SERVER_URL
 
+if (!socket_url) {
+    socket_url = 'https://munchkin-companion-server.onrender.com'
+}
+
+export let socket = io(socket_url, {autoConnect: false})

@@ -58,6 +58,7 @@ export default function App() {
     useEffect(() => {
         function onConnect() {
             console.log("Connected")
+            attemptReconnect()
             setIsConnected(true)
         }
         function onDisconnect() {
@@ -135,35 +136,34 @@ export default function App() {
             }
         }
 
-
-        socket.connect()
-        socket.emit(E.GET_RULES)
-
-        // Attempt reconnect using localstorage
-        try {
-            let connectionType = localStorage.getItem(LS_CONN_TYPE)
-            let roomId = localStorage.getItem(LS_ROOM_ID)
-            switch(connectionType){
-                case "player":
-                    let connId = localStorage.getItem(LS_CONN_ID)
-                    if(roomId && connId){
-                        socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
-                        socket.emit(E.PARTY_UPDATE)
-                    }
-                    break
-                case "tv":
-                    if (roomId){
-                        socket.emit(E.TV_CONNECT, {roomId})
-                        socket.emit(E.PARTY_UPDATE)
-                    }
-                    break
-                default:
-                    console.log("No localStorage, starting fresh session")
+        function attemptReconnect() {
+            // Attempt reconnect using localstorage
+            try {
+                let connectionType = localStorage.getItem(LS_CONN_TYPE)
+                let roomId = localStorage.getItem(LS_ROOM_ID)
+                switch(connectionType){
+                    case "player":
+                        let connId = localStorage.getItem(LS_CONN_ID)
+                        if(roomId && connId){
+                            socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
+                            socket.emit(E.PARTY_UPDATE)
+                        }
+                        break
+                    case "tv":
+                        if (roomId){
+                            socket.emit(E.TV_CONNECT, {roomId})
+                            socket.emit(E.PARTY_UPDATE)
+                        }
+                        break
+                    default:
+                        console.log("No localStorage, starting fresh session")
+                }
+            }
+            catch (error) {
+                console.warn("Could not access localstorage")
             }
         }
-        catch (error) {
-            console.warn("Could not access localstorage")
-        }
+
 
         function onGetRules(allRules) {
             console.log("Got rules from server:")
@@ -177,7 +177,9 @@ export default function App() {
             setRulesErrorMsg(message)
         }
 
-
+        socket.connect()
+        socket.emit(E.GET_RULES)
+        attemptReconnect()
 
         socket.on(E.CONNECTION, onConnect)
         socket.on(E.DISCONNECTION, onDisconnect)
