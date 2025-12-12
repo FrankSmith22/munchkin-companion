@@ -11,7 +11,7 @@ import { PICTURES as P } from '../app/pictureMapping';
 import bellLow from "../res/Synth_Bell_A_lo.wav";
 import bellHigh from "../res/Synth_Bell_A_hi.wav";
 
-export default function PlayerCard({socket, setDisplayMode, playerObj, allPlayers, allRules, rulesErrorMsg}){
+export default function PlayerCard({socket, playerObj, allPlayers, allRules, rulesErrorMsg, isConnected, setShowDisconnectedToast, setDisplayMode}){
 
     const [sidebarToggle, setSidebarToggle] = useState(true)
     const [sidebarPosition, setSidebarPosition] = useState("0px")
@@ -43,12 +43,39 @@ export default function PlayerCard({socket, setDisplayMode, playerObj, allPlayer
     if (allPlayers){
         allPlayersList = Object.entries(allPlayers).map(element => element[1]).filter(player => player.connId != playerObj.connId)
     }
-    // allPlayersList.push(allPlayersList[0])
-    // allPlayersList.push(allPlayersList[0])
-    // allPlayersList.push(allPlayersList[0])
-    // allPlayersList.push(allPlayersList[0])
-    // allPlayersList.push(allPlayersList[0])
-    // allPlayersList.push(allPlayersList[0])
+    
+
+    const incLevel = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_LEVEL_INC)
+    }
+
+    const decLevel = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_LEVEL_DEC)
+    }
+
+    const incGear = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_GEAR_INC)
+    }
+
+    const decGear = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_GEAR_DEC)
+    }
 
     return (
         <>
@@ -76,19 +103,19 @@ export default function PlayerCard({socket, setDisplayMode, playerObj, allPlayer
         <div className="container-fluid mt-3" style={{ height: "80%" }}>
             <Row>
                 <Col className="offset-3" style={{ wordWrap: "break-word" }}>
-                    <span><BackButton socket={socket} confirm={true} setDisplayMode={setDisplayMode}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/></span>
+                    <span><BackButton socket={socket} confirm={true} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/></span>
                     <br/>
                     <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
                     <br/>
                     <img src={P[playerObj.picture]} onClick={playChimeLow} className="img-thumbnail w-75 playerPictureThumbnail" style={{ maxWidth: "170px" }}></img>
                     <br></br><br></br>
-                    Level: {playerObj.level} <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_LEVEL_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_LEVEL_DEC)}>-</Button>
+                    Level: {playerObj.level} <Button className="munchkinButton plusMinusButton" onClick={incLevel}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={decLevel}>-</Button>
                     <br></br><br></br>
-                    Gear: {playerObj.gearBonus} <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_GEAR_INC)}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={() => socket.emit(E.PLAYER_GEAR_DEC)}>-</Button>
+                    Gear: {playerObj.gearBonus} <Button className="munchkinButton plusMinusButton" onClick={incGear}>+</Button> <Button className="munchkinButton plusMinusButton" onClick={decGear}>-</Button>
                     <br></br><br></br>
                     <b>total: {playerObj.level + playerObj.gearBonus}</b>
                     <br></br><br></br>
-                    <CombatButton socket={socket} allPlayersList={allPlayersList} playerObj={playerObj}/>
+                    <CombatButton socket={socket} allPlayersList={allPlayersList} playerObj={playerObj} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/>
                 </Col>
             </Row>
         </div>

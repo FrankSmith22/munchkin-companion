@@ -2,7 +2,7 @@ import BackButton from './BackButton';
 import { Row, Col } from 'reactstrap';
 import { PICTURES as P } from '../app/pictureMapping';
 
-export default function TvCard({socket, setDisplayMode, allPlayers}){
+export default function TvCard({socket, allPlayers, isConnected, setShowDisconnectedToast, setDisplayMode}){
 
     function levelStyleObj(level){
         level = String(level)
@@ -93,7 +93,7 @@ export default function TvCard({socket, setDisplayMode, allPlayers}){
 
     return (
         <div>
-            <BackButton socket={socket} confirm={false} setDisplayMode={setDisplayMode}/>
+            <BackButton socket={socket} confirm={false} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast} setDisplayMode={setDisplayMode}/>
             <div className="container-fluid overflow-auto">
                 <Row className='overflow-auto'>
                     {playerSlots}

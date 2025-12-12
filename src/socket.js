@@ -6,4 +6,3 @@ import { io } from 'socket.io-client';
 // export let socket = io('http://localhost:4000', {autoConnect: false})
 // live
 export let socket = io('https://munchkin-companion-server.onrender.com', {autoConnect: false})
-

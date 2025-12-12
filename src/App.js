@@ -8,6 +8,7 @@ import TvCard from './components/TvCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignal } from '@fortawesome/free-solid-svg-icons/faSignal'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Toast, ToastContainer } from 'react-bootstrap';
 import './App.css'
 import deepFreeze from "deep-freeze"
 import CardCreator from './components/CardCreator';
@@ -25,14 +26,27 @@ export const DISPLAY_MODES = deepFreeze({
 })
 
 
-function ConnectionState({ isConnected, roomId }) {
+function ConnectionState({ isConnected, roomId, setShowDisconnectedToast, showDisconnectedToast }) {
     const color = isConnected ? 'green' : 'red'
     return (
+        <>
         <div style={{ float: "right" }}>
             <FontAwesomeIcon style={{color: color, fontWeight: 'bold', fontSize: '1rem', float: "right"}} icon={faSignal} />
             <br/>
             {roomId ? <span className="roomIdSpan">Room ID: <b>{roomId}</b></span> : <></>}
         </div>
+        <ToastContainer position="top-center" className="p-3">
+            <Toast onClose={() => setShowDisconnectedToast(false)} show={showDisconnectedToast} delay={3000} autohide>
+            <Toast.Header>
+                <strong className="me-auto">Reconnecting...</strong>
+                <small>Just now</small>
+            </Toast.Header>
+            <Toast.Body>
+                Action ignored while reconnecting to server...
+            </Toast.Body>
+            </Toast>
+        </ToastContainer>
+        </>
     )
 }
 
@@ -44,6 +58,7 @@ export default function App() {
     const [roomId, setRoomId] = useState("")
     const [allRules, setAllRules] = useState([])
     const [rulesErrorMsg, setRulesErrorMsg] = useState("")
+    const [showDisconnectedToast, setShowDisconnectedToast] = useState(false)
 
     const setDisplayMode = (displayMode) => {
         setPageToDisplay(displayMode)
@@ -65,7 +80,9 @@ export default function App() {
     useEffect(() => {
         function onConnect() {
             console.log("Connected")
+            attemptReconnect()
             setIsConnected(true)
+            setShowDisconnectedToast(false)
         }
         function onDisconnect() {
             console.log("Disconnected")
@@ -142,37 +159,34 @@ export default function App() {
             }
         }
 
-
-        socket.connect()
-        socket.emit(E.GET_RULES)
-
-        // Attempt reconnect using localstorage
-        try {
-            let connectionType = localStorage.getItem(LS_CONN_TYPE)
-            let roomId = localStorage.getItem(LS_ROOM_ID)
-            switch(connectionType){
-                case DISPLAY_MODES.PLAYER_MODE:
-                    let connId = localStorage.getItem(LS_CONN_ID)
-                    if(roomId && connId){
-                        socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
-                        socket.emit(E.PARTY_UPDATE)
-                    }
-                    break
-                case DISPLAY_MODES.TV_MODE:
-                    if (roomId){
-                        socket.emit(E.TV_CONNECT, {roomId})
-                        socket.emit(E.PARTY_UPDATE)
-                    }
-                    break
-                case DISPLAY_MODES.CARD_CREATOR_MODE:
-                    setPageToDisplay(DISPLAY_MODES.CARD_CREATOR_MODE)
-                default:
-                    console.log("No localStorage, starting fresh session")
+        function attemptReconnect() {
+            // Attempt reconnect using localstorage
+            try {
+                let connectionType = localStorage.getItem(LS_CONN_TYPE)
+                let roomId = localStorage.getItem(LS_ROOM_ID)
+                switch(connectionType){
+                    case "player":
+                        let connId = localStorage.getItem(LS_CONN_ID)
+                        if(roomId && connId){
+                            socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
+                            socket.emit(E.PARTY_UPDATE)
+                        }
+                        break
+                    case "tv":
+                        if (roomId){
+                            socket.emit(E.TV_CONNECT, {roomId})
+                            socket.emit(E.PARTY_UPDATE)
+                        }
+                        break
+                    default:
+                        console.log("No localStorage, starting fresh session")
+                }
+            }
+            catch (error) {
+                console.warn("Could not access localstorage")
             }
         }
-        catch (error) {
-            console.warn("Could not access localstorage")
-        }
+
 
         function onGetRules(allRules) {
             console.log("Got rules from server:")
@@ -186,7 +200,9 @@ export default function App() {
             setRulesErrorMsg(message)
         }
 
-
+        socket.connect()
+        socket.emit(E.GET_RULES)
+        attemptReconnect()
 
         socket.on(E.CONNECTION, onConnect)
         socket.on(E.DISCONNECTION, onDisconnect)
@@ -213,11 +229,10 @@ export default function App() {
 
     return (
         <div className="App">
-            <ConnectionState isConnected={isConnected} roomId={roomId}/>
-            {pageToDisplay === DISPLAY_MODES.MODE_SELECT ? <ModeSelect socket={socket} setDisplayMode={setDisplayMode}/> : <></>}
-            {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} setDisplayMode={setDisplayMode} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg}/> : <></>}
-            {pageToDisplay === DISPLAY_MODES.TV_MODE ? <TvCard socket={socket} setDisplayMode={setDisplayMode} allPlayers={allPlayers}/> : <></>}
-            {pageToDisplay === DISPLAY_MODES.CARD_CREATOR_MODE ? <CardCreator socket={socket} setDisplayMode={setDisplayMode}/> : <></>}
+            <ConnectionState isConnected={isConnected} roomId={roomId} setShowDisconnectedToast={setShowDisconnectedToast} showDisconnectedToast={showDisconnectedToast}/>
+            {pageToDisplay === DISPLAY_MODES.MODE_SELECT ? <ModeSelect socket={socket} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} setDisplayMode={setDisplayMode} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.TV_MODE ? <TvCard socket={socket} setDisplayMode={setDisplayMode} allPlayers={allPlayers} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
         </div>
     );
 }

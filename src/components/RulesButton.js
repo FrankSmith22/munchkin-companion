@@ -5,7 +5,7 @@ import { faBook, faTrashCan, faPencil } from '@fortawesome/free-solid-svg-icons'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Card, CardHeader, CardTitle, CardBody, Collapse, CardFooter } from 'reactstrap';
 import loading from '../res/loading.gif';
 
-export default function RulesButton({socket, allRules, rulesErrorMsg}){
+export default function RulesButton({socket, allRules, rulesErrorMsg, isConnected, setShowDisconnectedToast}){
 
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
@@ -23,13 +23,25 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
     const toggleModal = () => setIsModalOpen(!isModalOpen)
     
     const toggleConfirmModal = (ruleId = null) => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_LEVEL_DEC)
         setIsConfirmModalOpen(!isConfirmModalOpen)
         if (ruleId) {
             setDeletingRule(ruleId)
         }
     }
 
-    const toggleCollapse = () => setIsNewRuleBoxOpen(!isNewRuleBoxOpen)
+    const toggleCollapse = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_LEVEL_DEC)
+        setIsNewRuleBoxOpen(!isNewRuleBoxOpen)
+    }
 
     function searchRules(e){
         const searchStr = e.target.value.toLowerCase()
@@ -58,6 +70,11 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
     }
 
     function beginEditing(ruleId) {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_LEVEL_DEC)
         let editingRule = filteredRules.filter(rule => rule.id === ruleId)
         if (editingRule.length === 0) return
         setRuleEditing(ruleId)
@@ -67,6 +84,11 @@ export default function RulesButton({socket, allRules, rulesErrorMsg}){
     }
 
     function endEditing() {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        socket.emit(E.PLAYER_LEVEL_DEC)
         setRuleEditing(null)
         setEditingRuleTitle("")
         setEditingRuleDesc("")

@@ -38,7 +38,6 @@ async function getRulesToClient(socketObj) {
         snapshot.forEach((doc) => {
             allRules.push({id: doc.id, data: doc.data()})
         })
-        console.log(`allRules: ${JSON.stringify(allRules)}`)
         socketObj.emit(E.GET_RULES, JSON.stringify(allRules))
         return ""
     }
@@ -67,6 +66,7 @@ io.on(E.CONNECTION, socket => {
                 playerRoomId = null
                 playerObj = null
                 socket.emit(E.DISCONNECT_ROOM)
+                clearInterval(intervalId)
             }
         }
     }, 5000)
@@ -183,6 +183,8 @@ io.on(E.CONNECTION, socket => {
     })
     // Reconnect
     socket.on(E.PLAYER_RECONNECT, ({localConnId, roomId}) => {
+        console.log("reconnecting...")
+        // TODO need to update this to allow clients to basically send their playerObj so smooth reconnection can happen even if stateful server went down
         connId = localConnId
         if (roomId in rooms && connId in rooms[roomId]) {
             playerRoomId = roomId
@@ -302,15 +304,15 @@ io.on(E.CONNECTION, socket => {
     })
     socket.on(E.DISCONNECTION, ()=>{
         console.log("client has disconnected")
-        clearInterval(intervalId)
-        if (rooms[playerRoomId] != null){
-                delete rooms[playerRoomId][connId]
-            }
-            socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
-            socket.leave(playerRoomId)
-            playerRoomId = null
-            playerObj = null
-            socket.emit(E.DISCONNECT_ROOM)
+    //     clearInterval(intervalId)
+    //     if (rooms[playerRoomId] != null){
+    //             delete rooms[playerRoomId][connId]
+    //         }
+    //     socket.to(playerRoomId).emit(E.PARTY_UPDATE, {"allPlayers": JSON.stringify(rooms[playerRoomId])})
+    //     socket.leave(playerRoomId)
+    //     playerRoomId = null
+    //     playerObj = null
+    //     socket.emit(E.DISCONNECT_ROOM)
     })
 })
 

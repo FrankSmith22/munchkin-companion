@@ -5,13 +5,17 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { DISPLAY_MODES } from '../App';
 
-export default function BackButton({socket, confirm, setDisplayMode}){
+export default function BackButton({socket, confirm, isConnected, setShowDisconnectedToast, setDisplayMode}){
 
     const [isOpen, setIsOpen] = useState(false)
 
     const toggle = () => setIsOpen(!isOpen)
 
     const sendDisconnect = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
         socket.emit(E.DISCONNECT_ROOM)
         setDisplayMode(DISPLAY_MODES.MODE_SELECT)
     }

@@ -10,7 +10,7 @@ import CardCreatorButton from './CardCreatorButton';
 const LS_DEFAULT_ROOM_ID = "defaultRoomId"
 const LS_DEFAULT_PLAYER_NAME = "defaultPlayerName"
 
-export default function ModeSelect({socket, setDisplayMode}){
+export default function ModeSelect({socket, isConnected, setShowDisconnectedToast, setDisplayMode}){
 
     let defaultPlayerName = localStorage.getItem(LS_DEFAULT_PLAYER_NAME)
     const [playerName, setPlayerName] = useState(defaultPlayerName)
@@ -19,7 +19,13 @@ export default function ModeSelect({socket, setDisplayMode}){
     const [isPictureSelectModalOpen, setIsPictureSelectModalOpen] = useState(false)
     const [selectedPicture, setSelectedPicture] = useState(null)
 
-    const togglePictureSelectModal = () => setIsPictureSelectModalOpen(!isPictureSelectModalOpen)
+    const togglePictureSelectModal = () => {
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
+        setIsPictureSelectModalOpen(!isPictureSelectModalOpen)
+    }
 
     useEffect(() => {
         localStorage.setItem(LS_DEFAULT_ROOM_ID, roomId)
@@ -27,7 +33,10 @@ export default function ModeSelect({socket, setDisplayMode}){
     }, [roomId, playerName])
 
     function onModeSelect(mode, roomId) {
-        // TODO display loading icon
+        if (!isConnected){
+            setShowDisconnectedToast()
+            return
+        }
         mode = mode.toLowerCase()
         roomId = roomId.toLowerCase()
         if (mode === "player"){
