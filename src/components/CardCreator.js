@@ -3,7 +3,7 @@ import { FormSelect } from "react-bootstrap";
 import { Container, Row, Col, Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { useState } from "react";
 
-export default function CardCreator({socket, setDisplayMode}){
+export default function CardCreator({socket, setDisplayMode, isConnected, setShowDisconnectedToast}){
 
     const [cardTypeSelectIsOpen, setCardTypeSelectIsOpen] = useState(false)
     const [cardType, setCardType] = useState("")
@@ -46,20 +46,28 @@ export default function CardCreator({socket, setDisplayMode}){
 
     return (
         <>
-        <BackButton socket={socket} confirm={false} setDisplayMode={setDisplayMode}/>
+        <BackButton socket={socket} confirm={false} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/>
         {cardSetupModal()}
-        <Container>
-            <Row className="text-center">
-                <Col xs="10" className="mx-auto">
-                    <Button onClick={() => setCardTypeSelectIsOpen(true)} className="munchkinButton mt-3" style={{ width: "100%", height: "25px", fontSize: ".8rem", lineHeight: "10px" }}>New Card +</Button>
+        <div className="container-fluid">
+            <Row className="justify-content-evenly">
+                <Col xs="3" md="2" className="mx-1 my-1 p-0">
+                    <div className="customCardThumbnailAdd d-flex justify-content-center">
+                        <span className="align-self-center">Add Card+</span>
+                    </div>
                 </Col>
-            </Row>
-            <Row className="mt-3">
-                <Col>
-                    BEHOLD.... our cards
+                <Col xs="3" md="2" className="mx-1 my-1 p-0">
+                    <div className="customCardThumbnail">
+                        ===I am a placeholder card===
+                    </div>
                 </Col>
+                <Col xs="3" md="2" className="mx-1 my-1 p-0">
+                    <div className="customCardThumbnail">
+                        ===I am a placeholder card===
+                    </div>
+                </Col>
+                
             </Row>
-        </Container>
+        </div>
         </>
     )
 }

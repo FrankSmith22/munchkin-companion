@@ -233,6 +233,7 @@ export default function App() {
             {pageToDisplay === DISPLAY_MODES.MODE_SELECT ? <ModeSelect socket={socket} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
             {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} setDisplayMode={setDisplayMode} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
             {pageToDisplay === DISPLAY_MODES.TV_MODE ? <TvCard socket={socket} setDisplayMode={setDisplayMode} allPlayers={allPlayers} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.CARD_CREATOR_MODE ? <CardCreator socket={socket} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
         </div>
     );
 }

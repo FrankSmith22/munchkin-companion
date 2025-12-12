@@ -133,83 +133,6 @@ input::placeholder {
     border-top: 1px solid #441B06;
 }
 
-.cardTypeSelect .modal-content {
-    height: 10vh;
-    width: 90vw;
-    margin-top: 5vh;
-    margin-right: auto;
-    margin-left: auto;
-}
-
-.munchkinModalDoorCard .modal-header .btn-close, .munchkinModalTreasureCard .modal-header .btn-close {
-    display: none;
-}
-
-.munchkinModalDoorCard .modal-header .modal-title, .munchkinModalTreasureCard .modal-header .modal-title {
-    margin-right: auto;
-    margin-left: auto;
-}
-
-
-.munchkinModalDoorCard .modal-content {
-    height: 90vh;
-    width: 90vw;
-    margin-top: 5vh;
-    margin-right: auto;
-    margin-left: auto;
-    transition: height 1000ms ease;
-}
-
-
-.munchkinModalDoorCard .modal-header {
-    border-bottom: unset;
-    background-color: #FBF3E5;
-    transition: background-color 200ms linear;
-}
-
-.munchkinModalDoorCard .modal-body {
-    background-color: #FBF3E5;
-    transition: background-color 200ms linear;
-}
-
-.munchkinModalDoorCard .modal-footer {
-    border-top: unset;
-    background-color: #FBF3E5;
-    transition: background-color 200ms linear;
-}
-
-
-
-
-.munchkinModalTreasureCard .modal-content {
-    height: 90vh;
-    width: 90vw;
-    margin-top: 5vh;
-    margin-right: auto;
-    margin-left: auto;
-    transition: height 1000ms ease;
-}
-
-
-.munchkinModalTreasureCard .modal-header {
-    border-bottom: unset;
-    background-color: #E9BC6D;
-    transition: background-color 200ms linear;
-}
-
-.munchkinModalTreasureCard .modal-body {
-    background-color: #E9BC6D;
-    transition: background-color 200ms linear;
-}
-
-.munchkinModalTreasureCard .modal-footer {
-    border-top: unset;
-    background-color: #E9BC6D;
-    transition: background-color 200ms linear;
-}
-
-
-
 /* Floating card creator button */
 .floating-button {
   position: fixed; /* Positions the element relative to the viewport */
@@ -219,4 +142,21 @@ input::placeholder {
   /* Optional: Add styling for appearance */
   border-radius: 50px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.customCardThumbnailAdd {
+    height: 140px;
+    width: 100px;
+    border-radius: 20px;
+    border: 2px dashed black;
+    font-size: 14px;
+}
+
+.customCardThumbnail {
+    height: 140px;
+    width: 100px;
+    border: 6px solid #441B06;
+    border-radius: 20px;
+    font-size: 8px;
+    box-shadow: 5px 5px 8px;
 }
