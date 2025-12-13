@@ -165,19 +165,21 @@ export default function App() {
                 let connectionType = localStorage.getItem(LS_CONN_TYPE)
                 let roomId = localStorage.getItem(LS_ROOM_ID)
                 switch(connectionType){
-                    case "player":
+                    case DISPLAY_MODES.PLAYER_MODE:
                         let connId = localStorage.getItem(LS_CONN_ID)
                         if(roomId && connId){
                             socket.emit(E.PLAYER_RECONNECT, {localConnId: connId, roomId})
                             socket.emit(E.PARTY_UPDATE)
                         }
                         break
-                    case "tv":
+                    case DISPLAY_MODES.TV_MODE:
                         if (roomId){
                             socket.emit(E.TV_CONNECT, {roomId})
                             socket.emit(E.PARTY_UPDATE)
                         }
                         break
+                    case DISPLAY_MODES.CARD_CREATOR_MODE:
+                        setDisplayMode(DISPLAY_MODES.CARD_CREATOR_MODE)
                     default:
                         console.log("No localStorage, starting fresh session")
                 }

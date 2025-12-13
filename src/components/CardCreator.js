@@ -1,45 +1,23 @@
 import BackButton from "./BackButton";
 import { FormSelect } from "react-bootstrap";
-import { Container, Row, Col, Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Container, Row, Col, Button } from "reactstrap";
+import Modal from 'react-bootstrap/Modal';
 import { useState } from "react";
 
 export default function CardCreator({socket, setDisplayMode, isConnected, setShowDisconnectedToast}){
 
-    const [cardTypeSelectIsOpen, setCardTypeSelectIsOpen] = useState(false)
+    const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
     const [cardType, setCardType] = useState("")
 
-    const toggleCardTypeSelect = () => setCardTypeSelectIsOpen(!cardTypeSelectIsOpen)
+    const toggleNewCardModalIsOpen = () => setNewCardModalIsOpen(!newCardModalIsOpen)
 
     const cardSetupModal = () => {
         return (
-            <Modal
-                size="sm"
-                toggle={toggleCardTypeSelect}
-                isOpen={cardTypeSelectIsOpen}
-                className={cardType === "door"
-                    ? "munchkinModal munchkinModalDoorCard"
-                    : cardType === "treasure"
-                    ? "munchkinModal munchkinModalTreasureCard"
-                    : "munchkinModal cardTypeSelect"
-                }
-            >
-                <ModalHeader onChange={() => console.log("new changes")} contentEditable={cardType != ""} className="text-center" toggle={toggleCardTypeSelect}>
-                    {cardType ? "title..." : "New card type"}
-                </ModalHeader>
-                <ModalBody>
-                    {cardType
-                        ? ""
-                        : <FormSelect value={cardType} onChange={e => setCardType(e.target.value)}>
-                            <option value="" disabled>Card type...</option>
-                            <option value="door">Door</option>
-                            <option value="treasure">Treasure</option>
-                        </FormSelect>
-                    }
-                </ModalBody>
-                <ModalFooter>
-                </ModalFooter>
+            <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} className="munchkinModal newCardCreatorModal">
+                <Modal.Body className="mx-auto mt-4 mt-md-0">
+                    <div draggable>hello world</div>
+                </Modal.Body>
             </Modal>
-            // TODO just define this modal manually.. reactstrap working its 'magic' is causing more heartache than I need for this more dynamic modal
         )
     }
     
@@ -51,8 +29,10 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         <div className="container-fluid">
             <Row className="justify-content-evenly">
                 <Col xs="3" md="2" className="mx-1 my-1 p-0">
-                    <div className="customCardThumbnailAdd d-flex justify-content-center">
-                        <span className="align-self-center">Add Card+</span>
+                    <div onClick={toggleNewCardModalIsOpen} className="customCardThumbnailAdd d-flex justify-content-center">
+                        <div className="align-self-center">
+                            <span>Create +</span>
+                        </div>
                     </div>
                 </Col>
                 <Col xs="3" md="2" className="mx-1 my-1 p-0">

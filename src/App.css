@@ -150,6 +150,7 @@ input::placeholder {
     border-radius: 20px;
     border: 2px dashed black;
     font-size: 14px;
+    cursor: pointer;
 }
 
 .customCardThumbnail {
@@ -159,4 +160,11 @@ input::placeholder {
     border-radius: 20px;
     font-size: 8px;
     box-shadow: 5px 5px 8px;
+}
+
+.newCardCreatorModal .modal-body {
+    aspect-ratio: 1 / 1.55;
+    width: 90%;
+    border: 15px solid #441B06;
+    border-radius: 60px;
 }
