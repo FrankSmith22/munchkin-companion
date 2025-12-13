@@ -68,11 +68,11 @@ input::placeholder {
 }
 
 .doorCardColor {
-    background-color: #FBF3E5;
+    background-color: #FBF3E5 !important;
 }
 
 .treasureCardColor {
-    background-color: #E9BC6D;
+    background-color: #E9BC6D !important;
 }
 
 .playerPictureThumbnail {
@@ -167,4 +167,5 @@ input::placeholder {
     width: 90%;
     border: 15px solid #441B06;
     border-radius: 60px;
+    transition: background-color 0.5s ease;
 }
