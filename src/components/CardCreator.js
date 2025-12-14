@@ -58,12 +58,11 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
             setNewCardContent(newCardContentCopy)
             localStorage.setItem("newCardContent", JSON.stringify(newCardContentCopy))
         }
-
-        const resetNewCardContent = () => { // TODO this dont work yet
-            for (const [section, content] of Object.entries(defaultCardContent)) {
-                updateNewCardContent(section, content)
-            }
+        
+        const resetNewCardContent = () => {
+            setNewCardContent(defaultCardContent)
             setDefaultContentOnModalOpen(defaultCardContent)
+            localStorage.setItem("newCardContent", JSON.stringify(defaultCardContent))
         }
 
         const modalBodyClasses = "mx-auto mt-4 mt-md-0 draggableParent "
