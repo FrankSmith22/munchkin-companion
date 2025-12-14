@@ -191,8 +191,6 @@ export default function App() {
 
 
         function onGetRules(allRules) {
-            console.log("Got rules from server:")
-            console.log(allRules)
             setAllRules(JSON.parse(allRules))
             setRulesErrorMsg("")
         }
