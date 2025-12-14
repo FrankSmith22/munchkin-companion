@@ -1,10 +1,10 @@
 import BackButton from "./BackButton";
-import { Row, Col, CardDeck } from "reactstrap";
+import { Row, Col } from "reactstrap";
 import Modal from 'react-bootstrap/Modal';
 import { useEffect, useState } from "react";
-import Draggable from "react-draggable";
+// import Draggable from "react-draggable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins, faDoorClosed, faGrip, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faCoins, faDoorClosed, faRotateRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function CardCreator({socket, setDisplayMode, isConnected, setShowDisconnectedToast}){
 
@@ -16,7 +16,8 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
     const defaultCardContent = {
         supertitle: ">level/bonus<",
         title: ">Title<",
-        subtitle: ">Subtitle<"
+        subtitle: ">Subtitle<",
+        description: ">Card description<"
     }
 
     const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
@@ -52,12 +53,19 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         }
 
         const updateNewCardContent = (section, content) => {
-            console.log(newCardContent)
             let newCardContentCopy = {...newCardContent}
             newCardContentCopy[section] = content
             setNewCardContent(newCardContentCopy)
             localStorage.setItem("newCardContent", JSON.stringify(newCardContentCopy))
         }
+
+        const resetNewCardContent = () => { // TODO this dont work yet
+            for (const [section, content] of Object.entries(defaultCardContent)) {
+                updateNewCardContent(section, content)
+            }
+            setDefaultContentOnModalOpen(defaultCardContent)
+        }
+
         const modalBodyClasses = "mx-auto mt-4 mt-md-0 draggableParent "
         return (
             // TODO maybe implement this proper one day... Just overkill for now
@@ -93,11 +101,27 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                     <FontAwesomeIcon
                         icon={cardType === "door" ? faDoorClosed : faCoins}
                         onClick={toggleCardType}
-                        style={{position: "absolute", height: "2rem"}}
+                        style={{position: "absolute", height: "2rem", color: "#441B06"}}
                     />
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("supertitle", e.target.innerText)} className="text-center mx-auto" style={{fontSize: "1rem", width: "90%"}}>{defaultContentOnModalOpen.supertitle}</div>
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("title", e.target.innerText)} className="text-center" style={{fontSize: "2rem"}}>{defaultContentOnModalOpen.title}</div>
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("subtitle", e.target.innerText)} className="text-center" style={{fontSize: "1rem"}}>{defaultContentOnModalOpen.subtitle}</div>
+                    <FontAwesomeIcon
+                        icon={faRotateRight}
+                        onClick={resetNewCardContent}
+                        style={{position: "absolute", height: "2rem", color: "#441B06", right: "16px"}}
+                    />
+                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("supertitle", e.target.textContent)} className="text-center mx-auto" style={{fontSize: "1rem", width: "90%"}}>{defaultContentOnModalOpen.supertitle}</div>
+                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("title", e.target.textContent)} className="text-center" style={{fontSize: "2rem"}}>{defaultContentOnModalOpen.title}</div>
+                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center" style={{fontSize: "1rem"}}>{defaultContentOnModalOpen.subtitle}</div>
+                    <div>
+                        <label className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload">
+                            <FontAwesomeIcon
+                                icon={faCamera}
+                                className="mx-auto align-self-center"
+                                style={{height: "2rem", color: "#441B06"}}
+                            />
+                        </label>
+                        <input type="file" id="pictureUpload" style={{display: "none"}}/>
+                    </div>
+                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("description", e.target.textContent)} style={{fontSize: "1rem", border: "1px solid red", lineHeight: "1.2", height: "40%", overflow: "hidden"}}>{defaultContentOnModalOpen.description}</div>
                     {/* Need:
                         1. level/bonus
                         2. title

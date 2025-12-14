@@ -169,3 +169,9 @@ input::placeholder {
     border-radius: 60px;
     transition: background-color 0.5s ease;
 }
+
+.newCardCreatorUploadImage {
+    border: 3px dashed #441B06;
+    width: 60%;
+    aspect-ratio: 1 / 1;
+}
