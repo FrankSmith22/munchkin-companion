@@ -75,7 +75,7 @@ export default function ModeSelect({socket, isConnected, setShowDisconnectedToas
     return (
         <>
         <Modal isOpen={isPictureSelectModalOpen} toggle={togglePictureSelectModal} className="munchkinModal">
-            <ModalHeader toggle={togglePictureSelectModal}>Select Picture</ModalHeader>
+            <ModalHeader className="mHeaderFont" toggle={togglePictureSelectModal}>Select Picture</ModalHeader>
             <ModalBody>
                 <Container className="overflow-auto" style={{ maxHeight: "60vh" }}>
                     <Row className="text-center">
@@ -90,7 +90,7 @@ export default function ModeSelect({socket, isConnected, setShowDisconnectedToas
         </Modal>
         <Container>
             <Row className="mt-3">
-                <Col className="text-center" xs="12"><h1>Munchkin Companion</h1></Col>
+                <Col className="text-center mHeaderFont" xs="12"><h1>Munchkin Companion</h1></Col>
             </Row>
             <Row>
                 <Col className="text-center">

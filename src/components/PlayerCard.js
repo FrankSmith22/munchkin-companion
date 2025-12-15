@@ -85,7 +85,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                 {allPlayersList ? allPlayersList.map((player, i, a) => {
                     return (<li key={player.connId}>
                                 {i == 0 ? "" : <hr/>}
-                                {player.name}<br/>
+                                <span className="mHeaderFont">{player.name}</span><br/>
                                 <img src={P[player.picture]} onClick={playChimeHigh} className="img-thumbnail w-75 playerPictureThumbnail mb-1"></img>
                                 Level: {player.level}<br/>
                                 Total: {player.level + player.gearBonus}
@@ -105,7 +105,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                 <Col className="offset-3" style={{ wordWrap: "break-word" }}>
                     <span><BackButton socket={socket} confirm={true} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/><RulesButton socket={socket} allRules={allRules} rulesErrorMsg={rulesErrorMsg} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/></span>
                     <br/>
-                    <span style={{ fontSize: "36px" }}>{playerObj.name}</span>
+                    <span className="mHeaderFont" style={{ fontSize: "28px" }}>{playerObj.name}</span>
                     <br/>
                     <img src={P[playerObj.picture]} onClick={playChimeLow} className="img-thumbnail w-75 playerPictureThumbnail" style={{ maxWidth: "170px" }}></img>
                     <br></br><br></br>

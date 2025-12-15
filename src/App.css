@@ -1,4 +1,5 @@
 @font-face {font-family: Windlass; src: url('res/Windlass.ttf');}
+@font-face {font-family: Garamond; src: url('res/EBGaramond-VariableFont_wght.ttf');}
 
 body {
     margin: 0;
@@ -7,6 +8,7 @@ body {
     background-color:#441B06 !important;
     box-sizing: border-box;
     overflow-x: hidden;
+    font-size: 1.3rem;
 }
 
 input::placeholder {
@@ -21,8 +23,16 @@ input::placeholder {
     border: 15px solid #441B06;
     border-radius: 60px;
     box-sizing: border-box;
-    font-family: Windlass, sans-serif;
     overflow-y: auto;
+    font-family: Garamond, serif;
+}
+
+.mHeaderFont {
+    font-family: Windlass, sans-serif;
+}
+
+.mTextFont {
+    font-family: Garamond, serif;
 }
 
 .munchkinButton {
@@ -30,6 +40,7 @@ input::placeholder {
     border: 3px solid #441B06;
     color: #441B06;
     cursor: pointer;
+    font-family: Windlass, sans-serif;
 }
 
 .munchkinButton:hover {
@@ -53,7 +64,7 @@ input::placeholder {
 }
 
 .modal {
-    font-family: Windlass, sans-serif;
+    font-family: Garamond, serif;
 }
 
 .playerHelper {
@@ -174,4 +185,14 @@ input::placeholder {
     border: 3px dashed #441B06;
     width: 60%;
     aspect-ratio: 1 / 1;
+}
+
+.newCardCreatorDescription {
+    /* border: 1px solid red; */
+    line-height: 1.2rem;
+    /* height: auto; */
+    overflow-y: auto;
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: column;
 }

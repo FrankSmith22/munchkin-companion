@@ -17,7 +17,9 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         supertitle: ">level/bonus<",
         title: ">Title<",
         subtitle: ">Subtitle<",
-        description: ">Card description<"
+        description: ">Card description<",
+        footerLeft: ">footer left<",
+        footerRight: ">footer right<",
     }
 
     const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
@@ -65,7 +67,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
             localStorage.setItem("newCardContent", JSON.stringify(defaultCardContent))
         }
 
-        const modalBodyClasses = "mx-auto mt-4 mt-md-0 draggableParent "
+        const modalBodyClasses = "mx-auto mt-4 mt-md-0 draggableParent d-flex "
         return (
             // TODO maybe implement this proper one day... Just overkill for now
             // <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} className="munchkinModal newCardCreatorModal">
@@ -96,7 +98,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
             //     </Modal.Body>
             // </Modal>
             <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} onShow={() => setDefaultContentOnModalOpen(newCardContent)} className="munchkinModal newCardCreatorModal">
-                <Modal.Body className={modalBodyClasses + (cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")}>
+                <Modal.Body className={modalBodyClasses + (cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column"}}>
                     <FontAwesomeIcon
                         icon={cardType === "door" ? faDoorClosed : faCoins}
                         onClick={toggleCardType}
@@ -107,9 +109,10 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                         onClick={resetNewCardContent}
                         style={{position: "absolute", height: "2rem", color: "#441B06", right: "16px"}}
                     />
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("supertitle", e.target.textContent)} className="text-center mx-auto" style={{fontSize: "1rem", width: "90%"}}>{defaultContentOnModalOpen.supertitle}</div>
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("title", e.target.textContent)} className="text-center" style={{fontSize: "2rem"}}>{defaultContentOnModalOpen.title}</div>
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center" style={{fontSize: "1rem"}}>{defaultContentOnModalOpen.subtitle}</div>
+                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("supertitle", e.target.textContent)} className="text-center mHeaderFont mx-auto" style={{fontSize: "1rem", width: "90%"}}>{defaultContentOnModalOpen.supertitle}</div>
+                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("title", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "2rem"}}>{defaultContentOnModalOpen.title}</div>
+                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "1rem"}}>{defaultContentOnModalOpen.subtitle}</div>
+                    <br/>
                     <div>
                         <label className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload">
                             <FontAwesomeIcon
@@ -120,7 +123,11 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                         </label>
                         <input type="file" id="pictureUpload" style={{display: "none"}}/>
                     </div>
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("description", e.target.textContent)} style={{fontSize: "1rem", border: "1px solid red", lineHeight: "1.2", height: "40%", overflow: "hidden"}}>{defaultContentOnModalOpen.description}</div>
+                    <br/>
+                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("description", e.target.textContent)} className="newCardCreatorDescription">{defaultContentOnModalOpen.description}</div>
+                    <div className="d-flex justify-content-between">
+                        <span contentEditable="plaintext-only" onInput={e => updateNewCardContent("footerLeft", e.target.textContent)} style={{width: "45%", display: "inline-block"}}>{defaultContentOnModalOpen.footerLeft}</span><span contentEditable="plaintext-only" onInput={e => updateNewCardContent("footerRight", e.target.textContent)} style={{width: "45%", display: "inline-block", textAlign: "end"}}>{defaultContentOnModalOpen.footerRight}</span>
+                    </div>
                     {/* Need:
                         1. level/bonus
                         2. title
@@ -144,7 +151,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                 <Col xs="3" md="2" className="mx-1 my-1 p-0">
                     <div onClick={toggleNewCardModalIsOpen} className="customCardThumbnailAdd d-flex justify-content-center">
                         <div className="align-self-center">
-                            <span>Create +</span>
+                            <span className="mHeaderFont">Create +</span>
                         </div>
                     </div>
                 </Col>

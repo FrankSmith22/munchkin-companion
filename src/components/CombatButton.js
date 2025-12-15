@@ -211,7 +211,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj, isConne
 
 
             <Modal size="sm" isOpen={isHelpSelectOpen} className="munchkinModal">
-                <ModalHeader>Party Members</ModalHeader>
+                <ModalHeader className="mHeaderFont">Party Members</ModalHeader>
                 <ModalBody>
                     {allPlayersList ? allPlayersList.map((player) => {
                         let isHelper = playersHelping.some(helper => helper.connId === player.connId)
@@ -222,7 +222,7 @@ export default function CombatModal({ socket, allPlayersList, playerObj, isConne
                             onClick={() => toggleHelper(player.connId)}
                             style={{ border: border }}
                         >
-                            <span>{player.name}</span><span style={{ float: "right" }}>{player.level + player.gearBonus}</span>
+                            <span className="mHeaderFont">{player.name}</span><span style={{ float: "right" }}>{player.level + player.gearBonus}</span>
                         </div>
                     }) : <></>}
                 </ModalBody>

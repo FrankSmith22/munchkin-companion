@@ -23,7 +23,7 @@ export default function BackButton({socket, confirm, isConnected, setShowDisconn
     return (
         <div style={{ display: "inline" }}>
             <Modal isOpen={isOpen} toggle={toggle} className="munchkinModal">
-                <ModalHeader toggle={toggle}>Are you sure?</ModalHeader>
+                <ModalHeader className="mHeaderFont" toggle={toggle}>Are you sure?</ModalHeader>
                 <ModalBody>
                     Are you sure? Your progress will be lost.
                 </ModalBody>

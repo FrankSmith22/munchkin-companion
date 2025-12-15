@@ -113,7 +113,7 @@ export default function RulesButton({socket, allRules, rulesErrorMsg, isConnecte
     return (
         <div style={{ display: "inline" }}>
             <Modal isOpen={isConfirmModalOpen} toggle={toggleConfirmModal} size="sm" className="munchkinModal">
-                <ModalHeader toggle={toggleConfirmModal}>Are you sure?</ModalHeader>
+                <ModalHeader className="mHeaderFont" toggle={toggleConfirmModal}>Are you sure?</ModalHeader>
                 <ModalBody>
                     Are you sure you want to permanently delete this rule?
                 </ModalBody>
@@ -123,7 +123,7 @@ export default function RulesButton({socket, allRules, rulesErrorMsg, isConnecte
                 </ModalFooter>
             </Modal>
             <Modal isOpen={isModalOpen} toggle={toggleModal} className="munchkinModal">
-                <ModalHeader toggle={toggleModal}>Rules</ModalHeader>
+                <ModalHeader className="mHeaderFont" toggle={toggleModal}>Rules</ModalHeader>
                 <ModalBody>
                     <Container className="overflow-auto" style={{ maxHeight: "60vh" }}>
                         <Row>
@@ -138,7 +138,7 @@ export default function RulesButton({socket, allRules, rulesErrorMsg, isConnecte
                                     <form action={addNewRule}>
                                         <Card>
                                             <CardHeader>
-                                                <CardTitle><input type="text" required={true} value={newRuleTitle} onChange={e => setNewRuleTitle(e.target.value)} placeholder="Rule title..." className="form-control"/></CardTitle>
+                                                <CardTitle><input type="text" required={true} value={newRuleTitle} onChange={e => setNewRuleTitle(e.target.value)} placeholder="Rule title..." className="form-control mHeaderFont"/></CardTitle>
                                             </CardHeader>
                                             <CardBody>
                                                 <textarea required={true} value={newRuleDesc} onChange={e => setNewRuleDesc(e.target.value)} placeholder="Rule description..." rows="3" className="form-control"></textarea>
@@ -166,8 +166,8 @@ export default function RulesButton({socket, allRules, rulesErrorMsg, isConnecte
                                             <CardTitle style={{ display: "inline" }}>
                                                 {
                                                     ruleEditing === rule.id
-                                                    ? <input type="text" className="form-control" value={editingRuleTitle} onChange={e => setEditingRuleTitle(e.target.value)}/>
-                                                    : rule.data.title
+                                                    ? <input type="text" className="form-control mHeaderFont" value={editingRuleTitle} onChange={e => setEditingRuleTitle(e.target.value)}/>
+                                                    : <span className="mHeaderFont">{rule.data.title}</span>
                                                 }
                                             </CardTitle>
                                             <div style={{ display: "inline", float: "right" }}>
