@@ -99,7 +99,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                         style={{position: "absolute", height: "2rem", color: "#441B06", right: "16px"}}
                     />
                     <div id="supertitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("supertitle", e.target.textContent)} className="text-center mHeaderFont mx-auto" style={{fontSize: "1rem", width: "90%", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
-                    <div id="title" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("title", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "2rem", overflowY: "auto", minHeight: "1.5rem", maxHeight: "6rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.title }}></div>
+                    <div id="title" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("title", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "2rem", overflowY: "auto", minHeight: "3rem", maxHeight: "6rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.title }}></div>
                     <div id="subtitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "1rem", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
                     <br/>
                     <div>
