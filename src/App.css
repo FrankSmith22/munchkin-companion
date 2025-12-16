@@ -188,11 +188,11 @@ input::placeholder {
 }
 
 .newCardCreatorDescription {
-    /* border: 1px solid red; */
     line-height: 1.2rem;
-    /* height: auto; */
     overflow-y: auto;
     flex: 1 1 auto;
     display: flex;
     flex-flow: column;
+    /* min-height: 20%; */
+    min-height: 2.7rem;
 }

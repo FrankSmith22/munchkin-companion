@@ -84,7 +84,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         const modalBodyClasses = "mx-auto mt-4 mt-md-0 d-flex "
         return (
             <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} onShow={() => setCustomCardFields(newCardContent)} className="munchkinModal newCardCreatorModal">
-                <Modal.Body className={modalBodyClasses + (newCardContent.cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column"}}>
+                <Modal.Body className={modalBodyClasses + (newCardContent.cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column", overflow: "hidden"}}>
                     <FontAwesomeIcon
                         icon={newCardContent.cardType === CARD_TYPES.DOOR ? faDoorClosed : faCoins}
                         onClick={toggleCardType}
@@ -98,9 +98,9 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                         }}
                         style={{position: "absolute", height: "2rem", color: "#441B06", right: "16px"}}
                     />
-                    <div id="supertitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("supertitle", e.target.textContent)} className="text-center mHeaderFont mx-auto" style={{fontSize: "1rem", width: "90%"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
-                    <div id="title" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("title", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "2rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.title }}></div>
-                    <div id="subtitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "1rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
+                    <div id="supertitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("supertitle", e.target.textContent)} className="text-center mHeaderFont mx-auto" style={{fontSize: "1rem", width: "90%", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
+                    <div id="title" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("title", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "2rem", overflowY: "auto", minHeight: "1.5rem", maxHeight: "6rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.title }}></div>
+                    <div id="subtitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "1rem", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
                     <br/>
                     <div>
                         <label className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload">
@@ -114,8 +114,8 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                     </div>
                     <br/>
                     <div id="description" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("description", e.target.textContent)} className="newCardCreatorDescription" dangerouslySetInnerHTML={{ __html: defaultCardContent.description }}></div>
-                    <div className="d-flex justify-content-between">
-                        <span id="footerLeft" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("footerLeft", e.target.textContent)} style={{width: "45%", display: "inline-block"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerLeft }}></span><span id="footerRight" contentEditable="plaintext-only" onInput={e => updateNewCardContent("footerRight", e.target.textContent)} style={{width: "45%", display: "inline-block", textAlign: "end"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerRight }}></span>
+                    <div className="d-flex justify-content-between" style={{overflowY: "hidden"}}>
+                        <div id="footerLeft" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("footerLeft", e.target.textContent)} style={{width: "45%", display: "inline-block", overflowY: "auto", minHeight: "1.7rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerLeft }}></div><div id="footerRight" contentEditable="plaintext-only" onInput={e => updateNewCardContent("footerRight", e.target.textContent)} style={{width: "45%", display: "inline-block", textAlign: "end", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerRight }}></div>
                     </div>
                 </Modal.Body>
             </Modal>
