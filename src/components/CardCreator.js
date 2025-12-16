@@ -14,6 +14,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
     }
 
     const defaultCardContent = {
+        cardType: CARD_TYPES.DOOR,
         supertitle: ">level/bonus<",
         title: ">Title<",
         subtitle: ">Subtitle<",
@@ -42,7 +43,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         if (savedNewCardContent){
             try {
                 savedNewCardContentObj = JSON.parse(savedNewCardContent)
-                setNewCardContent(savedNewCardContentObj)
+                setNewCardContent(savedNewCardContentObj) // TODO might be able to move to finally block
                 console.log(`Loading from localstorage: ${savedNewCardContent}`)
             } catch (error) {
                 console.error(`Something went wrong parsing newCardContent from local storage: ${error}. Loading in default values.`)
@@ -55,7 +56,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
 
 
     const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
-    const [cardType, setCardType] = useState(CARD_TYPES.DOOR)
+    // const [cardType, setCardType] = useState(CARD_TYPES.DOOR)
     const [newCardContent, setNewCardContent] = useState({})
 
     const toggleNewCardModalIsOpen = () => setNewCardModalIsOpen(!newCardModalIsOpen)
@@ -63,11 +64,14 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
     const newCardModal = () => {
 
         const toggleCardType = () => {
-            if (cardType === CARD_TYPES.DOOR){
-                setCardType(CARD_TYPES.TREASURE)
+            let newCardContentCopy = {...newCardContent}
+            if (newCardContent.cardType === CARD_TYPES.DOOR){
+                newCardContentCopy.cardType = CARD_TYPES.TREASURE
             } else {
-                setCardType(CARD_TYPES.DOOR)
+                newCardContentCopy.cardType = CARD_TYPES.DOOR
             }
+            setNewCardContent(newCardContentCopy)
+            localStorage.setItem("newCardContent", JSON.stringify(newCardContentCopy))
         }
 
         const updateNewCardContent = (section, content) => {
@@ -80,9 +84,9 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         const modalBodyClasses = "mx-auto mt-4 mt-md-0 d-flex "
         return (
             <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} onShow={() => setCustomCardFields(newCardContent)} className="munchkinModal newCardCreatorModal">
-                <Modal.Body className={modalBodyClasses + (cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column"}}>
+                <Modal.Body className={modalBodyClasses + (newCardContent.cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column"}}>
                     <FontAwesomeIcon
-                        icon={cardType === "door" ? faDoorClosed : faCoins}
+                        icon={newCardContent.cardType === CARD_TYPES.DOOR ? faDoorClosed : faCoins}
                         onClick={toggleCardType}
                         style={{position: "absolute", height: "2rem", color: "#441B06"}}
                     />
