@@ -22,27 +22,43 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         footerRight: ">footer right<",
     }
 
-    const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
-    const [cardType, setCardType] = useState(CARD_TYPES.DOOR)
-    const [newCardContent, setNewCardContent] = useState(defaultCardContent)
-    const [defaultContentOnModalOpen, setDefaultContentOnModalOpen] = useState(defaultCardContent)
-
-    const toggleNewCardModalIsOpen = () => setNewCardModalIsOpen(!newCardModalIsOpen)
-
-
+    const setCustomCardFields = (newContent) => {
+        // Hate doing this manual innerHTML setting, but is necessary for contentEditable items in React the way this is set up
+        try {
+            localStorage.setItem("newCardContent", JSON.stringify(newContent))
+            document.querySelector("#supertitle").innerHTML = newContent.supertitle
+            document.querySelector("#title").innerHTML = newContent.title
+            document.querySelector("#subtitle").innerHTML = newContent.subtitle
+            document.querySelector("#description").innerHTML = newContent.description
+            document.querySelector("#footerLeft").innerHTML = newContent.footerLeft
+            document.querySelector("#footerRight").innerHTML = newContent.footerRight
+        } catch(err) {
+            // Dont actually do anything, we hit this on page load, I suspect because of rendering race conditions
+        }
+    }
     useEffect(() => {
         const savedNewCardContent = localStorage.getItem("newCardContent")
+        let savedNewCardContentObj = {}
         if (savedNewCardContent){
             try {
-                const savedNewCardContentObj = JSON.parse(savedNewCardContent)
+                savedNewCardContentObj = JSON.parse(savedNewCardContent)
                 setNewCardContent(savedNewCardContentObj)
-                setDefaultContentOnModalOpen(savedNewCardContentObj)
+                console.log(`Loading from localstorage: ${savedNewCardContent}`)
             } catch (error) {
                 console.error(`Something went wrong parsing newCardContent from local storage: ${error}. Loading in default values.`)
+                savedNewCardContentObj = defaultCardContent
+            } finally {
+                setCustomCardFields(savedNewCardContentObj)
             }
         }
-    },[])
+    }, [])
 
+
+    const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
+    const [cardType, setCardType] = useState(CARD_TYPES.DOOR)
+    const [newCardContent, setNewCardContent] = useState({})
+
+    const toggleNewCardModalIsOpen = () => setNewCardModalIsOpen(!newCardModalIsOpen)
     
     const newCardModal = () => {
 
@@ -60,44 +76,10 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
             setNewCardContent(newCardContentCopy)
             localStorage.setItem("newCardContent", JSON.stringify(newCardContentCopy))
         }
-        
-        const resetNewCardContent = () => {
-            setNewCardContent(defaultCardContent)
-            setDefaultContentOnModalOpen(defaultCardContent)
-            localStorage.setItem("newCardContent", JSON.stringify(defaultCardContent))
-        }
 
-        const modalBodyClasses = "mx-auto mt-4 mt-md-0 draggableParent d-flex "
+        const modalBodyClasses = "mx-auto mt-4 mt-md-0 d-flex "
         return (
-            // TODO maybe implement this proper one day... Just overkill for now
-            // <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} className="munchkinModal newCardCreatorModal">
-            //     <Modal.Body
-            //         className={modalBodyClasses + (cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")}
-            //     >
-            //         <FontAwesomeIcon
-            //             icon={cardType === "door" ? faDoorClosed : faCoins}
-            //             onClick={toggleCardType}
-            //         />
-            //         <Draggable
-            //             bounds=".draggableParent"
-            //             handle=".handle"
-            //         >
-            //             <div style={{display: "inline-block"}} className="text-center">
-            //                 <div className="d-flex justify-content-evenly">
-            //                     <FontAwesomeIcon 
-            //                         className="handle"
-            //                         icon={faGrip}
-            //                     />
-            //                     <FontAwesomeIcon
-            //                         icon={faTrashCan}
-            //                     />
-            //                 </div>
-            //                 <span contentEditable>hello world</span>
-            //             </div>
-            //         </Draggable>
-            //     </Modal.Body>
-            // </Modal>
-            <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} onShow={() => setDefaultContentOnModalOpen(newCardContent)} className="munchkinModal newCardCreatorModal">
+            <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} onShow={() => setCustomCardFields(newCardContent)} className="munchkinModal newCardCreatorModal">
                 <Modal.Body className={modalBodyClasses + (cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column"}}>
                     <FontAwesomeIcon
                         icon={cardType === "door" ? faDoorClosed : faCoins}
@@ -106,12 +88,15 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                     />
                     <FontAwesomeIcon
                         icon={faRotateRight}
-                        onClick={resetNewCardContent}
+                        onClick={() => {
+                            setNewCardContent(defaultCardContent)
+                            setCustomCardFields(defaultCardContent)
+                        }}
                         style={{position: "absolute", height: "2rem", color: "#441B06", right: "16px"}}
                     />
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("supertitle", e.target.textContent)} className="text-center mHeaderFont mx-auto" style={{fontSize: "1rem", width: "90%"}}>{defaultContentOnModalOpen.supertitle}</div>
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("title", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "2rem"}}>{defaultContentOnModalOpen.title}</div>
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "1rem"}}>{defaultContentOnModalOpen.subtitle}</div>
+                    <div id="supertitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("supertitle", e.target.textContent)} className="text-center mHeaderFont mx-auto" style={{fontSize: "1rem", width: "90%"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
+                    <div id="title" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("title", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "2rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.title }}></div>
+                    <div id="subtitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "1rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
                     <br/>
                     <div>
                         <label className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload">
@@ -124,18 +109,10 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                         <input type="file" id="pictureUpload" style={{display: "none"}}/>
                     </div>
                     <br/>
-                    <div contentEditable="plaintext-only" onInput={e => updateNewCardContent("description", e.target.textContent)} className="newCardCreatorDescription">{defaultContentOnModalOpen.description}</div>
+                    <div id="description" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("description", e.target.textContent)} className="newCardCreatorDescription" dangerouslySetInnerHTML={{ __html: defaultCardContent.description }}></div>
                     <div className="d-flex justify-content-between">
-                        <span contentEditable="plaintext-only" onInput={e => updateNewCardContent("footerLeft", e.target.textContent)} style={{width: "45%", display: "inline-block"}}>{defaultContentOnModalOpen.footerLeft}</span><span contentEditable="plaintext-only" onInput={e => updateNewCardContent("footerRight", e.target.textContent)} style={{width: "45%", display: "inline-block", textAlign: "end"}}>{defaultContentOnModalOpen.footerRight}</span>
+                        <span id="footerLeft" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("footerLeft", e.target.textContent)} style={{width: "45%", display: "inline-block"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerLeft }}></span><span id="footerRight" contentEditable="plaintext-only" onInput={e => updateNewCardContent("footerRight", e.target.textContent)} style={{width: "45%", display: "inline-block", textAlign: "end"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerRight }}></span>
                     </div>
-                    {/* Need:
-                        1. level/bonus
-                        2. title
-                        3. subtitle
-                        4. image
-                        5. description
-                        6. footer (armor | levels           gp value | treasure)
-                    */}
                 </Modal.Body>
             </Modal>
         )
