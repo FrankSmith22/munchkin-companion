@@ -185,6 +185,9 @@ input::placeholder {
     border: 3px dashed #441B06;
     width: 60%;
     aspect-ratio: 1 / 1;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .newCardCreatorDescription {

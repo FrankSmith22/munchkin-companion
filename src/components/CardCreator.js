@@ -1,8 +1,8 @@
 import BackButton from "./BackButton";
-import { Row, Col } from "reactstrap";
+import { Row, Col, Button } from "reactstrap";
 import Modal from 'react-bootstrap/Modal';
 import { useEffect, useState } from "react";
-// import Draggable from "react-draggable";
+import { EVENTS as E } from '../app/events.mjs';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faCoins, faDoorClosed, faRotateRight } from "@fortawesome/free-solid-svg-icons";
 
@@ -21,6 +21,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         description: ">Card description<",
         footerLeft: ">footer left<",
         footerRight: ">footer right<",
+        image: ""
     }
 
     const setCustomCardFields = (newContent) => {
@@ -52,12 +53,24 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                 setCustomCardFields(savedNewCardContentObj)
             }
         }
+
+        const handleCardCreated = () => {
+            setNewCardModalIsOpen(false)
+            setNewCardContent(defaultCardContent)
+            setCustomCardFields(defaultCardContent)
+        }
+
+        socket.on(E.CREATE_CARD_SUCCESS, handleCardCreated)
+
+        return () => {
+            socket.off(E.CREATE_CARD_SUCCESS, handleCardCreated)
+        }
     }, [])
 
 
     const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
-    // const [cardType, setCardType] = useState(CARD_TYPES.DOOR)
     const [newCardContent, setNewCardContent] = useState({})
+    const [isSubmitBtnDisabled, setIsSubmitBtnDisabled] = useState(false)
 
     const toggleNewCardModalIsOpen = () => setNewCardModalIsOpen(!newCardModalIsOpen)
     
@@ -75,16 +88,26 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         }
 
         const updateNewCardContent = (section, content) => {
+            if (content === undefined) return
             let newCardContentCopy = {...newCardContent}
+            console.log(content)
+            if (section === "image") {
+                content = URL.createObjectURL(content)
+            }
             newCardContentCopy[section] = content
             setNewCardContent(newCardContentCopy)
             localStorage.setItem("newCardContent", JSON.stringify(newCardContentCopy))
         }
 
-        const modalBodyClasses = "mx-auto mt-4 mt-md-0 d-flex "
+        const handleSubmit = () => {
+            setIsSubmitBtnDisabled(true)
+            socket.emit(E.CREATE_CARD, newCardContent)
+        }
+
+        const modalBodyClasses = "mx-auto mt-4 mt-md-0 d-flex"
         return (
             <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} onShow={() => setCustomCardFields(newCardContent)} className="munchkinModal newCardCreatorModal">
-                <Modal.Body className={modalBodyClasses + (newCardContent.cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column", overflow: "hidden"}}>
+                <Modal.Body className={modalBodyClasses + " " + (newCardContent.cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column", overflow: "hidden"}}>
                     <FontAwesomeIcon
                         icon={newCardContent.cardType === CARD_TYPES.DOOR ? faDoorClosed : faCoins}
                         onClick={toggleCardType}
@@ -103,14 +126,19 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                     <div id="subtitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "1rem", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
                     <br/>
                     <div>
-                        <label className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload">
-                            <FontAwesomeIcon
-                                icon={faCamera}
-                                className="mx-auto align-self-center"
-                                style={{height: "2rem", color: "#441B06"}}
-                            />
+                        <label className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload" style={{backgroundImage: `url(${newCardContent.image})`}}>
+                            {
+                                !newCardContent.image ? 
+                                    <FontAwesomeIcon
+                                        icon={faCamera}
+                                        className="mx-auto align-self-center"
+                                        style={{height: "2rem", color: "#441B06"}}
+                                    />
+                                    :
+                                    ""
+                            }
                         </label>
-                        <input type="file" id="pictureUpload" style={{display: "none"}}/>
+                        <input type="file" id="pictureUpload" accept="image/*" onChange={event => updateNewCardContent("image", event.target.files[0])} style={{display: "none"}}/>
                     </div>
                     <br/>
                     <div id="description" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("description", e.target.textContent)} className="newCardCreatorDescription" dangerouslySetInnerHTML={{ __html: defaultCardContent.description }}></div>
@@ -118,6 +146,10 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                         <div id="footerLeft" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("footerLeft", e.target.textContent)} style={{width: "45%", display: "inline-block", overflowY: "auto", minHeight: "1.7rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerLeft }}></div><div id="footerRight" contentEditable="plaintext-only" onInput={e => updateNewCardContent("footerRight", e.target.textContent)} style={{width: "45%", display: "inline-block", textAlign: "end", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerRight }}></div>
                     </div>
                 </Modal.Body>
+                <div className="d-flex justify-content-evenly mt-5">
+                    <Button className="munchkinButton w-25" onClick={toggleNewCardModalIsOpen} style={{ backgroundColor: "#f48d5aff" }}>Cancel</Button>
+                    <Button className="munchkinButton w-25" disabled={isSubmitBtnDisabled} onClick={handleSubmit}>Create</Button>
+                </div>
             </Modal>
         )
     }
