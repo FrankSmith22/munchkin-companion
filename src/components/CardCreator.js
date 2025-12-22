@@ -21,7 +21,8 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         description: ">Card description<",
         footerLeft: ">footer left<",
         footerRight: ">footer right<",
-        image: ""
+        image: "",
+        imageObj: null
     }
 
     const setCustomCardFields = (newContent) => {
@@ -44,12 +45,12 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         if (savedNewCardContent){
             try {
                 savedNewCardContentObj = JSON.parse(savedNewCardContent)
-                setNewCardContent(savedNewCardContentObj) // TODO might be able to move to finally block
                 console.log(`Loading from localstorage: ${savedNewCardContent}`)
             } catch (error) {
                 console.error(`Something went wrong parsing newCardContent from local storage: ${error}. Loading in default values.`)
                 savedNewCardContentObj = defaultCardContent
             } finally {
+                setNewCardContent(savedNewCardContentObj)
                 setCustomCardFields(savedNewCardContentObj)
             }
         }
@@ -92,16 +93,20 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
             let newCardContentCopy = {...newCardContent}
             console.log(content)
             if (section === "image") {
-                content = URL.createObjectURL(content)
+                newCardContentCopy.imageObj = content
+                newCardContentCopy.image = URL.createObjectURL(content)
+            } else {
+                newCardContentCopy[section] = content
             }
-            newCardContentCopy[section] = content
             setNewCardContent(newCardContentCopy)
             localStorage.setItem("newCardContent", JSON.stringify(newCardContentCopy))
         }
 
         const handleSubmit = () => {
             setIsSubmitBtnDisabled(true)
-            socket.emit(E.CREATE_CARD, newCardContent)
+            const file = newCardContent.imageObj
+            delete newCardContent.imageObj
+            socket.emit(E.CREATE_CARD, newCardContent, file, file.name)
         }
 
         const modalBodyClasses = "mx-auto mt-4 mt-md-0 d-flex"

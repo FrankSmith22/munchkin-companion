@@ -5,16 +5,12 @@ import { EVENTS as E} from "./events.mjs"
 import { Player } from "./models.mjs"
 import { v4 as uuidv4 } from 'uuid';
 import { emitAllPlayersUpdate } from "./helper.mjs"
-import { logger } from "./logger.mjs";
-import { initializeApp, applicationDefault, cert } from 'firebase-admin/app'
-import { getFirestore, Timestamp, FieldValue, Filter } from 'firebase-admin/firestore'
-import { Readable } from 'stream'
-import { writeFile, readFileSync } from "fs";
+import { initializeApp, cert } from 'firebase-admin/app'
+import { getFirestore } from 'firebase-admin/firestore'
+import { Storage } from "@google-cloud/storage"
 
 const AFK_TIMEOUT_MILLIS = 10800000 // 3 hr
 // const AFK_TIMEOUT_MILLIS = 10000 // 10 sec (for testing purposes)
-const X_02_API_KEY = process.env.X_02_API_KEY
-const X_02_BASE_URL = "https://up.x02.me/api"
 
 const httpServer = createServer()
 
@@ -26,15 +22,21 @@ const io = new Server(4000, {
 
 const rooms = {}
 
-// db setup
+// google db and cloud storage setup
 const serviceAccount = process.env.GOOGLE_APPLICATION_CREDENTIALS
 const RULES_COLLECTION_NAME = "house-rules"
 const CUSTOM_CARDS_COLLECTION_NAME = "custom-cards"
+const STORAGE_PROJECT_ID = "munchkin-companion-server"
+const STORAGE_BUCKET = `${STORAGE_PROJECT_ID}.firebasestorage.app`
 initializeApp({
     credential: cert(serviceAccount)
-});
+})
 
-const DB = getFirestore();
+const DB = getFirestore()
+const storage = new Storage({
+    projectId: STORAGE_PROJECT_ID,
+    keyFilename: serviceAccount
+});
 
 async function getRulesToClient(socketObj) {
     try {
@@ -310,40 +312,34 @@ io.on(E.CONNECTION, socket => {
     socket.on(E.DISCONNECTION, ()=>{
         console.log("client has disconnected")
     })
-    socket.on(E.IMAGE_UPLOAD, async (file, callback) => {
-        console.log(file)
-        writeFile("image.jpg", file, async (err) => {
-            // callback({ message: err ? "failure" : "success" });
-            const upload_url = `${X_02_BASE_URL}/upload`
-            const fd = new FormData();
-            const data = readFileSync('image.jpg');
-            fd.append('file', data)
-            console.log(X_02_API_KEY)
-            let response = await fetch(upload_url, {
-                method: 'POST',
-                headers: {
-                    'X-API-Key': X_02_API_KEY,
-                    'Content-Type': "multipart/form-data"
-                },
-                body: fd
-            })
-            // console.log(response.status)
-            console.log(response.statusText)
-            console.log(await response.text())
-            callback({ message: "Done" });
-        });
-    })
-    socket.on(E.CREATE_CARD, async newCardContent => {
+    socket.on(E.CREATE_CARD, async (newCardContent, file, fileName) => {
+        const publicUrl = await uploadImage(file, fileName)
+        if (!publicUrl) {
+            socket.emit(E.CREATE_CARD_FAILURE)
+            return
+        }
+        newCardContent.image = publicUrl
         console.log(newCardContent)
-        //////////////////////////////////////////////////////////
-        // TODO here is where I would downscale and upload the user selected image. Since x02 is being weird, I will simply set all images to the same url for now.
-        newCardContent.image = "https://franksmith22.x02.me/i/CUY2H.png"
-        //////////////////////////////////////////////////////////
         const response = await DB.collection(CUSTOM_CARDS_COLLECTION_NAME).add(newCardContent)
         console.log(`New custom card added with id: ${response.id}`)
         socket.emit(E.CREATE_CARD_SUCCESS)
     })
 })
+
+async function uploadImage(file, fileName) {
+    console.log(`Image being uploaded: ${fileName}`)
+    try {
+        const fileRef = storage.bucket(STORAGE_BUCKET).file(fileName)
+        await fileRef.save(file)
+        await fileRef.makePublic()
+        const publicUrl = fileRef.publicUrl()
+        console.log(`File uploaded. Public URL: ${publicUrl}`)
+        return publicUrl
+    } catch (err) {
+        console.log(`Something went wrong uploading the file: ${err}`)
+        return ""
+    }
+}
 
 
 console.log("Server booted")
