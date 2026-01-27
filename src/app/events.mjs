@@ -31,5 +31,6 @@ export const EVENTS = deepFreeze({
     IMAGE_UPLOAD: "image-upload",
     CREATE_CARD: "create-card",
     CREATE_CARD_SUCCESS: "create-card-success",
-    CREATE_CARD_FAILURE: "create-card-failure"
+    CREATE_CARD_FAILURE: "create-card-failure",
+    GET_CARDS: "get-cards"
 })

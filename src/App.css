@@ -155,24 +155,6 @@ input::placeholder {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.customCardThumbnailAdd {
-    height: 140px;
-    width: 100px;
-    border-radius: 20px;
-    border: 2px dashed black;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.customCardThumbnail {
-    height: 140px;
-    width: 100px;
-    border: 6px solid #441B06;
-    border-radius: 20px;
-    font-size: 8px;
-    box-shadow: 5px 5px 8px;
-}
-
 .newCardCreatorModal .modal-body {
     aspect-ratio: 1 / 1.55;
     width: 90%;
@@ -181,8 +163,11 @@ input::placeholder {
     transition: background-color 0.5s ease;
 }
 
-.newCardCreatorUploadImage {
+#newCardCreatorUploadImageEditing {
     border: 3px dashed #441B06;
+}
+
+.newCardCreatorUploadImage {
     width: 60%;
     aspect-ratio: 1 / 1;
     background-size: contain;
@@ -190,12 +175,32 @@ input::placeholder {
     background-position: center;
 }
 
-.newCardCreatorDescription {
-    line-height: 1.2rem;
+.newCardCreatorDescription{
     overflow-y: auto;
     flex: 1 1 auto;
     display: flex;
     flex-flow: column;
-    /* min-height: 20%; */
+    font-size: 0.4rem;
+}
+
+.newCardCreatorDescription.editing {
+    line-height: 1.2rem;
     min-height: 2.7rem;
+    font-size: 1.1rem;
+}
+
+/* Custom card list */
+.customCardThumbnailAdd {
+    aspect-ratio: 1 / 1.55;
+    border-radius: 20px;
+    border: 2px dashed black;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.newCardCreatorCard {
+    aspect-ratio: 1 / 1.55;
+    border: 5px solid #441B06;
+    border-radius: 20px;
+    box-shadow: 5px 5px 8px;
 }

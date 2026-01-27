@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import { EVENTS as E } from '../app/events.mjs';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faCoins, faDoorClosed, faRotateRight } from "@fortawesome/free-solid-svg-icons";
+import CardCreatorListItem from "./CardCreatorListItem";
 
-export default function CardCreator({socket, setDisplayMode, isConnected, setShowDisconnectedToast}){
+export default function CardCreator({socket, setDisplayMode, isConnected, setShowDisconnectedToast, allCards}){
 
     const CARD_TYPES = {
         DOOR: "door",
@@ -91,7 +92,6 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         const updateNewCardContent = (section, content) => {
             if (content === undefined) return
             let newCardContentCopy = {...newCardContent}
-            console.log(content)
             if (section === "image") {
                 newCardContentCopy.imageObj = content
                 newCardContentCopy.image = URL.createObjectURL(content)
@@ -131,7 +131,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                     <div id="subtitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "1rem", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
                     <br/>
                     <div>
-                        <label className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload" style={{backgroundImage: `url(${newCardContent.image})`}}>
+                        <label id="newCardCreatorUploadImageEditing" className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload" style={{backgroundImage: `url(${newCardContent.image})`}}>
                             {
                                 !newCardContent.image ? 
                                     <FontAwesomeIcon
@@ -146,7 +146,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                         <input type="file" id="pictureUpload" accept="image/*" onChange={event => updateNewCardContent("image", event.target.files[0])} style={{display: "none"}}/>
                     </div>
                     <br/>
-                    <div id="description" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("description", e.target.textContent)} className="newCardCreatorDescription" dangerouslySetInnerHTML={{ __html: defaultCardContent.description }}></div>
+                    <div id="description" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("description", e.target.textContent)} className="newCardCreatorDescription editing" dangerouslySetInnerHTML={{ __html: defaultCardContent.description }}></div>
                     <div className="d-flex justify-content-between" style={{overflowY: "hidden"}}>
                         <div id="footerLeft" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("footerLeft", e.target.textContent)} style={{width: "45%", display: "inline-block", overflowY: "auto", minHeight: "1.7rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerLeft }}></div><div id="footerRight" contentEditable="plaintext-only" onInput={e => updateNewCardContent("footerRight", e.target.textContent)} style={{width: "45%", display: "inline-block", textAlign: "end", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerRight }}></div>
                     </div>
@@ -173,17 +173,13 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                         </div>
                     </div>
                 </Col>
-                <Col xs="3" md="2" className="mx-1 my-1 p-0">
-                    <div className="customCardThumbnail">
-                        ===I am a placeholder card===
-                    </div>
-                </Col>
-                <Col xs="3" md="2" className="mx-1 my-1 p-0">
-                    <div className="customCardThumbnail">
-                        ===I am a placeholder card===
-                    </div>
-                </Col>
-                
+                {allCards.map(card => {
+                    return (
+                        <Col key={card.id} xs="3" md="2" className="mx-1 my-1 p-0">
+                            <CardCreatorListItem card={card.data}/>
+                        </Col>
+                    )
+                })}
             </Row>
         </div>
         </>

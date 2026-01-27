@@ -55,6 +55,21 @@ async function getRulesToClient(socketObj) {
     }
 }
 
+async function getCardsToClient(socketObj) {
+    try {
+        const snapshot = await DB.collection(CUSTOM_CARDS_COLLECTION_NAME).get()
+        let allCards = []
+        snapshot.forEach(doc => {
+            allCards.push({id: doc.id, data: doc.data()})
+        })
+        socketObj.emit(E.GET_CARDS, JSON.stringify(allCards))
+    }
+    catch (error) {
+        const errMsg = `There was a problem getting the cards: ${error}`
+        console.error(errMsg)
+    }
+}
+
 io.on(E.CONNECTION, socket => {
     console.log('client connected: ' + socket.id)
     let playerRoomId
@@ -323,6 +338,10 @@ io.on(E.CONNECTION, socket => {
         const response = await DB.collection(CUSTOM_CARDS_COLLECTION_NAME).add(newCardContent)
         console.log(`New custom card added with id: ${response.id}`)
         socket.emit(E.CREATE_CARD_SUCCESS)
+        await getCardsToClient(socket)
+    })
+    socket.on(E.GET_CARDS, async () => {
+        await getCardsToClient(socket)
     })
 })
 

@@ -59,6 +59,7 @@ export default function App() {
     const [allRules, setAllRules] = useState([])
     const [rulesErrorMsg, setRulesErrorMsg] = useState("")
     const [showDisconnectedToast, setShowDisconnectedToast] = useState(false)
+    const [allCards, setAllCards] = useState([])
 
     const setDisplayMode = (displayMode) => {
         setPageToDisplay(displayMode)
@@ -200,8 +201,14 @@ export default function App() {
             setRulesErrorMsg(message)
         }
 
+        function onGetCards(allCards) {
+            console.log(`All custom cards: ${allCards}`)
+            setAllCards(JSON.parse(allCards))
+        }
+
         socket.connect()
         socket.emit(E.GET_RULES)
+        socket.emit(E.GET_CARDS)
         attemptReconnect()
 
         socket.on(E.CONNECTION, onConnect)
@@ -213,6 +220,7 @@ export default function App() {
         socket.on(E.DISCONNECT_ROOM, onDisconnectRoom)
         socket.on(E.GET_RULES, onGetRules)
         socket.on(E.RULES_ERROR, onRulesError)
+        socket.on(E.GET_CARDS, onGetCards)
         
         return () => {
             socket.off(E.CONNECTION, onConnect)
@@ -224,6 +232,7 @@ export default function App() {
             socket.off(E.DISCONNECT_ROOM, onDisconnectRoom)
             socket.off(E.GET_RULES, onGetRules)
             socket.off(E.RULES_ERROR, onRulesError)
+            socket.off(E.GET_CARDS, onGetCards)
         }
     }, [])
 
@@ -233,7 +242,7 @@ export default function App() {
             {pageToDisplay === DISPLAY_MODES.MODE_SELECT ? <ModeSelect socket={socket} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
             {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} setDisplayMode={setDisplayMode} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
             {pageToDisplay === DISPLAY_MODES.TV_MODE ? <TvCard socket={socket} setDisplayMode={setDisplayMode} allPlayers={allPlayers} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
-            {pageToDisplay === DISPLAY_MODES.CARD_CREATOR_MODE ? <CardCreator socket={socket} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.CARD_CREATOR_MODE ? <CardCreator socket={socket} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast} allCards={allCards}/> : <></>}
         </div>
     );
 }
