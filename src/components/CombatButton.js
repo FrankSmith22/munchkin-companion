@@ -124,7 +124,6 @@ export default function CombatModal({ socket, allPlayersList, playerObj, isConne
             setShowDisconnectedToast()
             return
         }
-        socket.emit(E.PLAYER_LEVEL_DEC)
         setPlayersHelping([])
         setCombatPartyTotal(playerObj.level + playerObj.gearBonus)
         setMonsterLevel(0)
