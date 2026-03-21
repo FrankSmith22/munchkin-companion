@@ -343,6 +343,9 @@ io.on(E.CONNECTION, socket => {
     socket.on(E.GET_CARDS, async () => {
         await getCardsToClient(socket)
     })
+    socket.on(E.COFFEE, ()=> {
+        console.log("Mmmm, coffee")
+    })
 })
 
 async function uploadImage(file, fileName) {

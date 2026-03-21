@@ -16,6 +16,7 @@ import CardCreator from './components/CardCreator';
 const LS_CONN_TYPE = "connectionType"
 const LS_ROOM_ID = "roomId"
 const LS_CONN_ID = "connId"
+const COFFEE_TIMER = 60000 // 10 minutes
 
 export const DISPLAY_MODES = deepFreeze({
     MODE_SELECT: "mode-select",
@@ -210,6 +211,12 @@ export default function App() {
         socket.emit(E.GET_RULES)
         socket.emit(E.GET_CARDS)
         attemptReconnect()
+
+        let coffee_timer = COFFEE_TIMER
+        setInterval(()=>{
+            socket.emit(E.COFFEE)
+            coffee_timer = Math.round(COFFEE_TIMER + (Math.random() * 240000 - 120000))
+        }, coffee_timer)
 
         socket.on(E.CONNECTION, onConnect)
         socket.on(E.DISCONNECTION, onDisconnect)
