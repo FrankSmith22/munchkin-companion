@@ -314,6 +314,9 @@ io.on(E.CONNECTION, socket => {
     //     playerObj = null
     //     socket.emit(E.DISCONNECT_ROOM)
     })
+    socket.on(E.COFFEE, ()=> {
+        console.log("Mmmm, coffee")
+    })
 })
 
 
