@@ -16,7 +16,7 @@ import CardCreator from './components/CardCreator';
 const LS_CONN_TYPE = "connectionType"
 const LS_ROOM_ID = "roomId"
 const LS_CONN_ID = "connId"
-const COFFEE_TIMER = 60000 // 10 minutes
+const COFFEE_TIMER = 600000 // 10 minutes
 
 export const DISPLAY_MODES = deepFreeze({
     MODE_SELECT: "mode-select",
