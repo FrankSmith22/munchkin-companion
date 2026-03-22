@@ -159,6 +159,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         )
     }
     
+    const [selectedCard, setSelectedCard] = useState("")
 
     return (
         <>
@@ -176,7 +177,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                 {allCards.map(card => {
                     return (
                         <Col key={card.id} xs="3" md="2" className="mx-1 my-1 p-0">
-                            <CardCreatorListItem card={card.data}/>
+                            <CardCreatorListItem card={card} selectedCard={selectedCard} setSelectedCard={setSelectedCard}/>
                         </Col>
                     )
                 })}
