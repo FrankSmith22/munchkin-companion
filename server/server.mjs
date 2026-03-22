@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { Server } from "socket.io"
-import { createServer, get } from 'http'
+import { createServer } from 'http'
 import { EVENTS as E} from "./events.mjs"
 import { Player } from "./models.mjs"
 import { v4 as uuidv4 } from 'uuid';
@@ -13,12 +13,9 @@ import fetch from 'node-fetch';
 const AFK_TIMEOUT_MILLIS = 10800000 // 3 hr
 // const AFK_TIMEOUT_MILLIS = 10000 // 10 sec (for testing purposes)
 const COFFEE_SERVER_PORT = 4001
-// const COFFEE_TIMER = 600000 // 10 minutes
 const COFFEE_TIMER = 300000 // 5 minutes
-// const COFFEE_TIMER = 10000 // 10 seconds
-// const COFFEE_DONE = 10800000 // 3 hours
-const COFFEE_DONE = 1800000 // 30 minutes
-// const COFFEE_DONE = 300000 // 5 minutes
+const COFFEE_DONE = 10800000 // 3 hours
+
 let LAST_INTERACTED_TIME = Date.now()
 
 const httpServer = createServer((req, res) => {
@@ -27,7 +24,7 @@ const httpServer = createServer((req, res) => {
 })
 
 httpServer.listen(COFFEE_SERVER_PORT, () => {
-    console.log(`Server running at http://localhost:${COFFEE_SERVER_PORT}/`);
+    console.log(`HTTP Server running at http://localhost:${COFFEE_SERVER_PORT}/`);
     let coffeeTimer = COFFEE_TIMER
     const coffeeInterval = setInterval(async () => {
         console.log("Grabbing coffee...")
@@ -37,7 +34,6 @@ httpServer.listen(COFFEE_SERVER_PORT, () => {
             console.log("coffee's done, cleared interval")
         }
         coffeeTimer = Math.round(COFFEE_TIMER + (Math.random() * 240000 - 120000)) // +- 2 minutes
-        console.log(`New coffee timer is in ${coffeeTimer / 60000} minutes`)
     }, coffeeTimer)
 });
 
@@ -347,4 +343,4 @@ io.on(E.CONNECTION, socket => {
     })
 })
 
-console.log("Server booted")
+console.log("Socket server booted")
