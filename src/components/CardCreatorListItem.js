@@ -1,6 +1,20 @@
+import { useState, useEffect } from "react"
+
 export default function CardCreatorListItem({card}) {
+
+    const [selectedCard, setSelectedCard] = useState(null)
+
+    // TODO handle deselecting other cards
+
+    useEffect(()=> {
+        if (!selectedCard) return
+        
+        selectedCard.style.filter = "blur(5px)"
+        selectedCard.style.opacity = "0.8"
+    }, [selectedCard])
+
     return (
-        <div className="newCardCreatorCard d-flex" style={{flexFlow: "column", overflow: "hidden"}}>
+        <div className="newCardCreatorCard d-flex" onClick={(e) => setSelectedCard(e.currentTarget)} style={{flexFlow: "column", overflow: "hidden", filter: "unset", opacity: "1"}}>
             <div className="text-center mHeaderFont mx-auto" style={{fontSize: "0.33rem", width: "90%", overflowY: "auto", minHeight: ".45rem"}}>
                 {card.supertitle}
             </div>
