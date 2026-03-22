@@ -13,7 +13,8 @@ import fetch from 'node-fetch';
 const AFK_TIMEOUT_MILLIS = 10800000 // 3 hr
 // const AFK_TIMEOUT_MILLIS = 10000 // 10 sec (for testing purposes)
 const COFFEE_SERVER_PORT = 4001
-const COFFEE_TIMER = 600000 // 10 minutes
+// const COFFEE_TIMER = 600000 // 10 minutes
+const COFFEE_TIMER = 300000 // 5 minutes
 // const COFFEE_TIMER = 10000 // 10 seconds
 // const COFFEE_DONE = 10800000 // 3 hours
 const COFFEE_DONE = 1800000 // 30 minutes
@@ -29,13 +30,14 @@ httpServer.listen(COFFEE_SERVER_PORT, () => {
     console.log(`Server running at http://localhost:${COFFEE_SERVER_PORT}/`);
     let coffeeTimer = COFFEE_TIMER
     const coffeeInterval = setInterval(async () => {
-      
+        console.log("Grabbing coffee...")
         await fetch(`${process.env.COFFEE_SERVER}`)
         if ((Date.now() - LAST_INTERACTED_TIME) > COFFEE_DONE) {
             clearInterval(coffeeInterval)
             console.log("coffee's done, cleared interval")
         }
         coffeeTimer = Math.round(COFFEE_TIMER + (Math.random() * 240000 - 120000)) // +- 2 minutes
+        console.log(`New coffee timer is in ${coffeeTimer / 60000} minutes`)
     }, coffeeTimer)
 });
 
