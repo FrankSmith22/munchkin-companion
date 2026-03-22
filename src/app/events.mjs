@@ -27,6 +27,5 @@ export const EVENTS = deepFreeze({
     NEW_RULE_SUCCESS: "new-rule-success",
     DELETE_RULE: "delete-rule",
     UPDATE_RULE: "update-rule",
-    UPDATE_RULE_SUCCESS: "update-rule-success",
-    COFFEE: "coffee"
+    UPDATE_RULE_SUCCESS: "update-rule-success"
 })

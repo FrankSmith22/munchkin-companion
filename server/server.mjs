@@ -11,6 +11,10 @@ import { getFirestore, Timestamp, FieldValue, Filter } from 'firebase-admin/fire
 
 const AFK_TIMEOUT_MILLIS = 10800000 // 3 hr
 // const AFK_TIMEOUT_MILLIS = 10000 // 10 sec (for testing purposes)
+const COFFEE_TIMER = 600000 // 10 minutes
+// const COFFEE_DONE = 10800000 // 3 hours
+const COFFEE_DONE = 1800000 // 3 hours
+let LAST_INTERACTED_TIME = Date.now()
 
 const httpServer = createServer()
 
@@ -314,10 +318,19 @@ io.on(E.CONNECTION, socket => {
     //     playerObj = null
     //     socket.emit(E.DISCONNECT_ROOM)
     })
-    socket.on(E.COFFEE, ()=> {
-        console.log("Mmmm, coffee")
+    socket.onAny(() => {
+        LAST_INTERACTED_TIME = Date.now()
     })
 })
 
+let coffeeTimer = COFFEE_TIMER
+const coffeeInterval = setInterval(() => {
+    console.log("Mmm, coffee")
+    if ((Date.now() - LAST_INTERACTED_TIME) > COFFEE_DONE) {
+        clearInterval(coffeeInterval)
+        console.log("coffee's done, cleared interval")
+    }
+    coffeeTimer = Math.round(COFFEE_TIMER + (Math.random() * 240000 - 120000)) // +- 2 minutes
+}, coffeeTimer)
 
 console.log("Server booted")
