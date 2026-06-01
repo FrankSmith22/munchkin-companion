@@ -9,7 +9,6 @@ import { initializeApp, cert } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
 import { Storage } from "@google-cloud/storage"
 import { logger } from "./logger.mjs";
-import { initializeApp, cert } from 'firebase-admin/app'
 import fetch from 'node-fetch';
 
 const AFK_TIMEOUT_MILLIS = 10800000 // 3 hr
@@ -367,6 +366,12 @@ io.on(E.CONNECTION, socket => {
     })
     socket.on(E.GET_CARDS, async () => {
         await getCardsToClient(socket)
+    })
+    socket.on(E.DELETE_CARD, async ({cardId}) => {
+        if (!cardId) return
+        await DB.collection(CUSTOM_CARDS_COLLECTION_NAME).doc(cardId).delete()
+        console.log(`Card id ${cardId} deleted`)
+        const errMsg = getCardsToClient(socket)
     })
     socket.onAny(() => {
         LAST_INTERACTED_TIME = Date.now()

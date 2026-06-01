@@ -11,7 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Toast, ToastContainer } from 'react-bootstrap';
 import './App.css'
 import deepFreeze from "deep-freeze"
-import CardCreator from './components/CardCreator';
+import CardCreator from './components/card-creator/CardCreator';
 
 const LS_CONN_TYPE = "connectionType"
 const LS_ROOM_ID = "roomId"

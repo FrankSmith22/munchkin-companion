@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import munchkinGuy from "../res/munchkin-guy.png"
 import { PICTURES as P } from '../app/pictureMapping';
-import CardCreatorButton from './CardCreatorButton';
+import CardCreatorButton from './card-creator/CardCreatorButton';
 
 const LS_DEFAULT_ROOM_ID = "defaultRoomId"
 const LS_DEFAULT_PLAYER_NAME = "defaultPlayerName"

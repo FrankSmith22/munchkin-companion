@@ -1,8 +1,8 @@
-import BackButton from "./BackButton";
+import BackButton from "../BackButton";
 import { Row, Col, Button } from "reactstrap";
 import Modal from 'react-bootstrap/Modal';
 import { useEffect, useState } from "react";
-import { EVENTS as E } from '../app/events.mjs';
+import { EVENTS as E } from '../../app/events.mjs';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faCoins, faDoorClosed, faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import CardCreatorListItem from "./CardCreatorListItem";
@@ -177,7 +177,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                 {allCards.map(card => {
                     return (
                         <Col key={card.id} xs="3" md="2" className="mx-1 my-1 p-0">
-                            <CardCreatorListItem card={card} selectedCard={selectedCard} setSelectedCard={setSelectedCard}/>
+                            <CardCreatorListItem socket={socket} card={card} selectedCard={selectedCard} setSelectedCard={setSelectedCard} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/>
                         </Col>
                     )
                 })}

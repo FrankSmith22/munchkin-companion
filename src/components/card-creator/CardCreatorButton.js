@@ -1,5 +1,5 @@
 import { Button } from "reactstrap";
-import { DISPLAY_MODES } from "../App"
+import { DISPLAY_MODES } from "../../App"
 
 export default function CardCreatorButton({setDisplayMode}) {
     return (
