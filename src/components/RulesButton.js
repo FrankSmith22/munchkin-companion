@@ -27,7 +27,6 @@ export default function RulesButton({socket, allRules, rulesErrorMsg, isConnecte
             setShowDisconnectedToast()
             return
         }
-        socket.emit(E.PLAYER_LEVEL_DEC)
         setIsConfirmModalOpen(!isConfirmModalOpen)
         if (ruleId) {
             setDeletingRule(ruleId)
@@ -39,7 +38,6 @@ export default function RulesButton({socket, allRules, rulesErrorMsg, isConnecte
             setShowDisconnectedToast()
             return
         }
-        socket.emit(E.PLAYER_LEVEL_DEC)
         setIsNewRuleBoxOpen(!isNewRuleBoxOpen)
     }
 
@@ -74,7 +72,6 @@ export default function RulesButton({socket, allRules, rulesErrorMsg, isConnecte
             setShowDisconnectedToast()
             return
         }
-        socket.emit(E.PLAYER_LEVEL_DEC)
         let editingRule = filteredRules.filter(rule => rule.id === ruleId)
         if (editingRule.length === 0) return
         setRuleEditing(ruleId)
@@ -88,7 +85,6 @@ export default function RulesButton({socket, allRules, rulesErrorMsg, isConnecte
             setShowDisconnectedToast()
             return
         }
-        socket.emit(E.PLAYER_LEVEL_DEC)
         setRuleEditing(null)
         setEditingRuleTitle("")
         setEditingRuleDesc("")
