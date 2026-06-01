@@ -24,7 +24,6 @@ export default function CombatModal({ socket, allPlayersList, playerObj, isConne
             setShowDisconnectedToast()
             return
         }
-        socket.emit(E.PLAYER_LEVEL_DEC)
         setIsHelpSelectOpen(!isHelpSelectOpen)
     }
 
@@ -33,7 +32,6 @@ export default function CombatModal({ socket, allPlayersList, playerObj, isConne
             setShowDisconnectedToast()
             return
         }
-        socket.emit(E.PLAYER_LEVEL_DEC)
         socket.emit(E.SEND_HELP, { helperConnIds: playersHelping.map(player => player.connId) })
         setIsHelpSelectOpen(false)
     }
@@ -91,9 +89,9 @@ export default function CombatModal({ socket, allPlayersList, playerObj, isConne
             // The !isHelpSelectOpen is a bit hacky. Basically allows me to set the playersHelping with the known
             // helpers coming from the server when the page first loads, regardless of whatever temporary decisions
             // that have been made in the help select modal. Probably a hook I could be using somewhere here...
-            else if (player.helping.includes(playerObj.connId) && !isHelpSelectOpen) {
-                updatedPlayersHelping.push(player)
-            }
+            // else if (player.helping.includes(playerObj.connId) && !isHelpSelectOpen) {
+            //     updatedPlayersHelping.push(player)
+            // }
         })
         setPlayersHelping(updatedPlayersHelping)
 
@@ -106,7 +104,6 @@ export default function CombatModal({ socket, allPlayersList, playerObj, isConne
             setShowDisconnectedToast()
             return
         }
-        socket.emit(E.PLAYER_LEVEL_DEC)
         let selectedPlayer = allPlayersList.find(player => player.connId === selectedConnId)
         if (!playersHelping.some(helper => helper.connId === selectedPlayer.connId)) {
             let playersHelpingClone = [...playersHelping]
