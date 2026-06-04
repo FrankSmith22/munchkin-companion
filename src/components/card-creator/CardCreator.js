@@ -1,7 +1,7 @@
 import BackButton from "../BackButton";
 import { Row, Col, Button } from "reactstrap";
 import Modal from 'react-bootstrap/Modal';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { EVENTS as E } from '../../app/events.mjs';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faCoins, faDoorClosed, faRotateRight } from "@fortawesome/free-solid-svg-icons";
@@ -27,34 +27,27 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
     }
 
     const setCustomCardFields = (newContent) => {
-        // Hate doing this manual innerHTML setting, but is necessary for contentEditable items in React the way this is set up
         try {
             localStorage.setItem("newCardContent", JSON.stringify(newContent))
-            document.querySelector("#supertitle").innerHTML = newContent.supertitle
-            document.querySelector("#title").innerHTML = newContent.title
-            document.querySelector("#subtitle").innerHTML = newContent.subtitle
-            document.querySelector("#description").innerHTML = newContent.description
-            document.querySelector("#footerLeft").innerHTML = newContent.footerLeft
-            document.querySelector("#footerRight").innerHTML = newContent.footerRight
+            if (supertitleRef.current &&
+                titleRef.current &&
+                subtitleRef.current &&
+                descriptionRef.current &&
+                footerLeftRef.current &&
+                footerRightRef.current
+            ){
+                supertitleRef.current.innerText = newContent.supertitle
+                titleRef.current.innerText = newContent.title
+                subtitleRef.current.innerText = newContent.subtitle
+                descriptionRef.current.innerText = newContent.description
+                footerLeftRef.current.innerText = newContent.footerLeft
+                footerRightRef.current.innerText = newContent.footerRight
+            }
         } catch(err) {
             // Dont actually do anything, we hit this on page load, I suspect because of rendering race conditions
         }
     }
     useEffect(() => {
-        const savedNewCardContent = localStorage.getItem("newCardContent")
-        let savedNewCardContentObj = {}
-        if (savedNewCardContent){
-            try {
-                savedNewCardContentObj = JSON.parse(savedNewCardContent)
-                console.log(`Loading from localstorage: ${savedNewCardContent}`)
-            } catch (error) {
-                console.error(`Something went wrong parsing newCardContent from local storage: ${error}. Loading in default values.`)
-                savedNewCardContentObj = defaultCardContent
-            } finally {
-                setNewCardContent(savedNewCardContentObj)
-                setCustomCardFields(savedNewCardContentObj)
-            }
-        }
 
         const handleCardCreated = () => {
             setNewCardModalIsOpen(false)
@@ -74,7 +67,34 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
     const [newCardContent, setNewCardContent] = useState({})
     const [isSubmitBtnDisabled, setIsSubmitBtnDisabled] = useState(false)
 
+    const supertitleRef = useRef(null)
+    const titleRef = useRef(null)
+    const subtitleRef = useRef(null)
+    const descriptionRef = useRef(null)
+    const footerLeftRef = useRef(null)
+    const footerRightRef = useRef(null)
+
     const toggleNewCardModalIsOpen = () => setNewCardModalIsOpen(!newCardModalIsOpen)
+
+    useEffect(() => {
+        if(newCardModalIsOpen) {
+            const savedNewCardContent = localStorage.getItem("newCardContent")
+            let savedNewCardContentObj = {}
+            if (savedNewCardContent){
+                try {
+                    savedNewCardContentObj = JSON.parse(savedNewCardContent)
+                    console.log(`Loading from localstorage: ${savedNewCardContent}`)
+                } catch (error) {
+                    console.error(`Something went wrong parsing newCardContent from local storage: ${error}. Loading in default values.`)
+                    savedNewCardContentObj = defaultCardContent
+
+                } finally {
+                    setNewCardContent(savedNewCardContentObj)
+                    setCustomCardFields(savedNewCardContentObj)
+                }
+            }
+        }
+    }, [newCardModalIsOpen])
     
     const newCardModal = () => {
 
@@ -90,15 +110,25 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         }
 
         const updateNewCardContent = (section, content) => {
-            if (content === undefined) return
             let newCardContentCopy = {...newCardContent}
             if (section === "image") {
                 newCardContentCopy.imageObj = content
                 newCardContentCopy.image = URL.createObjectURL(content)
             } else {
-                newCardContentCopy[section] = content
+                // else must be a ref object
+                let ref = null
+                switch(section) {
+                    case "supertitle": ref = supertitleRef; break;
+                    case "title": ref = titleRef; break;
+                    case "subtitle": ref = subtitleRef; break;
+                    case "description": ref = descriptionRef; break;
+                    case "footerLeft": ref = footerLeftRef; break;
+                    case "footerRight": ref = footerRightRef; break;
+                }
+                newCardContentCopy[section] = ref.current.innerText
             }
             setNewCardContent(newCardContentCopy)
+            console.log(newCardContentCopy)
             localStorage.setItem("newCardContent", JSON.stringify(newCardContentCopy))
         }
 
@@ -111,7 +141,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
 
         const modalBodyClasses = "mx-auto mt-4 mt-md-0 d-flex"
         return (
-            <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} onShow={() => setCustomCardFields(newCardContent)} className="munchkinModal newCardCreatorModal">
+            <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} className="munchkinModal newCardCreatorModal">
                 <Modal.Body className={modalBodyClasses + " " + (newCardContent.cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column", overflow: "hidden"}}>
                     <FontAwesomeIcon
                         icon={newCardContent.cardType === CARD_TYPES.DOOR ? faDoorClosed : faCoins}
@@ -126,9 +156,9 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                         }}
                         style={{position: "absolute", height: "2rem", color: "#441B06", right: "16px"}}
                     />
-                    <div id="supertitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("supertitle", e.target.textContent)} className="text-center mHeaderFont mx-auto" style={{fontSize: "1rem", width: "90%", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
-                    <div id="title" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("title", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "2rem", overflowY: "auto", minHeight: "3rem", maxHeight: "6rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.title }}></div>
-                    <div id="subtitle" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("subtitle", e.target.textContent)} className="text-center mHeaderFont" style={{fontSize: "1rem", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.supertitle }}></div>
+                    <div id="supertitle" ref={supertitleRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("supertitle")} className="text-center mHeaderFont mx-auto" style={{fontSize: "1rem", width: "90%", overflowY: "auto", minHeight: "1.5rem"}}></div>
+                    <div id="title" ref={titleRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("title")} className="text-center mHeaderFont" style={{fontSize: "2rem", overflowY: "auto", minHeight: "3rem", maxHeight: "6rem"}}></div>
+                    <div id="subtitle" ref={subtitleRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("subtitle")} className="text-center mHeaderFont" style={{fontSize: "1rem", overflowY: "auto", minHeight: "1.5rem"}}></div>
                     <br/>
                     <div>
                         <label id="newCardCreatorUploadImageEditing" className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload" style={{backgroundImage: `url(${newCardContent.image})`}}>
@@ -146,9 +176,10 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                         <input type="file" id="pictureUpload" accept="image/*" onChange={event => updateNewCardContent("image", event.target.files[0])} style={{display: "none"}}/>
                     </div>
                     <br/>
-                    <div id="description" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("description", e.target.textContent)} className="newCardCreatorDescription editing" dangerouslySetInnerHTML={{ __html: defaultCardContent.description }}></div>
+                    <div id="description" ref={descriptionRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("description")} className="newCardCreatorDescription editing"></div>
                     <div className="d-flex justify-content-between" style={{overflowY: "hidden"}}>
-                        <div id="footerLeft" contentEditable="plaintext-only" suppressContentEditableWarning={true} onInput={e => updateNewCardContent("footerLeft", e.target.textContent)} style={{width: "45%", display: "inline-block", overflowY: "auto", minHeight: "1.7rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerLeft }}></div><div id="footerRight" contentEditable="plaintext-only" onInput={e => updateNewCardContent("footerRight", e.target.textContent)} style={{width: "45%", display: "inline-block", textAlign: "end", overflowY: "auto", minHeight: "1.5rem"}} dangerouslySetInnerHTML={{ __html: defaultCardContent.footerRight }}></div>
+                        <div id="footerLeft" ref={footerLeftRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("footerLeft")} style={{width: "45%", display: "inline-block", overflowY: "auto", minHeight: "1.7rem"}}></div>
+                        <div id="footerRight" ref={footerRightRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("footerRight")} style={{width: "45%", display: "inline-block", textAlign: "end", overflowY: "auto", minHeight: "1.5rem"}}></div>
                     </div>
                 </Modal.Body>
                 <div className="d-flex justify-content-evenly mt-5">

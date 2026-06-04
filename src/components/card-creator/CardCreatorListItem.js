@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { EVENTS as E } from '../../app/events.mjs';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrashCan, faPencil } from '@fortawesome/free-solid-svg-icons';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Card, CardHeader, CardTitle, CardBody, Collapse, CardFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 export default function CardCreatorListItem({socket, card, setSelectedCard, selectedCard, isConnected, setShowDisconnectedToast}) {
 
