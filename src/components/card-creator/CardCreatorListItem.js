@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrashCan, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-export default function CardCreatorListItem({socket, card, setSelectedCard, selectedCard, isConnected, setShowDisconnectedToast}) {
+export default function CardCreatorListItem({socket, card, setSelectedCard, selectedCard, isConnected, setShowDisconnectedToast, toggleNewCardModalIsOpen, setEditingCardContent, setDefaultCardContent}) {
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
     const [deletingCard, setDeletingCard] = useState("")
@@ -23,6 +23,13 @@ export default function CardCreatorListItem({socket, card, setSelectedCard, sele
     function sendDeleteCard() {
         toggleConfirmModal()
         socket.emit(E.DELETE_CARD, {cardId: deletingCard})
+    }
+
+    function startEditingCard(card) {
+        let cardContent = {...card.data, id: card.id}
+        setEditingCardContent(cardContent)
+        setDefaultCardContent(cardContent) // This allows the reset button to only reset state back to card as it was before editing
+        toggleNewCardModalIsOpen()
     }
 
     return (
@@ -73,7 +80,7 @@ export default function CardCreatorListItem({socket, card, setSelectedCard, sele
                     <FontAwesomeIcon
                         style={{ color: "#441B06", cursor: "pointer" }}
                         icon={faPencil}
-                        onClick={() => {}}
+                        onClick={() => {startEditingCard(card)}}
                     />
                     <FontAwesomeIcon
                         style={{ color: "#441B06", cursor: "pointer" }}

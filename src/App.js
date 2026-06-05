@@ -202,7 +202,6 @@ export default function App() {
         }
 
         function onGetCards(allCards) {
-            console.log(`All custom cards: ${allCards}`)
             setAllCards(JSON.parse(allCards))
         }
 
