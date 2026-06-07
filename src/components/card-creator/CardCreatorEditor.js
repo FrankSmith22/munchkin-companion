@@ -17,21 +17,23 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
                 footerLeftRef.current &&
                 footerRightRef.current
             ){
-                supertitleRef.current.innerText = newContent.supertitle
-                titleRef.current.innerText = newContent.title
-                subtitleRef.current.innerText = newContent.subtitle
-                descriptionRef.current.innerText = newContent.description
-                footerLeftRef.current.innerText = newContent.footerLeft
-                footerRightRef.current.innerText = newContent.footerRight
+                supertitleRef.current.innerText = newContent.data.supertitle
+                titleRef.current.innerText = newContent.data.title
+                subtitleRef.current.innerText = newContent.data.subtitle
+                descriptionRef.current.innerText = newContent.data.description
+                footerLeftRef.current.innerText = newContent.data.footerLeft
+                footerRightRef.current.innerText = newContent.data.footerRight
             }
         } catch(err) {
             // Dont actually do anything, we hit this on page load, I suspect because of rendering race conditions
+            console.log(`setting custom card fields error: ${err}`)
         }
     }
     useEffect(() => {
 
         const handleCardCreated = () => {
             setNewCardModalIsOpen(false)
+            setIsSubmitBtnDisabled(false)
             // setNewCardContent(defaultCardContent)
             // setCustomCardFields(defaultCardContent)
         }
@@ -43,7 +45,7 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
         }
     }, [])
 
-    const [newCardContent, setNewCardContent] = useState({})
+    const [newCardContent, setNewCardContent] = useState({data: {}})
     const [isSubmitBtnDisabled, setIsSubmitBtnDisabled] = useState(false)
 
     const supertitleRef = useRef(null)
@@ -71,28 +73,41 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
             //         setCustomCardFields(savedNewCardContentObj)
             //     }
             // }
-            setNewCardContent(editingCardContent)
-            setCustomCardFields(editingCardContent)
+            setNewCardContent({...editingCardContent})
+            setCustomCardFields({...editingCardContent})
         }
     }, [newCardModalIsOpen])
     
 
     const toggleCardType = () => {
         let newCardContentCopy = {...newCardContent}
-        if (newCardContent.cardType === CARD_TYPES.DOOR){
-            newCardContentCopy.cardType = CARD_TYPES.TREASURE
+        if (newCardContent.data.cardType === CARD_TYPES.DOOR){
+            newCardContentCopy.data.cardType = CARD_TYPES.TREASURE
         } else {
-            newCardContentCopy.cardType = CARD_TYPES.DOOR
+            newCardContentCopy.data.cardType = CARD_TYPES.DOOR
         }
         setNewCardContent(newCardContentCopy)
         // localStorage.setItem("newCardContent", JSON.stringify(newCardContentCopy))
     }
 
-    const updateNewCardContent = (section, content) => {
+    const updateNewCardContent = (section, selectedImage) => {
+
+
+
+
+
+        // TODO SOMEHOW DEFAULTCARDCONTENT UPDATES ON EVERY UPDATE?? WHY???
+
+
+
+
+
+
+
         let newCardContentCopy = {...newCardContent}
         if (section === "image") {
-            newCardContentCopy.imageObj = content
-            newCardContentCopy.image = URL.createObjectURL(content)
+            newCardContentCopy.data.imageObj = selectedImage
+            newCardContentCopy.data.image = URL.createObjectURL(selectedImage)
         } else {
             // else must be a ref object
             let ref = null
@@ -105,7 +120,7 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
                 case "footerRight": ref = footerRightRef; break;
                 default: console.error("Unknown section"); return;
             }
-            newCardContentCopy[section] = ref.current.innerText
+            newCardContentCopy.data[section] = ref.current.innerText
         }
         setNewCardContent(newCardContentCopy)
         console.log(newCardContentCopy)
@@ -114,26 +129,30 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
 
     const handleSubmit = () => {
         setIsSubmitBtnDisabled(true)
-        const file = newCardContent.imageObj
-        delete newCardContent.imageObj
+        const file = newCardContent.data.imageObj
+        delete newCardContent.data.imageObj
         socket.emit(E.CREATE_CARD, newCardContent, file, file.name)
     }
 
     const modalBodyClasses = "mx-auto mt-4 mt-md-0 d-flex"
 
+    console.log(`newCardContent: ${JSON.stringify(newCardContent)}`)
+    console.log(`defaultCardContent: ${JSON.stringify(defaultCardContent)}`)
+
     return (
         <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} className="munchkinModal newCardCreatorModal">
-            <Modal.Body className={modalBodyClasses + " " + (newCardContent.cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column", overflow: "hidden"}}>
+            <Modal.Body className={modalBodyClasses + " " + (newCardContent.data.cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column", overflow: "hidden"}}>
                 <FontAwesomeIcon
-                    icon={newCardContent.cardType === CARD_TYPES.DOOR ? faDoorClosed : faCoins}
+                    icon={newCardContent.data.cardType === CARD_TYPES.DOOR ? faDoorClosed : faCoins}
                     onClick={toggleCardType}
                     style={{position: "absolute", height: "2rem", color: "#441B06"}}
                 />
                 <FontAwesomeIcon
                     icon={faRotateRight}
                     onClick={() => {
-                        setNewCardContent(defaultCardContent)
-                        setCustomCardFields(defaultCardContent)
+                        console.log(`reset button clicked. defaultCardContent: ${JSON.stringify(defaultCardContent)}`)
+                        setNewCardContent({...defaultCardContent})
+                        setCustomCardFields({...defaultCardContent})
                     }}
                     style={{position: "absolute", height: "2rem", color: "#441B06", right: "16px"}}
                 />
@@ -142,9 +161,9 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
                 <div id="subtitle" ref={subtitleRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("subtitle")} className="text-center mHeaderFont" style={{fontSize: "1rem", overflowY: "auto", minHeight: "1.5rem"}}></div>
                 <br/>
                 <div>
-                    <label id="newCardCreatorUploadImageEditing" className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload" style={{backgroundImage: `url(${newCardContent.image})`}}>
+                    <label id="newCardCreatorUploadImageEditing" className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload" style={{backgroundImage: `url(${newCardContent.data.image})`}}>
                         {
-                            !newCardContent.image ? 
+                            !newCardContent.data.image ? 
                                 <FontAwesomeIcon
                                     icon={faCamera}
                                     className="mx-auto align-self-center"
@@ -165,7 +184,7 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
             </Modal.Body>
             <div className="d-flex justify-content-evenly mt-5">
                 <Button className="munchkinButton w-25" onClick={toggleNewCardModalIsOpen} style={{ backgroundColor: "#f48d5aff" }}>Cancel</Button>
-                <Button className="munchkinButton w-25" disabled={isSubmitBtnDisabled} onClick={handleSubmit}>Create</Button>
+                <Button className="munchkinButton w-25" disabled={isSubmitBtnDisabled} onClick={handleSubmit}>{Object.hasOwn(newCardContent, "id") ? "Edit" : "Create"}</Button>
             </div>
         </Modal>
     )

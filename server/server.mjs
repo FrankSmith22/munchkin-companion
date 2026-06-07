@@ -357,9 +357,9 @@ io.on(E.CONNECTION, socket => {
             socket.emit(E.CREATE_CARD_FAILURE)
             return
         }
-        newCardContent.image = publicUrl
+        newCardContent.data.image = publicUrl
         console.log(newCardContent)
-        const response = await DB.collection(CUSTOM_CARDS_COLLECTION_NAME).add(newCardContent)
+        const response = await DB.collection(CUSTOM_CARDS_COLLECTION_NAME).add(newCardContent.data)
         console.log(`New custom card added with id: ${response.id}`)
         socket.emit(E.CREATE_CARD_SUCCESS)
         await getCardsToClient(socket)

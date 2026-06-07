@@ -12,29 +12,34 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
         DOOR: "door",
         TREASURE: "treasure"
     }
+
+    const newCardDefaultContent = {
+        data: {
+            cardType: CARD_TYPES.DOOR,
+            supertitle: ">level/bonus<",
+            title: ">Title<",
+            subtitle: ">Subtitle<",
+            description: ">Card description<",
+            footerLeft: ">footer left<",
+            footerRight: ">footer right<",
+            image: "",
+            imageObj: null
+        }
+    }
     
-    const [defaultCardContent, setDefaultCardContent] = useState({
-        cardType: CARD_TYPES.DOOR,
-        supertitle: ">level/bonus<",
-        title: ">Title<",
-        subtitle: ">Subtitle<",
-        description: ">Card description<",
-        footerLeft: ">footer left<",
-        footerRight: ">footer right<",
-        image: "",
-        imageObj: null
-    })
+    const [defaultCardContent, setDefaultCardContent] = useState({data: {}})
 
     const [newCardModalIsOpen, setNewCardModalIsOpen] = useState(false)
 
-    const [editingCardContent, setEditingCardContent] = useState(defaultCardContent)
+    const [editingCardContent, setEditingCardContent] = useState({data: {}})
 
     const toggleNewCardModalIsOpen = () => setNewCardModalIsOpen(!newCardModalIsOpen)
     
     const [selectedCard, setSelectedCard] = useState("")
 
     function startEditingNewCard () {
-        setEditingCardContent(defaultCardContent)
+        setEditingCardContent({...newCardDefaultContent})
+        setDefaultCardContent({...newCardDefaultContent}) 
         toggleNewCardModalIsOpen()
     }
 
@@ -55,7 +60,7 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
                 {allCards.map(card => {
                     return (
                         <Col key={card.id} xs="3" md="2" className="mx-1 my-1 p-0">
-                            <CardCreatorListItem socket={socket} card={card} selectedCard={selectedCard} setSelectedCard={setSelectedCard} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast} toggleNewCardModalIsOpen={toggleNewCardModalIsOpen} setEditingCardContent={setEditingCardContent} setDefaultCardContent={setDefaultCardContent}/>
+                            <CardCreatorListItem socket={socket} card={card} selectedCard={selectedCard} setSelectedCard={setSelectedCard} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast} toggleNewCardModalIsOpen={toggleNewCardModalIsOpen} setEditingCardContent={setEditingCardContent} setDefaultCardContent={setDefaultCardContent} CARD_TYPES={CARD_TYPES}/>
                         </Col>
                     )
                 })}

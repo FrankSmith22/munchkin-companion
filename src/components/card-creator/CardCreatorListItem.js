@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrashCan, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-export default function CardCreatorListItem({socket, card, setSelectedCard, selectedCard, isConnected, setShowDisconnectedToast, toggleNewCardModalIsOpen, setEditingCardContent, setDefaultCardContent}) {
+export default function CardCreatorListItem({socket, card, setSelectedCard, selectedCard, isConnected, setShowDisconnectedToast, toggleNewCardModalIsOpen, setEditingCardContent, setDefaultCardContent, CARD_TYPES}) {
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
     const [deletingCard, setDeletingCard] = useState("")
@@ -26,9 +26,8 @@ export default function CardCreatorListItem({socket, card, setSelectedCard, sele
     }
 
     function startEditingCard(card) {
-        let cardContent = {...card.data, id: card.id}
-        setEditingCardContent(cardContent)
-        setDefaultCardContent(cardContent) // This allows the reset button to only reset state back to card as it was before editing
+        setEditingCardContent({...card})
+        setDefaultCardContent({...card}) // This allows the reset button to only reset state back to card as it was before editing
         toggleNewCardModalIsOpen()
     }
 
@@ -45,7 +44,7 @@ export default function CardCreatorListItem({socket, card, setSelectedCard, sele
                 </ModalFooter>
             </Modal>
             <div style={{ position: "relative" }}>
-                <div className="newCardCreatorCard d-flex" onClick={() => setSelectedCard(card)} style={{
+                <div className={"newCardCreatorCard d-flex " + (card.data.cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} onClick={() => setSelectedCard(card)} style={{
                     flexFlow: "column", 
                     overflow: "hidden", 
                     filter: selectedCard.id === card.id ? "blur(5px)" : "unset",
