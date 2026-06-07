@@ -1,4 +1,4 @@
-import { Row, Col, Button } from "reactstrap";
+import { Button } from "reactstrap";
 import Modal from 'react-bootstrap/Modal';
 import { useEffect, useState, useRef } from "react";
 import { EVENTS as E } from '../../app/events.mjs';
@@ -73,14 +73,14 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
             //         setCustomCardFields(savedNewCardContentObj)
             //     }
             // }
-            setNewCardContent({...editingCardContent})
-            setCustomCardFields({...editingCardContent})
+            setNewCardContent(structuredClone(editingCardContent))
+            setCustomCardFields(structuredClone(editingCardContent))
         }
     }, [newCardModalIsOpen])
     
 
     const toggleCardType = () => {
-        let newCardContentCopy = {...newCardContent}
+        let newCardContentCopy = structuredClone(newCardContent)
         if (newCardContent.data.cardType === CARD_TYPES.DOOR){
             newCardContentCopy.data.cardType = CARD_TYPES.TREASURE
         } else {
@@ -91,20 +91,7 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
     }
 
     const updateNewCardContent = (section, selectedImage) => {
-
-
-
-
-
-        // TODO SOMEHOW DEFAULTCARDCONTENT UPDATES ON EVERY UPDATE?? WHY???
-
-
-
-
-
-
-
-        let newCardContentCopy = {...newCardContent}
+        let newCardContentCopy = structuredClone(newCardContent)
         if (section === "image") {
             newCardContentCopy.data.imageObj = selectedImage
             newCardContentCopy.data.image = URL.createObjectURL(selectedImage)
@@ -136,9 +123,6 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
 
     const modalBodyClasses = "mx-auto mt-4 mt-md-0 d-flex"
 
-    console.log(`newCardContent: ${JSON.stringify(newCardContent)}`)
-    console.log(`defaultCardContent: ${JSON.stringify(defaultCardContent)}`)
-
     return (
         <Modal show={newCardModalIsOpen} onHide={toggleNewCardModalIsOpen} className="munchkinModal newCardCreatorModal">
             <Modal.Body className={modalBodyClasses + " " + (newCardContent.data.cardType === CARD_TYPES.DOOR ? "doorCardColor" : "treasureCardColor")} style={{flexFlow: "column", overflow: "hidden"}}>
@@ -150,9 +134,8 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
                 <FontAwesomeIcon
                     icon={faRotateRight}
                     onClick={() => {
-                        console.log(`reset button clicked. defaultCardContent: ${JSON.stringify(defaultCardContent)}`)
-                        setNewCardContent({...defaultCardContent})
-                        setCustomCardFields({...defaultCardContent})
+                        setNewCardContent(structuredClone(defaultCardContent))
+                        setCustomCardFields(structuredClone(defaultCardContent))
                     }}
                     style={{position: "absolute", height: "2rem", color: "#441B06", right: "16px"}}
                 />

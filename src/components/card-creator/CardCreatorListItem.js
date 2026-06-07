@@ -26,8 +26,8 @@ export default function CardCreatorListItem({socket, card, setSelectedCard, sele
     }
 
     function startEditingCard(card) {
-        setEditingCardContent({...card})
-        setDefaultCardContent({...card}) // This allows the reset button to only reset state back to card as it was before editing
+        setEditingCardContent(structuredClone(card))
+        setDefaultCardContent(structuredClone(card)) // This allows the reset button to only reset state back to card as it was before editing
         toggleNewCardModalIsOpen()
     }
 
@@ -79,12 +79,12 @@ export default function CardCreatorListItem({socket, card, setSelectedCard, sele
                     <FontAwesomeIcon
                         style={{ color: "#441B06", cursor: "pointer" }}
                         icon={faPencil}
-                        onClick={() => {startEditingCard(card)}}
+                        onClick={() => startEditingCard(card)}
                     />
                     <FontAwesomeIcon
                         style={{ color: "#441B06", cursor: "pointer" }}
                         icon={faTrashCan}
-                        onClick={() => {toggleConfirmModal(card.id)}}
+                        onClick={() => toggleConfirmModal(card.id)}
                     />
                 </div>
             </div>

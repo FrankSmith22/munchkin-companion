@@ -1,8 +1,6 @@
 import BackButton from "../BackButton";
 import { Row, Col } from "reactstrap";
 import { useState } from "react";
-import { EVENTS as E } from '../../app/events.mjs';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CardCreatorListItem from "./CardCreatorListItem";
 import CardCreatorEditor from "./CardCreatorEditor";
 
@@ -38,8 +36,8 @@ export default function CardCreator({socket, setDisplayMode, isConnected, setSho
     const [selectedCard, setSelectedCard] = useState("")
 
     function startEditingNewCard () {
-        setEditingCardContent({...newCardDefaultContent})
-        setDefaultCardContent({...newCardDefaultContent}) 
+        setEditingCardContent(structuredClone(newCardDefaultContent))
+        setDefaultCardContent(structuredClone(newCardDefaultContent)) 
         toggleNewCardModalIsOpen()
     }
 
