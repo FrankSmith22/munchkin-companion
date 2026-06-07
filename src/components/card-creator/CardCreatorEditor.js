@@ -73,6 +73,7 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
             //         setCustomCardFields(savedNewCardContentObj)
             //     }
             // }
+            console.log(`editingCardContent: ${JSON.stringify(editingCardContent)}`)
             setNewCardContent(structuredClone(editingCardContent))
             setCustomCardFields(structuredClone(editingCardContent))
         }
@@ -116,9 +117,26 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
 
     const handleSubmit = () => {
         setIsSubmitBtnDisabled(true)
-        const file = newCardContent.data.imageObj
-        delete newCardContent.data.imageObj
-        socket.emit(E.CREATE_CARD, newCardContent, file, file.name)
+        //  A couple permutations here.
+        // 1. Check if editing or creating anew
+        // 2. Check if `image` url starts with `blob:`. If it is, it needs to be uploaded. If not, it doesnt need to be
+        if (!Object.hasOwn(newCardContent, "id")) {
+            // Creating new card
+            const file = newCardContent.data.imageObj
+            delete newCardContent.data.imageObj
+            socket.emit(E.CREATE_CARD, newCardContent, file, file.name)
+        }
+        else {
+            // Editing existing card
+            if (newCardContent.data.image.startsWith("blob:")) {
+                const file = newCardContent.data.imageObj
+                delete newCardContent.data.imageObj
+                socket.emit(E.EDIT_CARD, newCardContent, file, file.name)
+            }
+            else {
+                socket.emit(E.EDIT_CARD, newCardContent, null, "")
+            }
+        }
     }
 
     const modalBodyClasses = "mx-auto mt-4 mt-md-0 d-flex"
@@ -139,9 +157,9 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
                     }}
                     style={{position: "absolute", height: "2rem", color: "#441B06", right: "16px"}}
                 />
-                <div id="supertitle" ref={supertitleRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("supertitle")} className="text-center mHeaderFont mx-auto" style={{fontSize: "1rem", width: "90%", overflowY: "auto", minHeight: "1.5rem"}}></div>
-                <div id="title" ref={titleRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("title")} className="text-center mHeaderFont" style={{fontSize: "2rem", overflowY: "auto", minHeight: "3rem", maxHeight: "6rem"}}></div>
-                <div id="subtitle" ref={subtitleRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("subtitle")} className="text-center mHeaderFont" style={{fontSize: "1rem", overflowY: "auto", minHeight: "1.5rem"}}></div>
+                <div id="supertitle" ref={supertitleRef} contentEditable={true} suppressContentEditableWarning={true} onInput={() => updateNewCardContent("supertitle")} className="text-center mHeaderFont mx-auto" style={{fontSize: "1rem", width: "90%", overflowY: "auto", minHeight: "1.5rem"}}></div>
+                <div id="title" ref={titleRef} contentEditable={true} suppressContentEditableWarning={true} onInput={() => updateNewCardContent("title")} className="text-center mHeaderFont" style={{fontSize: "2rem", overflowY: "auto", minHeight: "3rem", maxHeight: "6rem"}}></div>
+                <div id="subtitle" ref={subtitleRef} contentEditable={true} suppressContentEditableWarning={true} onInput={() => updateNewCardContent("subtitle")} className="text-center mHeaderFont" style={{fontSize: "1rem", overflowY: "auto", minHeight: "1.5rem"}}></div>
                 <br/>
                 <div>
                     <label id="newCardCreatorUploadImageEditing" className="newCardCreatorUploadImage mx-auto d-flex" htmlFor="pictureUpload" style={{backgroundImage: `url(${newCardContent.data.image})`}}>
@@ -159,10 +177,10 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
                     <input type="file" id="pictureUpload" accept="image/*" onChange={event => updateNewCardContent("image", event.target.files[0])} style={{display: "none"}}/>
                 </div>
                 <br/>
-                <div id="description" ref={descriptionRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("description")} className="newCardCreatorDescription editing"></div>
+                <div id="description" ref={descriptionRef} contentEditable={true} suppressContentEditableWarning={true} onInput={() => updateNewCardContent("description")} className="newCardCreatorDescription editing"></div>
                 <div className="d-flex justify-content-between" style={{overflowY: "hidden"}}>
-                    <div id="footerLeft" ref={footerLeftRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("footerLeft")} style={{width: "45%", display: "inline-block", overflowY: "auto", minHeight: "1.7rem"}}></div>
-                    <div id="footerRight" ref={footerRightRef} contentEditable={true} suppressContentEditableWarning={true} onInput={e => updateNewCardContent("footerRight")} style={{width: "45%", display: "inline-block", textAlign: "end", overflowY: "auto", minHeight: "1.5rem"}}></div>
+                    <div id="footerLeft" ref={footerLeftRef} contentEditable={true} suppressContentEditableWarning={true} onInput={() => updateNewCardContent("footerLeft")} style={{width: "45%", display: "inline-block", overflowY: "auto", minHeight: "1.7rem"}}></div>
+                    <div id="footerRight" ref={footerRightRef} contentEditable={true} suppressContentEditableWarning={true} onInput={() => updateNewCardContent("footerRight")} style={{width: "45%", display: "inline-block", textAlign: "end", overflowY: "auto", minHeight: "1.5rem"}}></div>
                 </div>
             </Modal.Body>
             <div className="d-flex justify-content-evenly mt-5">

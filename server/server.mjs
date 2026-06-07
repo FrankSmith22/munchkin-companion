@@ -371,7 +371,22 @@ io.on(E.CONNECTION, socket => {
         if (!cardId) return
         await DB.collection(CUSTOM_CARDS_COLLECTION_NAME).doc(cardId).delete()
         console.log(`Card id ${cardId} deleted`)
-        const errMsg = getCardsToClient(socket)
+        const errMsg = await getCardsToClient(socket)
+    })
+    socket.on(E.EDIT_CARD, async (newCardContent, file, fileName) => {
+        if (file) {
+            const publicUrl = await uploadImage(file, fileName)
+            if (!publicUrl) {
+                socket.emit(E.CREATE_CARD_FAILURE)
+                return
+            }
+            newCardContent.data.image = publicUrl
+            console.log(newCardContent)
+        }
+        await DB.collection(CUSTOM_CARDS_COLLECTION_NAME).doc(newCardContent.id).set(newCardContent.data)
+        console.log("Card updated")
+        socket.emit(E.CREATE_CARD_SUCCESS)
+        await getCardsToClient(socket)
     })
     socket.onAny(() => {
         LAST_INTERACTED_TIME = Date.now()
