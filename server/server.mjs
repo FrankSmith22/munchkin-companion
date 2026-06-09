@@ -174,7 +174,7 @@ io.on(E.CONNECTION, socket => {
             return
         }
         playerObj.lastInteractedTime = Date.now()
-        playerObj.gearBonus = Math.max(playerObj.gearBonus - 1, 0)
+        playerObj.gearBonus = playerObj.gearBonus - 1
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
         emitAllPlayersUpdate(io, rooms, playerRoomId)
@@ -197,7 +197,7 @@ io.on(E.CONNECTION, socket => {
             return
         }
         playerObj.lastInteractedTime = Date.now()
-        playerObj.combat.partyModifier = Math.max(playerObj.combat.partyModifier - 1, 0)
+        playerObj.combat.partyModifier = playerObj.combat.partyModifier - 1
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
     })
@@ -217,7 +217,7 @@ io.on(E.CONNECTION, socket => {
             return
         }
         playerObj.lastInteractedTime = Date.now()
-        playerObj.combat.monsterModifier = Math.max(playerObj.combat.monsterModifier - 1, 0)
+        playerObj.combat.monsterModifier = playerObj.combat.monsterModifier - 1
         rooms[playerRoomId][connId] = playerObj
         socket.emit(E.PLAYER_UPDATE, {"playerObj": JSON.stringify(playerObj)})
     })
