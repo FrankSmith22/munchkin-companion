@@ -1,0 +1,9 @@
+.sticky-bottom-right {
+  /* The core positioning logic */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  
+  /* Ensuring it stays on top of other content */
+  z-index: 1000;
+}

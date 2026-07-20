@@ -10,6 +10,7 @@ import CombatButton from './CombatButton';
 import { PICTURES as P } from '../app/pictureMapping';
 import bellLow from "../res/Synth_Bell_A_lo.wav";
 import bellHigh from "../res/Synth_Bell_A_hi.wav";
+import CustomCardsInPlay from './card-creator/CustomCardsInPlay';
 
 export default function PlayerCard({socket, playerObj, allPlayers, allRules, rulesErrorMsg, isConnected, setShowDisconnectedToast, setDisplayMode}){
 
@@ -119,6 +120,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                 </Col>
             </Row>
         </div>
+        <CustomCardsInPlay/>
         </>
     )
 }
