@@ -12,10 +12,12 @@ export default function CustomCardsInPlay() {
 
     const toggleDrawCardModal = () => setIsDrawCardModalOpen(!isDrawCardModalOpen);
 
+    const [isDrawButtonDisabled, setIsDrawButtonDisabled] = useState(false)
+
     // 1. Initialize deck only when the modal is completely open and visible
     const handleModalOpened = () => {
         if (containerRef.current && !deckInstanceRef.current) {
-            const deck = Deck(true);
+            const deck = Deck();
             deckInstanceRef.current = deck;
             deck.mount(containerRef.current);
         }
@@ -47,7 +49,26 @@ export default function CustomCardsInPlay() {
     };
 
     const drawCard = () => {
-        console.log("hello world");
+        console.log(deckInstanceRef.current.cards[0])
+        if (deckInstanceRef.current.cards[0].side === 'front') {
+            handleFlip()
+        }
+        setIsDrawButtonDisabled(true)
+        handleFan()
+        setTimeout(() => {
+            handleFlip()
+            setTimeout(() => {
+                handleFlip()
+                handleShuffle()
+                handleShuffle()
+                handleShuffle()
+                handleShuffle()
+                setTimeout(() => {
+                    handleFlip()
+                    setIsDrawButtonDisabled(false)
+                }, 2000)
+            }, 1500)
+        }, 1000)
     };
 
     return (
@@ -60,15 +81,15 @@ export default function CustomCardsInPlay() {
                 onClosed={handleModalClosed}
             >
                 <ModalHeader toggle={toggleDrawCardModal}>Draw custom card</ModalHeader>
-                <ModalBody>
-                    <div style={{ padding: '20px', textAlign: 'center' }}>
+                <ModalBody style={{ height: "50vh" }}>
+                    <div style={{  marginTop: "50%" }}>
                         {/* Control Buttons */}
-                        <div style={{ marginBottom: '30px' }}>
+                        {/* <div style={{ marginBottom: '30px' }}>
                             <button onClick={handleShuffle} style={buttonStyle}>Shuffle</button>
                             <button onClick={handleFan} style={buttonStyle}>Fan</button>
                             <button onClick={handleFlip} style={buttonStyle}>Flip All</button>
                             <button onClick={handleSort} style={buttonStyle}>Sort</button>
-                        </div>
+                        </div> */}
 
                         {/* The Vanilla DOM container */}
                         <div
@@ -76,16 +97,15 @@ export default function CustomCardsInPlay() {
                             className="deck-container-wrapper mt-5"
                             style={{
                                 position: 'relative',
-                                height: '300px',
                                 width: '100%',
                                 margin: '0 auto',
-                                left: "50%"
+                                left: "45%"
                             }}
                         />
                     </div>
                 </ModalBody>
                 <ModalFooter className="d-flex justify-content-center">
-                    <Button className="munchkinButton" onClick={drawCard}>~ Draw ~</Button>
+                    <Button className="munchkinButton" onClick={drawCard} disabled={isDrawButtonDisabled}>~ Draw ~</Button>
                 </ModalFooter>
             </Modal>
             <div className="sticky-bottom-right">
