@@ -1,9 +1,49 @@
 .sticky-bottom-right {
-  /* The core positioning logic */
   position: fixed;
   bottom: 20px;
   right: 20px;
-  
-  /* Ensuring it stays on top of other content */
   z-index: 1000;
+}
+
+/* Your inner content styling */
+.custom-card-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    border: 4px solid #6b4c2a;
+    border-radius: 4px;
+}
+
+.custom-card-content .card-header {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: auto;
+    padding-top: 5px;
+    color: #6b4c2a;
+}
+
+.custom-card-content .card-body-text {
+    font-size: 16px;
+    font-weight: bold;
+    /* margin-bottom: auto; */
+}
+
+.custom-card-content-image {
+  height: 5vh;
+  width: auto;
+}
+
+.card:before {
+  content: none !important
+}
+
+.card:after {
+  content: none !important
 }

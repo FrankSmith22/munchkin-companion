@@ -53,7 +53,6 @@ export default function ModeSelect({socket, isConnected, setShowDisconnectedToas
     }
 
     function pictureSelect(picture){
-        console.log(picture)
         setSelectedPicture(picture)
     }
 

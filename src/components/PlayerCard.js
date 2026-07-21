@@ -12,7 +12,7 @@ import bellLow from "../res/Synth_Bell_A_lo.wav";
 import bellHigh from "../res/Synth_Bell_A_hi.wav";
 import CustomCardsInPlay from './card-creator/CustomCardsInPlay';
 
-export default function PlayerCard({socket, playerObj, allPlayers, allRules, rulesErrorMsg, isConnected, setShowDisconnectedToast, setDisplayMode}){
+export default function PlayerCard({socket, playerObj, allPlayers, allRules, rulesErrorMsg, isConnected, setShowDisconnectedToast, setDisplayMode, allCards}){
 
     const [sidebarToggle, setSidebarToggle] = useState(true)
     const [sidebarPosition, setSidebarPosition] = useState("0px")
@@ -120,7 +120,7 @@ export default function PlayerCard({socket, playerObj, allPlayers, allRules, rul
                 </Col>
             </Row>
         </div>
-        <CustomCardsInPlay/>
+        <CustomCardsInPlay socket={socket} allCards={allCards}/>
         </>
     )
 }

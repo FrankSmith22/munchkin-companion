@@ -26,7 +26,7 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
             }
         } catch(err) {
             // Dont actually do anything, we hit this on page load, I suspect because of rendering race conditions
-            console.log(`setting custom card fields error: ${err}`)
+            console.error(`setting custom card fields error: ${err}`)
         }
     }
     useEffect(() => {
@@ -73,7 +73,6 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
             //         setCustomCardFields(savedNewCardContentObj)
             //     }
             // }
-            console.log(`editingCardContent: ${JSON.stringify(editingCardContent)}`)
             setNewCardContent(structuredClone(editingCardContent))
             setCustomCardFields(structuredClone(editingCardContent))
         }
@@ -111,7 +110,6 @@ export default function CardEditor({socket, newCardModalIsOpen, setNewCardModalI
             newCardContentCopy.data[section] = ref.current.innerText
         }
         setNewCardContent(newCardContentCopy)
-        console.log(newCardContentCopy)
         // localStorage.setItem("newCardContent", JSON.stringify(newCardContentCopy))
     }
 

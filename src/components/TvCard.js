@@ -85,7 +85,6 @@ export default function TvCard({socket, allPlayers, isConnected, setShowDisconne
     //         gearBonus: 4
     //     },
     // }
-    console.log(JSON.stringify(allPlayers))
     for (const [connId, playerObj] of Object.entries(allPlayers)){
         playerSlots.push(playerSlot(connId, playerObj))
     }

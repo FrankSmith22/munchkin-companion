@@ -80,13 +80,11 @@ export default function App() {
 
     useEffect(() => {
         function onConnect() {
-            console.log("Connected")
             attemptReconnect()
             setIsConnected(true)
             setShowDisconnectedToast(false)
         }
         function onDisconnect() {
-            console.log("Disconnected")
             setIsConnected(false)
         }
         function onPlayerConnect({playerObj, roomId}) {
@@ -134,14 +132,12 @@ export default function App() {
         }
 
         function onPartyUpdate({allPlayers}) {
-            console.log("Received party update")
             allPlayers = allPlayers || "{}"
             const parsedAllPlayers = JSON.parse(allPlayers)
             const allPlayerObjs = {}
             for (const [socket_id, playerObj] of Object.entries(parsedAllPlayers)) {
                 allPlayerObjs[socket_id] = Object.assign(new Player(), playerObj)
             }
-            console.log(`allPlayerObjs=${JSON.stringify(allPlayerObjs)}`)
             setAllPlayers(allPlayerObjs)
         }
 
@@ -197,7 +193,6 @@ export default function App() {
         }
 
         function onRulesError({message}) {
-            console.log(`Got error message from server for getting rules: ${message}`)
             setRulesErrorMsg(message)
         }
 
@@ -239,7 +234,7 @@ export default function App() {
         <div className="App">
             <ConnectionState isConnected={isConnected} roomId={roomId} setShowDisconnectedToast={setShowDisconnectedToast} showDisconnectedToast={showDisconnectedToast}/>
             {pageToDisplay === DISPLAY_MODES.MODE_SELECT ? <ModeSelect socket={socket} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
-            {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} setDisplayMode={setDisplayMode} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
+            {pageToDisplay === DISPLAY_MODES.PLAYER_MODE ? <PlayerCard socket={socket} setDisplayMode={setDisplayMode} playerObj={playerObj} allPlayers={allPlayers} allRules={allRules} rulesErrorMsg={rulesErrorMsg} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast} allCards={allCards}/> : <></>}
             {pageToDisplay === DISPLAY_MODES.TV_MODE ? <TvCard socket={socket} setDisplayMode={setDisplayMode} allPlayers={allPlayers} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast}/> : <></>}
             {pageToDisplay === DISPLAY_MODES.CARD_CREATOR_MODE ? <CardCreator socket={socket} setDisplayMode={setDisplayMode} isConnected={isConnected} setShowDisconnectedToast={setShowDisconnectedToast} allCards={allCards}/> : <></>}
         </div>

@@ -75,7 +75,6 @@ export default function RulesButton({socket, allRules, rulesErrorMsg, isConnecte
         let editingRule = filteredRules.filter(rule => rule.id === ruleId)
         if (editingRule.length === 0) return
         setRuleEditing(ruleId)
-        console.log(editingRule[0])
         setEditingRuleTitle(editingRule[0].data.title)
         setEditingRuleDesc(editingRule[0].data.description)
     }
